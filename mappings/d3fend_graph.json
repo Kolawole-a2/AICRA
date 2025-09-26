@@ -1,0 +1,13 @@
+{
+  "T1486": [
+    {"control": "D3-HTD-0001", "name": "Host-based Tamper Detection"},
+    {"control": "D3-DCA-0002", "name": "Data Backup and Recovery"}
+  ],
+  "T1105": [
+    {"control": "D3-NBA-0003", "name": "Network Behavior Analytics"}
+  ],
+  "T1041": [
+    {"control": "D3-DLP-0004", "name": "Data Loss Prevention"}
+  ]
+}
+
