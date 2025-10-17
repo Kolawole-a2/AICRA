@@ -31,6 +31,7 @@ class CalibrationPipeline:
         y_prob_train: np.ndarray[Any, np.dtype[np.floating]],
         y_prob_val: np.ndarray[Any, np.dtype[np.floating]],
         method: Literal["platt", "isotonic", "auto"] = "auto",
+        post_ensemble_check: bool = True,
     ) -> Calibrator:
         """Train calibrator and generate reliability plot."""
         
@@ -45,6 +46,12 @@ class CalibrationPipeline:
 
         # Generate calibrated probabilities
         y_prob_calibrated = calibrator.transform(y_prob_val)
+
+        # Post-ensemble calibration check
+        if post_ensemble_check:
+            calibrator = self._post_ensemble_calibration_check(
+                calibrator, y_prob_train, train_data.labels.values, method
+            )
 
         # Generate reliability plot
         self._plot_reliability_diagram(
@@ -61,6 +68,7 @@ class CalibrationPipeline:
         # Log to MLflow
         with mlflow.start_run():
             mlflow.log_param("calibration_method", method)
+            mlflow.log_param("post_ensemble_check", post_ensemble_check)
             mlflow.log_metrics({
                 "brier_uncalibrated": brier_uncalibrated,
                 "brier_calibrated": brier_calibrated,
@@ -200,3 +208,63 @@ class IsotonicCalibrator(Calibrator):
             raise ValueError("Calibrator must be fitted before transform")
         
         return self.isotonic.transform(y_prob)
+    
+    def _post_ensemble_calibration_check(
+        self,
+        calibrator: Calibrator,
+        y_prob_train: np.ndarray[Any, np.dtype[np.floating]],
+        y_true_train: np.ndarray[Any, np.dtype[np.integer]],
+        method: str
+    ) -> Calibrator:
+        """Check if ECE degrades after ensemble calibration and refit if needed."""
+        
+        # Compute ECE before calibration
+        ece_before = self._compute_ece(y_true_train, y_prob_train)
+        
+        # Apply calibration
+        y_prob_calibrated = calibrator.transform(y_prob_train)
+        
+        # Compute ECE after calibration
+        ece_after = self._compute_ece(y_true_train, y_prob_calibrated)
+        
+        # If ECE degrades, refit isotonic regression on ensemble scores
+        if ece_after > ece_before:
+            mlflow.log_param("post_ensemble_refit", True)
+            mlflow.log_metrics({
+                "ece_before_ensemble": ece_before,
+                "ece_after_ensemble": ece_after,
+                "ece_degradation": ece_after - ece_before,
+            })
+            
+            # Refit isotonic regression
+            refit_calibrator = IsotonicCalibrator()
+            refit_calibrator.fit(y_prob_calibrated, y_true_train)
+            
+            return refit_calibrator
+        else:
+            mlflow.log_param("post_ensemble_refit", False)
+            mlflow.log_metrics({
+                "ece_before_ensemble": ece_before,
+                "ece_after_ensemble": ece_after,
+                "ece_improvement": ece_before - ece_after,
+            })
+            
+            return calibrator
+    
+    def _compute_ece(self, y_true: np.ndarray, y_prob: np.ndarray, n_bins: int = 10) -> float:
+        """Compute Expected Calibration Error."""
+        bin_boundaries = np.linspace(0, 1, n_bins + 1)
+        bin_lowers = bin_boundaries[:-1]
+        bin_uppers = bin_boundaries[1:]
+        
+        ece = 0
+        for bin_lower, bin_upper in zip(bin_lowers, bin_uppers):
+            in_bin = (y_prob > bin_lower) & (y_prob <= bin_upper)
+            prop_in_bin = in_bin.mean()
+            
+            if prop_in_bin > 0:
+                accuracy_in_bin = y_true[in_bin].mean()
+                avg_confidence_in_bin = y_prob[in_bin].mean()
+                ece += np.abs(avg_confidence_in_bin - accuracy_in_bin) * prop_in_bin
+        
+        return ece

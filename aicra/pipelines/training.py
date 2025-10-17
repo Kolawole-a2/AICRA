@@ -82,7 +82,7 @@ class TrainingPipeline:
             return str(model_path)
     
     def _train_lightgbm(self, X: np.ndarray, y: np.ndarray, seeds: int) -> Any:
-        """Train LightGBM model with histogram-based tree learner."""
+        """Train LightGBM model with histogram-based tree learner and robust losses."""
         import pandas as pd
         from lightgbm import LGBMClassifier
         
@@ -107,6 +107,8 @@ class TrainingPipeline:
                 boosting_type="gbdt",  # Histogram-based tree learner
                 # GOSS off per constraints
                 force_col_wise=True,  # Use histogram-based
+                # Robust losses for shift/noise mitigation
+                scale_pos_weight=self._compute_scale_pos_weight(y),
             )
             model.fit(X_df, y)
             models.append(model)
@@ -114,6 +116,16 @@ class TrainingPipeline:
         # Return bagged model
         from ..models.lightgbm import BaggedLightGBM
         return BaggedLightGBM(models=models)
+    
+    def _compute_scale_pos_weight(self, y: np.ndarray) -> float:
+        """Compute scale_pos_weight for class imbalance."""
+        if self.settings.class_weight == "balanced":
+            # Compute balanced weight
+            n_pos = np.sum(y == 1)
+            n_neg = np.sum(y == 0)
+            if n_pos > 0 and n_neg > 0:
+                return n_neg / n_pos
+        return 1.0
     
     def _train_ffnn(self, X: np.ndarray, y: np.ndarray, seeds: int) -> Any:
         """Train small FFNN with focal loss."""
