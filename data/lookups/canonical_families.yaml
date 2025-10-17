@@ -1,0 +1,163 @@
+# Canonical malware family mapping
+# Version-controlled mapping from raw tags to canonical families
+__version__: "1.0.0"
+__description__: "Mapping from raw malware family/tag strings to canonical family names"
+
+# Mapping rules (case-insensitive matching)
+mappings:
+  # Locky variants
+  "locky": "Locky"
+  "locky.*": "Locky"
+  "locky_*": "Locky"
+  "locky-*": "Locky"
+  
+  # Ryuk variants
+  "ryuk": "Ryuk"
+  "ryuk.*": "Ryuk"
+  "ryuk_*": "Ryuk"
+  "ryuk-*": "Ryuk"
+  
+  # Conti variants
+  "conti": "Conti"
+  "conti.*": "Conti"
+  "conti_*": "Conti"
+  "conti-*": "Conti"
+  
+  # Maze variants
+  "maze": "Maze"
+  "maze.*": "Maze"
+  "maze_*": "Maze"
+  "maze-*": "Maze"
+  
+  # REvil/Sodinokibi variants
+  "revil": "REvil"
+  "sodinokibi": "REvil"
+  "sodin": "REvil"
+  "revil.*": "REvil"
+  "sodinokibi.*": "REvil"
+  
+  # Egregor variants
+  "egregor": "Egregor"
+  "egregor.*": "Egregor"
+  "egregor_*": "Egregor"
+  
+  # DarkSide variants
+  "darkside": "DarkSide"
+  "darkside.*": "DarkSide"
+  "dark_side": "DarkSide"
+  
+  # Avaddon variants
+  "avaddon": "Avaddon"
+  "avaddon.*": "Avaddon"
+  "avaddon_*": "Avaddon"
+  
+  # Babuk variants
+  "babuk": "Babuk"
+  "babuk.*": "Babuk"
+  "babuk_*": "Babuk"
+  
+  # Ragnar Locker variants
+  "ragnar": "RagnarLocker"
+  "ragnar_locker": "RagnarLocker"
+  "ragnar.*": "RagnarLocker"
+  
+  # NetWalker variants
+  "netwalker": "NetWalker"
+  "netwalker.*": "NetWalker"
+  "net_walker": "NetWalker"
+  
+  # Clop variants
+  "clop": "Clop"
+  "clop.*": "Clop"
+  "clop_*": "Clop"
+  
+  # DoppelPaymer variants
+  "doppelpaymer": "DoppelPaymer"
+  "doppel.*": "DoppelPaymer"
+  "doppel_paymer": "DoppelPaymer"
+  
+  # RansomEXX variants
+  "ransomexx": "RansomEXX"
+  "ransomexx.*": "RansomEXX"
+  "ransom_exx": "RansomEXX"
+  
+  # Mount Locker variants
+  "mount_locker": "MountLocker"
+  "mountlocker": "MountLocker"
+  "mount.*": "MountLocker"
+  
+  # PYSA variants
+  "pysa": "PYSA"
+  "pysa.*": "PYSA"
+  "mespinoza": "PYSA"
+  
+  # Cuba variants
+  "cuba": "Cuba"
+  "cuba.*": "Cuba"
+  "cuba_*": "Cuba"
+  
+  # Hive variants
+  "hive": "Hive"
+  "hive.*": "Hive"
+  "hive_*": "Hive"
+  
+  # BlackMatter variants
+  "blackmatter": "BlackMatter"
+  "black_matter": "BlackMatter"
+  "blackmatter.*": "BlackMatter"
+  
+  # ALPHV/BlackCat variants
+  "alphv": "ALPHV"
+  "blackcat": "ALPHV"
+  "alphv.*": "ALPHV"
+  "blackcat.*": "ALPHV"
+  
+  # BianLian variants
+  "bianlian": "BianLian"
+  "bian_lian": "BianLian"
+  "bianlian.*": "BianLian"
+  
+  # Royal variants
+  "royal": "Royal"
+  "royal.*": "Royal"
+  "royal_*": "Royal"
+  
+  # Play variants
+  "play": "Play"
+  "play.*": "Play"
+  "play_*": "Play"
+  
+  # Unknown/Generic ransomware
+  "unknown": "Unknown"
+  "generic": "Unknown"
+  "ransomware": "Unknown"
+  "malware": "Unknown"
+  "trojan": "Unknown"
+  "virus": "Unknown"
+
+# Default canonical families list
+canonical_families:
+  - "Locky"
+  - "Ryuk"
+  - "Conti"
+  - "Maze"
+  - "REvil"
+  - "Egregor"
+  - "DarkSide"
+  - "Avaddon"
+  - "Babuk"
+  - "RagnarLocker"
+  - "NetWalker"
+  - "Clop"
+  - "DoppelPaymer"
+  - "RansomEXX"
+  - "MountLocker"
+  - "PYSA"
+  - "Cuba"
+  - "Hive"
+  - "BlackMatter"
+  - "ALPHV"
+  - "BianLian"
+  - "Royal"
+  - "Play"
+  - "Unknown"
