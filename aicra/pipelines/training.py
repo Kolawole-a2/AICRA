@@ -175,11 +175,15 @@ class TrainingPipeline:
         return BaggedFFNN(models=models)
 
 
-class SmallFFNN(nn.Module):
+class SmallFFNN:
     """Small feedforward neural network for ransomware detection."""
     
     def __init__(self, input_dim: int, hidden_dim: int = 128):
-        super().__init__()
+        try:
+            import torch.nn as nn
+        except ImportError:
+            raise ImportError("PyTorch is required for FFNN. Install with: pip install torch")
+        
         self.network = nn.Sequential(
             nn.Linear(input_dim, hidden_dim),
             nn.ReLU(),
@@ -194,16 +198,22 @@ class SmallFFNN(nn.Module):
         return self.network(x)
 
 
-class FocalLoss(nn.Module):
+class FocalLoss:
     """Focal loss implementation for class imbalance."""
     
     def __init__(self, alpha: float = 0.75, gamma: float = 2.0):
-        super().__init__()
+        try:
+            import torch.nn as nn
+        except ImportError:
+            raise ImportError("PyTorch is required for FocalLoss. Install with: pip install torch")
+        
         self.alpha = alpha
         self.gamma = gamma
+        self.ce_loss = nn.CrossEntropyLoss(reduction='none')
     
     def forward(self, inputs, targets):
-        ce_loss = nn.CrossEntropyLoss(reduction='none')(inputs, targets)
+        import torch
+        ce_loss = self.ce_loss(inputs, targets)
         pt = torch.exp(-ce_loss)
         focal_loss = self.alpha * (1 - pt) ** self.gamma * ce_loss
         return focal_loss.mean()
