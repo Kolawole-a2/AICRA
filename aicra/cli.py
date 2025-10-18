@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from pathlib import Path
 
 import joblib
@@ -19,6 +20,8 @@ from .pipelines.training import TrainingPipeline
 from .pipelines.calibration import CalibrationPipeline
 from .pipelines.evaluation import EvaluationPipeline
 from .pipelines.policy import PolicyPipeline
+from .pipelines.smoke import SmokeTestPipeline
+from .utils import save_run_results, list_recent_runs
 
 app = typer.Typer(
     name="aicra",
@@ -101,7 +104,8 @@ def train(
         model_type=model_type,
         model_name=model_name,
         experiment_name=experiment_name,
-        seeds=seeds
+        seeds=seeds,
+        is_smoke_test=False  # Regular training, not smoke test
     )
 
     typer.echo(f"Model saved to {model_path}")
@@ -160,7 +164,8 @@ def evaluate(
         threshold=threshold,
         timestamp_column=timestamp_column,
         family_column=family_column,
-        k_values=k_vals
+        k_values=k_vals,
+        is_smoke_test=False  # Regular evaluation, not smoke test
     )
 
     # Print metrics
@@ -381,6 +386,44 @@ def drift_check(
 
 
 @app.command()
+def smoke(
+    dry_run: bool = typer.Option(False, help="Run smoke test in dry-run mode (no training)"),
+) -> None:
+    """Run end-to-end smoke test to validate AICRA pipeline."""
+    settings = get_settings()
+    
+    # Set up MLflow
+    mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
+    mlflow.set_experiment("smoke_test")
+    
+    typer.echo("Running AICRA smoke test...")
+    
+    # Run smoke test pipeline
+    smoke_pipeline = SmokeTestPipeline(settings)
+    success, summary = smoke_pipeline.run(dry_run=dry_run)
+    
+    # Print results
+    typer.echo(summary)
+    
+    # Exit with appropriate code
+    if success:
+        typer.echo("✅ Smoke test PASSED")
+        
+        # Archive smoke test results
+        save_run_results(
+            settings=settings,
+            run_name="smoke",
+            dataset_name="synthetic",
+            model_name="mock_model",
+        )
+        
+        raise typer.Exit(0)
+    else:
+        typer.echo("❌ Smoke test FAILED")
+        raise typer.Exit(1)
+
+
+@app.command()
 def register(
     model_path: Path | None = typer.Option(None, help="Path to trained model"),
     policy_path: Path | None = typer.Option(None, help="Path to policy file"),
@@ -438,9 +481,102 @@ def register(
     policy_pipeline = PolicyPipeline(settings)
     register_df = policy_pipeline.enrich_register_with_controls(register_df)
     
-    write_register(register_df, name=output_name)
+    # Generate model and policy IDs
+    model_id = f"model_{model_path.stem}_{datetime.now().strftime('%Y%m%d_%H%M')}"
+    policy_id = f"policy_{policy_path.stem}_{datetime.now().strftime('%Y%m%d_%H%M')}"
+    
+    # Write register with metadata
+    latest_path, archived_path = write_register(
+        register_df, 
+        name=output_name,
+        model_id=model_id,
+        policy_id=policy_id
+    )
 
     typer.echo(f"Register saved as {output_name}")
+    typer.echo(f"Latest version: {latest_path}")
+    typer.echo(f"Archived version: {archived_path}")
+    
+    # Archive results
+    save_run_results(
+        settings=settings,
+        run_name="register",
+        dataset_name="ember2024",
+        model_name=model_path.stem,
+    )
+
+
+@app.command()
+def update_lookups(
+    attack_bundle: Path | None = typer.Option(None, help="Path to MITRE ATT&CK JSON bundle"),
+    d3fend_bundle: Path | None = typer.Option(None, help="Path to MITRE D3FEND JSON bundle"),
+    malware_families: str | None = typer.Option(None, help="Comma-separated list of malware families"),
+    policy_path: Path | None = typer.Option(None, help="Path to policy.json to update with versions"),
+) -> None:
+    """Update lookup tables from MITRE ATT&CK and D3FEND bundles."""
+    settings = get_settings()
+    
+    # Parse malware families
+    families_list = None
+    if malware_families:
+        families_list = [f.strip() for f in malware_families.split(',')]
+    
+    typer.echo("Parsing MITRE bundles and updating lookup tables...")
+    
+    # Initialize parser
+    parser = MitreParser(settings)
+    
+    # Parse and update lookups
+    results = parser.parse_and_update_lookups(
+        attack_bundle_path=attack_bundle,
+        d3fend_bundle_path=d3fend_bundle,
+        malware_families=families_list,
+    )
+    
+    # Update policy with versions if provided
+    if policy_path and policy_path.exists():
+        update_policy_with_versions(policy_path, results)
+    
+    # Print results
+    typer.echo("Lookup table updates completed:")
+    typer.echo(f"  - Canonical families updated: {results['canonical_families_updated']}")
+    typer.echo(f"  - Family to attack updated: {results['family_to_attack_updated']}")
+    typer.echo(f"  - Attack to D3FEND updated: {results['attack_to_d3fend_updated']}")
+    typer.echo(f"  - Timestamp: {results['timestamp']}")
+    
+    if results['source_versions']:
+        typer.echo("Source versions:")
+        for source, version in results['source_versions'].items():
+            typer.echo(f"  - {source}: {version}")
+
+
+@app.command()
+def archive_results(
+    run_name: str | None = typer.Option(None, help="Custom name for the run"),
+    dataset_name: str = typer.Option("ember2024", help="Name of the dataset used"),
+    model_name: str = typer.Option("bagged_lightgbm", help="Name of the model used"),
+) -> None:
+    """Manually archive current results to a timestamped folder."""
+    settings = get_settings()
+    
+    typer.echo("Archiving current results...")
+    
+    result_folder = save_run_results(
+        settings=settings,
+        run_name=run_name,
+        dataset_name=dataset_name,
+        model_name=model_name,
+    )
+    
+    typer.echo(f"Results archived to: {result_folder}")
+
+
+@app.command()
+def list_runs(
+    limit: int = typer.Option(10, help="Number of recent runs to show"),
+) -> None:
+    """List recent runs from the versions log."""
+    list_recent_runs(limit=limit)
 
 
 @app.command()
@@ -456,6 +592,14 @@ def run_all() -> None:
     register()
 
     typer.echo("AICRA pipeline completed successfully!")
+    
+    # Archive complete pipeline results
+    save_run_results(
+        settings=get_settings(),
+        run_name="full_pipeline",
+        dataset_name="ember2024",
+        model_name="bagged_lightgbm",
+    )
 
 
 if __name__ == "__main__":

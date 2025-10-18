@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AICRA Input Schema",
+  "description": "Schema for validating input data to AICRA",
+  "type": "object",
+  "properties": {
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "feature_0": {"type": "number"},
+          "feature_1": {"type": "number"},
+          "feature_2": {"type": "number"}
+        },
+        "additionalProperties": {
+          "type": "number"
+        },
+        "required": ["feature_0", "feature_1", "feature_2"]
+      },
+      "minItems": 1
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "family": {"type": "string"},
+        "timestamp": {"type": "string", "format": "date-time"},
+        "file_hash": {"type": "string"},
+        "file_size": {"type": "integer", "minimum": 0}
+      },
+      "required": ["family", "timestamp"]
+    }
+  },
+  "required": ["features", "metadata"],
+  "additionalProperties": false
+}

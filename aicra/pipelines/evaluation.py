@@ -40,6 +40,7 @@ class EvaluationPipeline:
         timestamp_column: Optional[str] = None,
         family_column: Optional[str] = None,
         k_values: list[int] = [1, 5, 10],
+        is_smoke_test: bool = False,
     ) -> Metrics:
         """Evaluate model and generate artifacts."""
         
@@ -101,6 +102,10 @@ class EvaluationPipeline:
 
             # Log artifacts
             mlflow.log_artifacts(str(self.settings.artifacts_dir))
+
+        # Check target bars for non-smoke tests
+        if not is_smoke_test:
+            self._check_target_bars(metrics)
 
         return metrics
 
@@ -360,3 +365,31 @@ class EvaluationPipeline:
         
         plt.savefig(self.settings.artifacts_dir / 'reliability.png', dpi=300, bbox_inches='tight')
         plt.close()
+    
+    def _check_target_bars(self, metrics: Metrics) -> None:
+        """Check target bars for non-smoke tests and print warnings if not met."""
+        warnings = []
+        
+        # Target bars: AUROC ≥ 0.75, ECE ≤ 0.10, Brier ≤ 0.20, Lift@5% > 1.3
+        if metrics.auroc < 0.75:
+            warnings.append(f"AUROC ({metrics.auroc:.3f}) < 0.75 target")
+        
+        if metrics.ece > 0.10:
+            warnings.append(f"ECE ({metrics.ece:.3f}) > 0.10 target")
+        
+        if metrics.brier > 0.20:
+            warnings.append(f"Brier Score ({metrics.brier:.3f}) > 0.20 target")
+        
+        # Check Lift@5%
+        lift_at_5 = getattr(metrics, 'lift_at_5pct', None)
+        if lift_at_5 is not None and lift_at_5 <= 1.3:
+            warnings.append(f"Lift@5% ({lift_at_5:.3f}) <= 1.3 target")
+        
+        # Print warnings if any
+        if warnings:
+            print("\n⚠️  TARGET BAR WARNINGS:")
+            for warning in warnings:
+                print(f"   - {warning}")
+            print("   (These are warnings only - evaluation continues)")
+        else:
+            print("\n✅ All target bars met!")

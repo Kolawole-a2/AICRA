@@ -26,6 +26,7 @@ class TrainingPipeline:
         model_name: str = "bagged_lightgbm",
         experiment_name: str | None = None,
         seeds: int = 5,
+        is_smoke_test: bool = False,
     ) -> str:
         """Train model and log to MLflow."""
         
@@ -51,14 +52,14 @@ class TrainingPipeline:
                 "class_weight": self.settings.class_weight,
             })
 
-            # Extract PE features if needed
-            if hasattr(train_data, 'file_paths') and train_data.file_paths is not None:
-                mlflow.log_param("feature_type", "pe_static")
+            # Extract PE features for non-smoke tests
+            if not is_smoke_test and hasattr(train_data, 'file_paths') and train_data.file_paths is not None:
+                mlflow.log_param("feature_type", "ember_plus_pe_static")
                 pe_features = build_pe_features(train_data.file_paths)
                 # Combine with existing features
                 X = np.hstack([train_data.features.values, pe_features.values])
             else:
-                mlflow.log_param("feature_type", "ember")
+                mlflow.log_param("feature_type", "ember_only")
                 X = train_data.features.values
 
             # Train model based on type
@@ -104,9 +105,9 @@ class TrainingPipeline:
                 colsample_bytree=self.settings.colsample_bytree,
                 random_state=seed,
                 class_weight=self.settings.class_weight,
-                boosting_type="gbdt",  # Histogram-based tree learner
-                # GOSS off per constraints
+                boosting_type="gbdt",  # Histogram-based tree learner (default)
                 force_col_wise=True,  # Use histogram-based
+                # GOSS is explicitly OFF per constraints
                 # Robust losses for shift/noise mitigation
                 scale_pos_weight=self._compute_scale_pos_weight(y),
             )

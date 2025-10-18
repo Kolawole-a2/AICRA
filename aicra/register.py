@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
 
 import orjson
 import pandas as pd
@@ -64,12 +66,40 @@ def compute_register(
     return df
 
 
-def write_register(df: pd.DataFrame, name: str) -> None:
+def write_register(
+    df: pd.DataFrame, 
+    name: str, 
+    model_id: str | None = None, 
+    policy_id: str | None = None
+) -> tuple[Path, Path]:
+    """Write register to both latest and archived versions with metadata."""
     settings = get_settings()
     settings.register_dir.mkdir(parents=True, exist_ok=True)
-    settings.policies_dir.mkdir(parents=True, exist_ok=True)
-    csv_path = settings.register_dir / f"{name}.csv"
-    json_path = settings.register_dir / f"{name}.json"
-    df.to_csv(csv_path, index=False)
-    with open(json_path, "wb") as f:
-        f.write(orjson.dumps(df.to_dict(orient="records")))
+    settings.artifacts_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Add metadata columns if provided
+    df_with_metadata = df.copy()
+    if model_id:
+        df_with_metadata["model_id"] = model_id
+    if policy_id:
+        df_with_metadata["policy_id"] = policy_id
+    
+    # Generate timestamp for archived version
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+    
+    # Write latest version to artifacts/
+    latest_path = settings.artifacts_dir / "risk_register.csv"
+    df_with_metadata.to_csv(latest_path, index=False)
+    
+    # Write archived version to artifacts/
+    archived_path = settings.artifacts_dir / f"risk_register_{timestamp}.csv"
+    df_with_metadata.to_csv(archived_path, index=False)
+    
+    # Also write to register directory for backward compatibility
+    register_csv_path = settings.register_dir / f"{name}.csv"
+    register_json_path = settings.register_dir / f"{name}.json"
+    df_with_metadata.to_csv(register_csv_path, index=False)
+    with open(register_json_path, "wb") as f:
+        f.write(orjson.dumps(df_with_metadata.to_dict(orient="records")))
+    
+    return latest_path, archived_path

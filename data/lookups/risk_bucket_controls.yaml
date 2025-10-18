@@ -1,150 +1,26 @@
-# Risk bucket controls mapping
-# Maps risk buckets to prescriptive banking controls
-__version__: "1.0.0"
-__description__: "Mapping from risk buckets to prescriptive banking controls"
-
+__version__: "1.0.0-smoke"
 risk_buckets:
-  "High":
-    description: "High susceptibility to ransomware (S > 0.66)"
+  High:
+    description: "High risk requiring immediate action"
     controls:
       - "Enable Attack Surface Reduction (ASR) rules"
       - "Implement Local Administrator Password Solution (LAPS)"
-      - "Deploy Just-in-Time (JIT) admin access"
-      - "Create immutable/offline backups"
-      - "Enable AppLocker/application allowlisting"
-      - "Implement network segmentation"
-      - "Deploy advanced threat protection"
-      - "Enable real-time monitoring and alerting"
-      - "Implement privileged access management"
-      - "Deploy endpoint detection and response (EDR)"
-      - "Enable file integrity monitoring"
-      - "Implement data loss prevention (DLP)"
-      - "Deploy security orchestration and response (SOAR)"
-      - "Enable threat hunting capabilities"
-      - "Implement zero-trust network access"
-
-  "Medium":
-    description: "Medium susceptibility to ransomware (0.33 < S ≤ 0.66)"
+      - "Ensure immutable and offline backups"
+      - "Deploy Application Allowlisting"
+      - "Isolate affected systems from network"
+  Medium:
+    description: "Medium risk requiring enhanced monitoring"
     controls:
-      - "Implement multi-factor authentication (MFA) hardening"
-      - "Deploy EDR with strict policies"
-      - "Enable credential rotation policies"
-      - "Implement patch management automation"
-      - "Deploy network monitoring tools"
-      - "Enable security awareness training"
-      - "Implement vulnerability scanning"
-      - "Deploy email security solutions"
-      - "Enable web filtering"
-      - "Implement device compliance policies"
-      - "Deploy mobile device management (MDM)"
-      - "Enable security information and event management (SIEM)"
-      - "Implement backup verification"
-      - "Deploy network access control (NAC)"
-      - "Enable threat intelligence feeds"
-
-  "Low":
-    description: "Low susceptibility to ransomware (S ≤ 0.33)"
+      - "Enforce Multi-Factor Authentication (MFA)"
+      - "Implement strict EDR policies"
+      - "Regularly rotate credentials"
+      - "Conduct vulnerability assessments"
+      - "Enhance network segmentation"
+  Low:
+    description: "Low risk requiring standard hygiene"
     controls:
-      - "Implement basic monitoring and hygiene"
-      - "Enable standard antivirus protection"
-      - "Deploy basic firewall rules"
-      - "Implement regular security updates"
-      - "Enable basic backup procedures"
-      - "Deploy standard user training"
-      - "Implement basic access controls"
-      - "Enable standard logging"
-      - "Deploy basic network monitoring"
-      - "Implement standard incident response procedures"
-      - "Enable basic vulnerability management"
-      - "Deploy standard email security"
-      - "Implement basic data classification"
-      - "Enable standard change management"
-      - "Deploy basic business continuity planning"
-
-# Control categories for detailed mapping
-control_categories:
-  "Prevention":
-    - "Application Allowlisting"
-    - "Attack Surface Reduction"
-    - "Network Segmentation"
-    - "Privileged Access Management"
-    - "Multi-Factor Authentication"
-    - "Patch Management"
-    - "Vulnerability Management"
-    - "Email Security"
-    - "Web Filtering"
-    - "Device Compliance"
-
-  "Detection":
-    - "Endpoint Detection and Response"
-    - "Security Information and Event Management"
-    - "Network Monitoring"
-    - "File Integrity Monitoring"
-    - "Threat Hunting"
-    - "User Behavior Analytics"
-    - "Threat Intelligence"
-    - "Log Analysis"
-    - "Anomaly Detection"
-    - "Security Orchestration"
-
-  "Response":
-    - "Incident Response Procedures"
-    - "Backup and Recovery"
-    - "Business Continuity Planning"
-    - "Disaster Recovery"
-    - "Forensic Capabilities"
-    - "Communication Plans"
-    - "Escalation Procedures"
-    - "Recovery Testing"
-    - "Post-Incident Review"
-    - "Lessons Learned"
-
-  "Recovery":
-    - "Immutable Backups"
-    - "Offline Storage"
-    - "Recovery Testing"
-    - "Data Restoration Procedures"
-    - "System Recovery Plans"
-    - "Communication Recovery"
-    - "Business Process Recovery"
-    - "Vendor Recovery Plans"
-    - "Third-Party Recovery"
-    - "Recovery Validation"
-
-# Banking-specific controls
-banking_controls:
-  "Regulatory Compliance":
-    - "PCI DSS compliance"
-    - "SOX compliance"
-    - "Basel III requirements"
-    - "FFIEC guidelines"
-    - "NCUA regulations"
-    - "FDIC requirements"
-    - "State banking regulations"
-    - "International banking standards"
-    - "Anti-money laundering (AML)"
-    - "Know Your Customer (KYC)"
-
-  "Operational Resilience":
-    - "Operational risk management"
-    - "Business continuity planning"
-    - "Disaster recovery testing"
-    - "Third-party risk management"
-    - "Vendor management"
-    - "Supply chain security"
-    - "Critical system identification"
-    - "Recovery time objectives"
-    - "Recovery point objectives"
-    - "Maximum tolerable downtime"
-
-  "Customer Protection":
-    - "Customer data protection"
-    - "Privacy controls"
-    - "Data encryption"
-    - "Access controls"
-    - "Audit trails"
-    - "Customer notification procedures"
-    - "Fraud prevention"
-    - "Identity verification"
-    - "Transaction monitoring"
-    - "Suspicious activity reporting"
+      - "Maintain continuous security monitoring"
+      - "Ensure robust security hygiene"
+      - "Conduct employee security awareness training"
+      - "Implement strong email filtering"
+      - "Regularly review access controls"

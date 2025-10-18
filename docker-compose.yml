@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  aicra:
+    build: .
+    volumes:
+      - ./data:/app/data
+      - ./artifacts:/app/artifacts
+      - ./models:/app/models
+      - ./logs:/app/logs
+    environment:
+      - PYTHONHASHSEED=0
+      - MLFLOW_TRACKING_URI=file:./mlruns
+    command: ["aicra", "train"]
+
+  sonarqube:
+    image: sonarqube:community
+    ports:
+      - "9000:9000"
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_extensions:/opt/sonarqube/extensions
+
+volumes:
+  sonarqube_data:
+  sonarqube_logs:
+  sonarqube_extensions:

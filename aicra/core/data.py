@@ -2,12 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Tuple
 
 import numpy as np
 import pandas as pd
 
-from .config import PATHS
+from ..config import get_settings
 
 
 @dataclass
@@ -38,12 +37,12 @@ def _load_jsonl_pair(features_path: Path, labels_path: Path) -> Dataset:
     return Dataset(features=features, labels=labels, families=families, timestamps=timestamps)
 
 
-def _synthetic_dataset(n: int = 5000, d: int = 256, seed: int = 0) -> Tuple[Dataset, Dataset]:
+def _synthetic_dataset(n: int = 5000, d: int = 256, seed: int = 0) -> tuple[Dataset, Dataset]:
     rng = np.random.default_rng(seed)
     timestamps = pd.date_range("2024-01-01", periods=n, freq="H")
     families = rng.choice(["lockbit", "blackcat", "benign"], size=n, p=[0.15, 0.1, 0.75])
     labels = (families != "benign").astype(int)
-    means = np.where(labels.values[:, None] == 1, 0.3, 0.0)
+    means = np.where(labels[:, None] == 1, 0.3, 0.0)
     X = rng.normal(loc=means, scale=1.0, size=(n, d)).astype(np.float32)
     df = pd.DataFrame(X, columns=[f"feature_{i}" for i in range(d)])
     ds = Dataset(
@@ -68,11 +67,12 @@ def _synthetic_dataset(n: int = 5000, d: int = 256, seed: int = 0) -> Tuple[Data
     return train, test
 
 
-def load_ember_2024() -> Tuple[Dataset, Dataset]:
-    train_feat = PATHS.ember_dir / "train_features.jsonl"
-    train_lab = PATHS.ember_dir / "train_labels.jsonl"
-    test_feat = PATHS.ember_dir / "test_features.jsonl"
-    test_lab = PATHS.ember_dir / "test_labels.jsonl"
+def load_ember_2024() -> tuple[Dataset, Dataset]:
+    settings = get_settings()
+    train_feat = settings.ember_dir / "train_features.jsonl"
+    train_lab = settings.ember_dir / "train_labels.jsonl"
+    test_feat = settings.ember_dir / "test_features.jsonl"
+    test_lab = settings.ember_dir / "test_labels.jsonl"
     if all(p.exists() for p in [train_feat, train_lab, test_feat, test_lab]):
         train = _load_jsonl_pair(train_feat, train_lab)
         test = _load_jsonl_pair(test_feat, test_lab)

@@ -1,0 +1,3 @@
+family,probability,label,canonical_family,attack_techniques,d3fend_controls,susceptibility,susceptibility_bucket,expected_loss,prescriptive_controls,status
+benign,0.3333608784461353,0,Unknown,[],[],0.3333608784461353,Medium,1666804.3922306767,"['Enforce MFA', 'Implement EDR', 'Rotate credentials']",Monitor
+blackcat,0.33336537959714024,1,Unknown,[],[],0.33336537959714024,Medium,1666826.8979857012,"['Enforce MFA', 'Implement EDR', 'Rotate credentials']",Monitor
