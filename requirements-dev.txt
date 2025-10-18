@@ -1,0 +1,25 @@
+# Development dependencies
+-r requirements.txt
+
+# Testing
+pytest>=7.0
+pytest-cov>=4.0
+pytest-mock>=3.10
+
+# Code quality
+ruff>=0.1
+mypy>=1.0
+pylint>=2.17
+pre-commit>=3.0
+pyupgrade>=3.0
+detect-secrets>=1.0
+
+# Security
+pip-audit>=2.0
+
+# Schema validation
+jsonschema>=4.0
+
+# Documentation
+sphinx>=5.0
+sphinx-rtd-theme>=1.0

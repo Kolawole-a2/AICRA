@@ -1,0 +1,2 @@
+timestamp,run_name,dataset,model,AUROC,PR-AUC,ECE,Lift@5,folder_path
+2025-10-17 21:56:17,run_2025-10-17_2156_test_archive,ember2024,bagged_lightgbm,0.6769,0.352,0.021,2.5,results\run_2025-10-17_2156_test_archive

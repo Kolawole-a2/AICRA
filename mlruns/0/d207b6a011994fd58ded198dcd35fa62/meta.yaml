@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/KLAMOS/Desktop/My%20Cursor%20Projects/AICRA/mlruns/0/d207b6a011994fd58ded198dcd35fa62/artifacts
+end_time: 1760750233367
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: d207b6a011994fd58ded198dcd35fa62
+run_name: mitre_parser_update
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760750233137
+status: 3
+tags: []
+user_id: KLAMOS

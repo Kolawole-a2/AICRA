@@ -1,0 +1,12 @@
+{
+  "threshold": 0.5,
+  "cost_false_negative": 100.0,
+  "cost_false_positive": 5.0,
+  "impact_default": 1000000.0,
+  "version": "1.0.0",
+  "timestamp": "2025-10-17T19:35:43.814073",
+  "author": "AICRA",
+  "model_id": "",
+  "calibration_id": "",
+  "lookup_versions": {}
+}
