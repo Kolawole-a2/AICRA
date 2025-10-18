@@ -1,0 +1,14 @@
+{
+  "threshold": 0.5,
+  "cost_false_negative": 100.0,
+  "cost_false_positive": 5.0,
+  "impact_default": 5000000.0,
+  "model_id": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\models\\smoke_test_model.joblib",
+  "calibration_id": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\models\\smoke_test_calibrator.joblib",
+  "canonical_families_version": "1.0.0-smoke",
+  "family_to_attack_version": "1.0.0-smoke",
+  "attack_to_d3fend_version": "1.0.0-smoke",
+  "risk_bucket_controls_version": "1.0.0-smoke",
+  "timestamp": "2024-01-01T00:00:00",
+  "author": "AICRA Smoke Test"
+}

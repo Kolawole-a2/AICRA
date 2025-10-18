@@ -1,0 +1,30 @@
+{
+  "summary": {
+    "total_samples": 4,
+    "total_alerts": 2,
+    "alert_rate": 0.5,
+    "threshold": 0.5,
+    "total_expected_loss": 8500000.0,
+    "avg_expected_loss": 4250000.0
+  },
+  "risk_buckets": {
+    "High": 2
+  },
+  "family_distribution": {
+    "Locky": 1,
+    "Ryuk": 1
+  },
+  "policy": {
+    "threshold": 0.5,
+    "cost_false_negative": 100.0,
+    "cost_false_positive": 5.0,
+    "impact_default": 1000000.0,
+    "version": "1.0.0",
+    "timestamp": "2025-10-17T19:35:44.045187",
+    "author": "AICRA",
+    "model_id": "",
+    "calibration_id": "",
+    "lookup_versions": {}
+  },
+  "timestamp": "2025-10-17T19:35:44.062901"
+}

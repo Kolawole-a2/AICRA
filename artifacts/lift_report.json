@@ -1,0 +1,28 @@
+{
+  "lift_analysis": {
+    "lift_at_1pct": {
+      "lift": NaN,
+      "precision_at_k": NaN,
+      "overall_precision": 0.5,
+      "samples": 0
+    },
+    "lift_at_5pct": {
+      "lift": NaN,
+      "precision_at_k": NaN,
+      "overall_precision": 0.5,
+      "samples": 0
+    },
+    "lift_at_10pct": {
+      "lift": NaN,
+      "precision_at_k": NaN,
+      "overall_precision": 0.5,
+      "samples": 0
+    }
+  },
+  "k_values": [
+    1,
+    5,
+    10
+  ],
+  "timestamp": "2025-10-17T19:35:44.329943"
+}
