@@ -51,9 +51,10 @@ class Policy:
 class PolicyPipeline:
     """Banking narratives and cost-sensitive policy pipeline."""
     
-    def __init__(self, settings: Settings):
+    def __init__(self, settings: Settings, skip_mlflow: bool = False):
         self.settings = settings
-        self.mapping_pipeline = MappingPipeline(settings)
+        self.skip_mlflow = skip_mlflow
+        self.mapping_pipeline = MappingPipeline(settings, skip_mlflow=skip_mlflow)
         self.risk_bucket_controls = self._load_risk_bucket_controls()
     
     def _load_risk_bucket_controls(self) -> Dict[str, Any]:
@@ -64,7 +65,8 @@ class PolicyPipeline:
             data = yaml.safe_load(f)
         
         # Log version to MLflow
-        mlflow.log_param("risk_bucket_controls_version", data.get("__version__", "unknown"))
+        if not self.skip_mlflow:
+            mlflow.log_param("risk_bucket_controls_version", data.get("__version__", "unknown"))
         
         return data
     
@@ -114,13 +116,14 @@ class PolicyPipeline:
         optimal_threshold = thresholds[min_cost_idx]
         
         # Log optimization results
-        mlflow.log_metrics({
-            "optimal_threshold": optimal_threshold,
-            "min_cost": costs[min_cost_idx],
-            "cost_fn": cost_fn,
-            "cost_fp": cost_fp,
-            "cost_ratio": cost_fn / cost_fp,
-        })
+        if not self.skip_mlflow:
+            mlflow.log_metrics({
+                "optimal_threshold": optimal_threshold,
+                "min_cost": costs[min_cost_idx],
+                "cost_fn": cost_fn,
+                "cost_fp": cost_fp,
+                "cost_ratio": cost_fn / cost_fp,
+            })
         
         return optimal_threshold
     
@@ -171,7 +174,8 @@ class PolicyPipeline:
             f.write(policy.to_json())
         
         # Log to MLflow
-        mlflow.log_artifact(str(output_path))
+        if not self.skip_mlflow:
+            mlflow.log_artifact(str(output_path))
         
         return output_path
     
@@ -230,15 +234,16 @@ class PolicyPipeline:
             json.dump(report, f, indent=2)
         
         # Log to MLflow
-        mlflow.log_metrics({
-            "total_samples": total_samples,
-            "total_alerts": total_alerts,
-            "alert_rate": alert_rate,
-            "total_expected_loss": total_expected_loss,
-            "avg_expected_loss": avg_expected_loss,
-        })
-        
-        mlflow.log_artifact(str(output_path))
+        if not self.skip_mlflow:
+            mlflow.log_metrics({
+                "total_samples": total_samples,
+                "total_alerts": total_alerts,
+                "alert_rate": alert_rate,
+                "total_expected_loss": total_expected_loss,
+                "avg_expected_loss": avg_expected_loss,
+            })
+            
+            mlflow.log_artifact(str(output_path))
         
         return report
     
@@ -290,10 +295,11 @@ class PolicyPipeline:
             json.dump(report, f, indent=2)
         
         # Log to MLflow
-        for k, result in lift_results.items():
-            mlflow.log_metric(k, result["lift"])
-        
-        mlflow.log_artifact(str(output_path))
+        if not self.skip_mlflow:
+            for k, result in lift_results.items():
+                mlflow.log_metric(k, result["lift"])
+            
+            mlflow.log_artifact(str(output_path))
         
         return report
     
@@ -316,6 +322,6 @@ class PolicyPipeline:
                 return []
             return self.get_risk_bucket_controls(bucket)
         
-        df["prescriptive_controls"] = df["susceptibility_bucket"].apply(get_controls_for_bucket)
+        df["prescriptive_controls"] = df["susceptibility_bucket"].apply(lambda bucket: str(get_controls_for_bucket(bucket)))
         
         return df

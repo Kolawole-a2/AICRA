@@ -1,7 +1,8 @@
-__version__: 1.0.0-smoke
-__source_version__: mitre_parser_20251017_2117
-__last_updated__: '2025-10-17T21:17:12.892592'
+__version__: 1.1.0-ember2024
+__source_version__: ember2024_real_data_20251018
+__last_updated__: '2025-10-18T19:00:00.000000'
 mappings:
+  # Original smoke test families
   lockbit: LockBit
   lock_bit: LockBit
   conti: Conti
@@ -10,3 +11,125 @@ mappings:
   ryuk_ransomware: Ryuk
   unknown: Unknown
   blackcat: BlackCat
+  
+  # Real EMBER-2024 families
+  berbew: Berbew
+  wacatac: Wacatac
+  xmrig: XMRig
+  expiro: Expiro
+  upatre: Upatre
+  flystudio: FlyStudio
+  sfone: SFOne
+  scarletflash: ScarletFlash
+  bedep: Bedep
+  trollav: TrollAv
+  cosmu: Cosmu
+  eggnog: Eggnog
+  disin: Disin
+  sinowal: Sinowal
+  gepys: Gepys
+  redline: RedLine
+  aenjaris: Aenjaris
+  wabot: Wabot
+  shipshape: ShipShape
+  doina: Doina
+  
+  # Pattern matching for variants
+  "*lockbit*": LockBit
+  "*conti*": Conti
+  "*ryuk*": Ryuk
+  "*berbew*": Berbew
+  "*wacatac*": Wacatac
+  "*xmrig*": XMRig
+  "*expiro*": Expiro
+  "*upatre*": Upatre
+  "*flystudio*": FlyStudio
+  "*sfone*": SFOne
+  "*scarletflash*": ScarletFlash
+  "*bedep*": Bedep
+  "*trollav*": TrollAv
+  "*cosmu*": Cosmu
+  "*eggnog*": Eggnog
+  "*disin*": Disin
+  "*sinowal*": Sinowal
+  "*gepys*": Gepys
+  "*redline*": RedLine
+  "*aenjaris*": Aenjaris
+  "*wabot*": Wabot
+  "*shipshape*": ShipShape
+  # Additional EMBER-2024 families from unmapped report
+  emdup: Emdup
+  mufila: Mufila
+  ulise: Ulise
+  luna: Luna
+  alien: Alien
+  beebone: Beebone
+  azovwiper: AzovWiper
+  nitol: Nitol
+  clipbanker: ClipBanker
+  hwidchanger: HWIDChanger
+  gandcrab: GandCrab
+  urelas: Urelas
+  mepe: Mepe
+  zeus: Zeus
+  blackmon: BlackMon
+  pcclient: PCClient
+  satana: Satana
+  tempedreve: Tempedreve
+  soltern: Soltern
+  
+  # Pattern matching for additional variants
+  "*emdup*": Emdup
+  "*mufila*": Mufila
+  "*ulise*": Ulise
+  "*luna*": Luna
+  "*alien*": Alien
+  "*beebone*": Beebone
+  "*azovwiper*": AzovWiper
+  "*nitol*": Nitol
+  "*clipbanker*": ClipBanker
+  "*hwidchanger*": HWIDChanger
+  "*gandcrab*": GandCrab
+  "*urelas*": Urelas
+  "*mepe*": Mepe
+  "*zeus*": Zeus
+  "*blackmon*": BlackMon
+  "*pcclient*": PCClient
+  "*satana*": Satana
+  "*tempedreve*": Tempedreve
+  "*soltern*": Soltern
+  
+  # Additional high-frequency families from EMBER-2024
+  vobfus: Vobfus
+  shelm: Shelm
+  edrsandblast: EDRSandblast
+  ramnit: Ramnit
+  diztakun: Diztakun
+  doenerium: Doenerium
+  reflo: Reflo
+  metasploit: Metasploit
+  grandoreiro: Grandoreiro
+  goshell: GoShell
+  crossrider: Crossrider
+  khalesi: Khalesi
+  baidusearch: BaiduSearch
+  dridex: Dridex
+  lunastorm: LunaStorm
+  dinwod: Dinwod
+  blackmoon: BlackMoon
+  disco: Disco
+  vilsel: Vilsel
+  balrok: Balrok
+  banload: Banload
+  hematite: Hematite
+  convagent: ConvAgent
+  shodi: Shodi
+  glupteba: Glupteba
+  vindor: Vindor
+  r77rootkit: R77Rootkit
+  havoc: Havoc
+  legmir: Legmir
+  lotok: Lotok
+  
+  # Generic fallback patterns for unknown families
+  "*": GenericMalware

@@ -58,6 +58,15 @@ class Settings(BaseSettings):
 
     # Coverage threshold
     coverage_fail_under: float = 40.0
+    
+    # Mapping configuration
+    max_unmapped_rate: float = 0.05  # Maximum allowed unmapped rate (5%)
+    mapping_cache_size: int = 1000  # LRU cache size for mapping operations
+    mapping_timeout_seconds: int = 30  # Timeout for mapping operations
+    
+    # Dataset type and mapping requirements
+    dataset_type: str = "ember"  # Dataset type: "ember", "bank_logs", etc.
+    require_family_mapping: bool = False  # Whether to require family mapping (False for EMBER)
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)

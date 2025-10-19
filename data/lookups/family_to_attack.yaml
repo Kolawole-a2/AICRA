@@ -1,5 +1,8 @@
-__version__: "1.0.0-smoke"
+__version__: "1.1.0-ember2024"
+__source_version__: ember2024_real_data_20251018
+__last_updated__: '2025-10-18T19:00:00.000000'
 mappings:
+  # Original smoke test families
   LockBit:
     - T1486 # Data Encrypted for Impact
     - T1490 # Inhibit System Recovery
@@ -16,3 +19,293 @@ mappings:
     - T1021 # Remote Services
     - T1070 # Indicator Removal on Host
   Unknown: []
+  BlackCat:
+    - T1486 # Data Encrypted for Impact
+    - T1490 # Inhibit System Recovery
+    - T1059 # Command and Scripting Interpreter
+  
+  # Real EMBER-2024 families with common techniques
+  Berbew:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Wacatac:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  XMRig:
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+    - T1059 # Command and Scripting Interpreter
+  Expiro:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Upatre:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  FlyStudio:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  SFOne:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  ScarletFlash:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Bedep:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  TrollAv:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Cosmu:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Eggnog:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Disin:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Sinowal:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Gepys:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  RedLine:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Aenjaris:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Wabot:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  ShipShape:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Doina:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  
+  # Additional EMBER-2024 families
+  Emdup:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Mufila:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Ulise:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Luna:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Alien:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Beebone:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  AzovWiper:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Nitol:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  ClipBanker:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  HWIDChanger:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  GandCrab:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Urelas:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Mepe:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Zeus:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  BlackMon:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  PCClient:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Satana:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Tempedreve:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Soltern:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  
+  # Additional high-frequency families from EMBER-2024
+  Vobfus:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Shelm:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  EDRSandblast:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Ramnit:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Diztakun:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Doenerium:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Reflo:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Metasploit:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Grandoreiro:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  GoShell:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Crossrider:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Khalesi:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  BaiduSearch:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Dridex:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  LunaStorm:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Dinwod:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  BlackMoon:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Disco:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Vilsel:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Balrok:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Banload:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Hematite:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  ConvAgent:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Shodi:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Glupteba:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Vindor:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  R77Rootkit:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Havoc:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Legmir:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  Lotok:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
+  GenericMalware:
+    - T1486 # Data Encrypted for Impact
+    - T1055 # Process Injection
+    - T1027 # Obfuscated Files or Information
