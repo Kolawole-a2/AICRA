@@ -322,6 +322,6 @@ class PolicyPipeline:
                 return []
             return self.get_risk_bucket_controls(bucket)
         
-        df["prescriptive_controls"] = df["susceptibility_bucket"].apply(lambda bucket: str(get_controls_for_bucket(bucket)))
+        df["prescriptive_controls"] = df["susceptibility_bucket"].apply(get_controls_for_bucket)
         
         return df

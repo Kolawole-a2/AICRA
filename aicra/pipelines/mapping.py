@@ -119,7 +119,11 @@ class MappingPipeline:
     def _matches_pattern(self, tag: str, pattern: str) -> bool:
         """Check if tag matches a pattern (supports wildcards)."""
         # Convert pattern to regex
-        regex_pattern = pattern.replace('*', '.*').replace('.', r'\.')
+        regex_pattern = pattern.replace('*', '.*')
+        # Escape literal dots (but not the ones we just added)
+        regex_pattern = regex_pattern.replace('.', r'\.')
+        # Fix the double dots we created
+        regex_pattern = regex_pattern.replace(r'\.\.*', '.*')
         
         try:
             return bool(re.match(regex_pattern, tag))
@@ -160,7 +164,7 @@ class MappingPipeline:
         with open(families_path, 'r', encoding='utf-8') as f:
             data = yaml.safe_load(f)
         
-        return data.get("canonical_families", [])
+        return list(set(data.get("mappings", {}).values()))
     
     def get_family_techniques(self, raw_tag: str) -> List[str]:
         """Get ATT&CK techniques for a raw family tag."""
@@ -173,7 +177,7 @@ class MappingPipeline:
         missing_mappings = []
         
         for family in canonical_families:
-            if family not in self.family_to_attack:
+            if family not in self.family_to_attack_dict:
                 missing_mappings.append(family)
         
         return {

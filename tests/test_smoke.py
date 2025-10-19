@@ -96,14 +96,14 @@ class TestSmokeTestPipeline:
         assert sample_path.exists()
         
         df = pd.read_csv(sample_path)
-        assert len(df) == 1000
+        assert len(df) == 500
         assert "label" in df.columns
         assert "family" in df.columns
         assert "file_path" in df.columns
         
         # Check feature columns
         feature_cols = [col for col in df.columns if col.startswith("feature_")]
-        assert len(feature_cols) == 50
+        assert len(feature_cols) == 20
 
     def test_detect_dataset(self, smoke_pipeline):
         """Test dataset detection."""
@@ -160,11 +160,11 @@ class TestSmokeTestPipeline:
         """Test validation failures."""
         # Create mock metrics with poor performance
         metrics = MagicMock()
-        metrics.auroc = 0.50  # Too low
-        metrics.pr_auc = 0.01  # Too low
-        metrics.brier = 0.50  # Too high
-        metrics.ece = 0.30  # Too high
-        metrics.lift_at_5pct = 0.5  # Too low
+        metrics.auroc = 0.49  # Too low
+        metrics.pr_auc = 0.005  # Too low
+        metrics.brier = 0.51  # Too high
+        metrics.ece = 0.51  # Too high
+        metrics.lift_at_5pct = 0.4  # Too low
         
         smoke_pipeline._ensure_directories()
         

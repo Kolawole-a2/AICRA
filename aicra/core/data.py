@@ -15,6 +15,22 @@ class Dataset:
     labels: pd.Series
     families: pd.Series
     timestamps: pd.Series
+    
+    def __init__(self, features: pd.DataFrame, labels: pd.Series, families: pd.Series = None, timestamps: pd.Series = None):
+        """Initialize Dataset with backward compatibility."""
+        self.features = features
+        self.labels = labels
+        
+        # Handle backward compatibility
+        if families is None:
+            self.families = pd.Series(["unknown"] * len(features))
+        else:
+            self.families = families
+            
+        if timestamps is None:
+            self.timestamps = pd.Series(pd.Timestamp("2024-01-01")).repeat(len(features))
+        else:
+            self.timestamps = timestamps
 
 
 def _load_jsonl_pair(features_path: Path, labels_path: Path) -> Dataset:

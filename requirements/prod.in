@@ -1,0 +1,9 @@
+# Production requirements for AICRA
+-r base.txt
+
+# Production-specific packages
+gunicorn>=21.2.0
+uvicorn>=0.23.0
+fastapi>=0.100.0
+redis>=4.6.0
+celery>=5.3.0

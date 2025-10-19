@@ -238,7 +238,8 @@ class TestPolicyPipeline:
     
     @patch('aicra.pipelines.policy.yaml.safe_load')
     @patch('builtins.open', new_callable=lambda: MagicMock())
-    def test_load_risk_bucket_controls(self, mock_file, mock_yaml):
+    @patch('aicra.pipelines.policy.mlflow.log_param')
+    def test_load_risk_bucket_controls(self, mock_mlflow, mock_file, mock_yaml):
         """Test loading risk bucket controls from YAML."""
         mock_data = {
             "__version__": "1.0.0",

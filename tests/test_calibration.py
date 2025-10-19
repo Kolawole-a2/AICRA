@@ -1,6 +1,7 @@
 """Tests for calibration pipeline."""
 
 import numpy as np
+import pandas as pd
 import pytest
 from unittest.mock import patch, MagicMock
 
@@ -19,14 +20,14 @@ class TestCalibrationPipeline:
         
         # Create test data
         self.train_data = Dataset(
-            features=None,
-            labels=np.array([0, 1, 0, 1, 0]),
-            families=None
+            features=pd.DataFrame(np.random.rand(5, 10)),
+            labels=pd.Series([0, 1, 0, 1, 0]),
+            families=pd.Series(["family1", "family2", "family1", "family2", "family1"])
         )
         self.val_data = Dataset(
-            features=None,
-            labels=np.array([0, 1, 0]),
-            families=None
+            features=pd.DataFrame(np.random.rand(3, 10)),
+            labels=pd.Series([0, 1, 0]),
+            families=pd.Series(["family1", "family2", "family1"])
         )
         self.y_prob_train = np.array([0.1, 0.9, 0.2, 0.8, 0.3])
         self.y_prob_val = np.array([0.15, 0.85, 0.25])
