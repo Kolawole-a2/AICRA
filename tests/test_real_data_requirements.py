@@ -80,7 +80,7 @@ def test_data_loader_with_invalid_jsonl():
         (temp_path / "invalid.jsonl").write_text("invalid json\n{\"feature_0\": 0.1, \"feature_1\": 0.2, \"label\": 0}\n")
         
         # Should handle invalid JSON gracefully and use valid lines
-        features_df, labels_series, metadata = data_loader.load_ember_data(
+        features_df, labels_series, families_series, metadata = data_loader.load_ember_data(
             data_dir=str(temp_path),
             sample_size=None,
             seed=42,
@@ -121,14 +121,14 @@ def test_data_loader_deterministic_sampling():
         (temp_path / "labels.jsonl").write_text(labels_content)
         
         # Load with same seed twice
-        features1, labels1, _ = data_loader.load_ember_data(
+        features1, labels1, families1, _ = data_loader.load_ember_data(
             data_dir=str(temp_path),
             sample_size=3,
             seed=42,
             phase="test"
         )
         
-        features2, labels2, _ = data_loader.load_ember_data(
+        features2, labels2, families2, _ = data_loader.load_ember_data(
             data_dir=str(temp_path),
             sample_size=3,
             seed=42,

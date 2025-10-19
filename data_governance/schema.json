@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AICRA Data Schema",
+  "description": "Schema for AICRA input features and labels",
+  "type": "object",
+  "properties": {
+    "features": {
+      "type": "object",
+      "description": "Feature columns",
+      "properties": {
+        "feature_*": {
+          "type": "number",
+          "description": "Numeric features (0-255 range for byte features, normalized for others)"
+        },
+        "byte_*": {
+          "type": "number",
+          "description": "Byte histogram features (0-255 range)",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "pe_*": {
+          "type": "number",
+          "description": "PE file features (normalized)"
+        }
+      },
+      "additionalProperties": {
+        "type": "number"
+      }
+    },
+    "label": {
+      "type": "integer",
+      "description": "Binary label (0=benign, 1=malware)",
+      "enum": [0, 1]
+    },
+    "family": {
+      "type": "string",
+      "description": "Malware family name",
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "description": "ISO 8601 timestamp",
+      "format": "date-time"
+    },
+    "file_path": {
+      "type": "string",
+      "description": "Path to the original file",
+      "pattern": "^.*\\.(exe|dll|sys)$"
+    }
+  },
+  "required": ["label"],
+  "additionalProperties": false
+}

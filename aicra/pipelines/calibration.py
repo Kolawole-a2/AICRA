@@ -257,8 +257,9 @@ class PlattCalibrator(Calibrator):
     def fit(self, y_prob: np.ndarray, y_true: np.ndarray) -> None:
         """Fit Platt scaling."""
         # Platt scaling: sigmoid(1 / (1 + exp(A * logit(p) + B)))
-        # We use logistic regression on logit(p) to find A and B
-        logits = np.log(y_prob / (1 - y_prob + 1e-15))  # Add small epsilon to avoid log(0)
+        # Clip probabilities to avoid log(0) and log(inf)
+        y_prob_clipped = np.clip(y_prob, 1e-15, 1 - 1e-15)
+        logits = np.log(y_prob_clipped / (1 - y_prob_clipped))
         self.lr.fit(logits.reshape(-1, 1), y_true)
         self.is_fitted = True
     
@@ -267,7 +268,8 @@ class PlattCalibrator(Calibrator):
         if not self.is_fitted:
             raise ValueError("Calibrator must be fitted before transform")
         
-        logits = np.log(y_prob / (1 - y_prob + 1e-15))
+        y_prob_clipped = np.clip(y_prob, 1e-15, 1 - 1e-15)
+        logits = np.log(y_prob_clipped / (1 - y_prob_clipped))
         calibrated_probs = self.lr.predict_proba(logits.reshape(-1, 1))[:, 1]
         return calibrated_probs
 
