@@ -30,6 +30,7 @@ class EvaluationPipeline:
 
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
+        self.mapping_pipeline = MappingPipeline(settings, skip_mlflow=True)
 
     def run(
         self,
@@ -41,12 +42,14 @@ class EvaluationPipeline:
         family_column: Optional[str] = None,
         k_values: list[int] = [1, 5, 10],
         is_smoke_test: bool = False,
+        skip_mlflow: bool = False,
     ) -> Metrics:
         """Evaluate model and generate artifacts."""
         
         # Time-ordered split if timestamp exists
         if timestamp_column and timestamp_column in test_data.features.columns:
-            mlflow.log_param("split_type", "time_ordered")
+            if not skip_mlflow:
+                mlflow.log_param("split_type", "time_ordered")
             train_idx, test_idx = self._time_ordered_split(
                 test_data.features[timestamp_column]
             )
@@ -54,8 +57,9 @@ class EvaluationPipeline:
             y_true_test = test_data.labels.values[test_idx]
             families_test = test_data.families[test_idx] if hasattr(test_data, 'families') else None
         else:
-            mlflow.log_param("split_type", "random")
-            mlflow.log_param("split_warning", "No timestamp column found, using random split")
+            if not skip_mlflow:
+                mlflow.log_param("split_type", "random")
+                mlflow.log_param("split_warning", "No timestamp column found, using random split")
             y_prob_test = y_prob
             y_true_test = test_data.labels.values
             families_test = test_data.families if hasattr(test_data, 'families') else None
@@ -65,6 +69,11 @@ class EvaluationPipeline:
             self._evaluate_out_of_family_generalization(
                 y_true_test, y_prob_test, families_test, threshold
             )
+            
+            # Track mapping coverage for families
+            if not is_smoke_test:  # Skip coverage tracking for smoke tests
+                family_list = families_test.tolist() if hasattr(families_test, 'tolist') else list(families_test)
+                self.mapping_pipeline.map_families_batch(family_list, "evaluation")
 
         # Compute comprehensive metrics
         metrics = self._compute_comprehensive_metrics(
@@ -78,30 +87,31 @@ class EvaluationPipeline:
         self._plot_lift_curve(y_true_test, y_prob_test, k_values)
         self._plot_reliability_diagram(y_true_test, y_prob_test)
 
-        # Log to MLflow
-        with mlflow.start_run():
-            mlflow.log_metrics({
-                "auroc": metrics.auroc,
-                "pr_auc": metrics.pr_auc,
-                "brier": metrics.brier,
-                "ece": metrics.ece,
-                "threshold": metrics.threshold,
-            })
-            
-            # Log Lift@k metrics
-            for k in k_values:
-                mlflow.log_metric(f"lift_at_{k}pct", getattr(metrics, f"lift_at_{k}pct", 0.0))
+        # Log to MLflow (only if not skipped)
+        if not skip_mlflow:
+            with mlflow.start_run():
+                mlflow.log_metrics({
+                    "auroc": metrics.auroc,
+                    "pr_auc": metrics.pr_auc,
+                    "brier": metrics.brier,
+                    "ece": metrics.ece,
+                    "threshold": metrics.threshold,
+                })
+                
+                # Log Lift@k metrics
+                for k in k_values:
+                    mlflow.log_metric(f"lift_at_{k}pct", getattr(metrics, f"lift_at_{k}pct", 0.0))
 
-            # Log confusion matrix
-            mlflow.log_metrics({
-                "tn": metrics.confusion[0],
-                "fp": metrics.confusion[1],
-                "fn": metrics.confusion[2],
-                "tp": metrics.confusion[3],
-            })
+                # Log confusion matrix
+                mlflow.log_metrics({
+                    "tn": metrics.confusion[0],
+                    "fp": metrics.confusion[1],
+                    "fn": metrics.confusion[2],
+                    "tp": metrics.confusion[3],
+                })
 
-            # Log artifacts
-            mlflow.log_artifacts(str(self.settings.artifacts_dir))
+                # Log artifacts
+                mlflow.log_artifacts(str(self.settings.artifacts_dir))
 
         # Check target bars for non-smoke tests
         if not is_smoke_test:
@@ -288,6 +298,9 @@ class EvaluationPipeline:
         
         # Get top k% of samples
         k_samples = int(len(y_true) * k / 100)
+        if k_samples == 0:
+            return 1.0  # Return neutral lift for empty samples
+        
         top_k_indices = sorted_indices[:k_samples]
         
         # Compute lift
@@ -297,7 +310,7 @@ class EvaluationPipeline:
         if overall_precision > 0:
             lift = precision_at_k / overall_precision
         else:
-            lift = 0.0
+            lift = 1.0  # Return neutral lift if no positives
         
         return lift
     

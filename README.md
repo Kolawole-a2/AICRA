@@ -80,6 +80,168 @@ timestamp,run_name,dataset,model,AUROC,PR-AUC,ECE,Lift@5,folder_path
 2025-10-17 20:45:22,run_2025-10-17_2045_smoke,synthetic,mock_model,0.6789,0.1234,0.1456,1.23,results/run_2025-10-17_2045_smoke
 ```
 
+## Full EMBER Debug Mode
+
+The AICRA pipeline includes a comprehensive debug mode for the full EMBER-2024 phase to diagnose and fix common causes of AUROC ≈ 0.50 on large datasets.
+
+### Debug Mode Features
+
+- **Data Loading Validation**: Verifies row counts, label balance, and feature integrity
+- **Split Integrity Checks**: Detects data leakage and validates time-ordered or stratified splits
+- **Feature Analysis**: Identifies and removes constant/near-constant features
+- **LightGBM Retuning**: Optimizes parameters for large datasets with early stopping
+- **Comprehensive Reporting**: Generates detailed debug reports with probable causes and recommendations
+
+### Usage
+
+```bash
+# Run full EMBER-2024 with debug mode
+aicra run-test --phase full --data-dir data/ember2024 --seed 42 --debug --time-split
+
+# Debug mode parameters:
+# --debug: Enable deep diagnostics and verbose logs
+# --time-split: Use time-ordered split if timestamp column exists
+# --data-dir: Path to EMBER-2024 JSONL files (default: data/ember2024)
+# --seed: Random seed for reproducibility (default: 42)
+```
+
+### Debug Artifacts
+
+When debug mode is enabled, the following artifacts are generated:
+
+- **`artifacts/debug_full_report.json`**: Comprehensive debug report with metrics, causes, and recommendations
+- **`artifacts/debug_full_report.md`**: Human-readable Markdown version of the debug report
+- **`artifacts/debug_full_data_summary.json`**: Data loading validation results
+- **`artifacts/debug_full_split_time.json`**: Time-ordered split validation (if `--time-split` used)
+- **`artifacts/debug_full_split_stratified.json`**: Stratified split validation (default)
+- **`artifacts/leakage_check_full.csv`**: Data leakage detection results
+- **`artifacts/removed_features_full.csv`**: List of constant/near-constant features removed
+- **`artifacts/feature_importance_full.csv`**: Top features by importance
+
+### Troubleshooting Low AUROC
+
+If AUROC ≈ 0.50, the debug report will identify probable causes:
+
+1. **Single-class labels**: Only one class found in the dataset
+2. **Extreme class imbalance**: Prevalence < 1% or > 99%
+3. **Insufficient informative features**: Too many constant features after cleaning
+4. **Data leakage**: Overlapping IDs between train and test sets
+5. **Model underfitting**: Try reducing `min_data_in_leaf` or increasing `num_leaves`
+6. **Model overfitting**: Try increasing `min_data_in_leaf` or reducing `num_leaves`
+
+### LightGBM Parameter Tuning
+
+Debug mode automatically optimizes LightGBM parameters for large datasets:
+
+- **num_leaves**: 127 for >100 features, 64 otherwise
+- **learning_rate**: 0.05
+- **n_estimators**: 3000 with early stopping (200 rounds)
+- **min_data_in_leaf**: 200 (adjustable based on dataset size)
+- **feature_fraction**: 0.8
+- **bagging_fraction**: 0.8
+
+### Configuration
+
+Debug parameters can be adjusted in `aicra/config.py`:
+
+```python
+# Debug configuration
+max_unmapped_rate: float = 0.05  # Maximum allowed unmapped rate
+mapping_cache_size: int = 1000   # LRU cache size for mapping operations
+mapping_timeout_seconds: int = 30 # Timeout for mapping operations
+```
+
+### Example Debug Output
+
+```
+🔍 DEBUG: Validating data loading...
+🔍 DEBUG: Validating split integrity...
+🔍 DEBUG: Retuning LightGBM for large data...
+🔍 DEBUG: Generating debug report...
+
+⚠️  Full run AUROC low (0.523) — potential data/param issue.
+📋 See artifacts/debug_full_report.json for details.
+🔍 Probable causes:
+  • Extreme class imbalance
+  • Model underfitting - try reducing min_data_in_leaf or increasing num_leaves
+
+📋 Debug report saved to: artifacts/debug_full_report.json
+```
+
+## Lookup Coverage & Unmapped Report
+
+The AICRA pipeline includes comprehensive lookup coverage tracking and fail-fast mechanisms to ensure high-quality mapping between malware families, ATT&CK techniques, and D3FEND controls.
+
+### Coverage Metrics
+
+The system tracks three key coverage metrics:
+
+1. **Alias-to-Family Coverage**: Percentage of raw malware family names successfully mapped to canonical families
+2. **Family-to-Attack Coverage**: Percentage of canonical families with mapped ATT&CK techniques  
+3. **Attack-to-D3FEND Coverage**: Percentage of ATT&CK techniques with mapped D3FEND controls
+
+### Coverage Thresholds
+
+- **Default Maximum Unmapped Rate**: 5% (`max_unmapped_rate = 0.05`)
+- **Fail-Fast Behavior**: Pipeline exits with non-zero status if alias-to-family coverage falls below threshold
+- **Configurable**: Thresholds can be adjusted in `aicra/config.py`
+
+### Coverage Reports
+
+For each test phase, the system generates:
+
+- **`artifacts/mapping_coverage_{phase}.json`**: Detailed coverage metrics and statistics
+- **`artifacts/unmapped_report_{phase}.csv`**: List of unmapped items with occurrence counts
+
+### Validation Commands
+
+```bash
+# Validate lookup coverage for specific phase
+aicra validate-lookups --phase small_ember
+aicra validate-lookups --phase full
+
+# Expand lookups from MITRE data
+aicra expand-lookups --from-mitre /path/to/mitre/data --dry-run
+aicra expand-lookups --from-mitre /path/to/mitre/data
+```
+
+### Curating Lookup Files
+
+To improve coverage:
+
+1. **Review Unmapped Reports**: Check `artifacts/unmapped_report_{phase}.csv` for frequently unmapped items
+2. **Update Canonical Families**: Add new mappings to `data/lookups/canonical_families.yaml`
+3. **Add ATT&CK Mappings**: Update `data/lookups/family_to_attack.yaml` with technique mappings
+4. **Add D3FEND Controls**: Update `data/lookups/attack_to_d3fend.yaml` with control mappings
+5. **Re-run Validation**: Use `aicra validate-lookups` to verify improvements
+
+### Performance Features
+
+- **Vectorized Processing**: Uses pandas for efficient batch operations
+- **LRU Caching**: Caches normalized results for repeated lookups
+- **Pre-compiled Patterns**: Regex patterns compiled once for performance
+- **Memory Efficient**: Handles 100k+ samples with reasonable memory usage
+
+### Example Coverage Report
+
+```json
+{
+  "phase": "small_ember",
+  "coverage_metrics": {
+    "alias_to_family_coverage": 0.847,
+    "family_to_attack_coverage": 0.923,
+    "attack_to_d3fend_coverage": 0.891
+  },
+  "coverage_stats": {
+    "alias_to_family": {
+      "mapped": 8470,
+      "total": 10000,
+      "unmapped": ["unknown_family_1", "unknown_family_2", ...]
+    }
+  }
+}
+```
+
 ## Quickstart
 
 ### Installation
@@ -121,6 +283,92 @@ aicra smoke --dry-run
 - PR-AUC > 0.05 (above prevalence)
 - Brier Score ≤ 0.25
 - Expected Calibration Error (ECE) ≤ 0.15
+
+## Automated Test Phases
+
+AICRA supports three sequential test phases for comprehensive validation:
+
+### Phase 1: Smoke Test (Synthetic Data)
+Fast validation using synthetic data - no external dependencies required:
+
+```bash
+# Run smoke test with synthetic data
+aicra run-test --phase smoke
+```
+
+**Behavior**: Uses LogisticRegression on synthetic data for quick validation
+**Data**: Generated synthetic features and labels
+**Artifacts**: `metrics_smoke.json`, `roc_smoke.png`, `pr_smoke.png`, `reliability_smoke.png`, `confusion_smoke.png`, `policy_smoke.json`, `risk_register_smoke.csv`
+
+### Phase 2: Small EMBER-2024 (Real Data)
+Medium-scale test using real EMBER-2024 data with sampling:
+
+```bash
+# Run small EMBER test with real data
+aicra run-test --phase small_ember --data-dir data/ember2024 --sample-size 10000 --seed 42
+```
+
+**Behavior**: Uses LightGBM on sampled EMBER-2024 data
+**Data**: Real EMBER-2024 JSONL files (sampled to ~10k rows)
+**Requirements**: 
+- `data/ember2024/` directory must exist
+- Must contain `*.jsonl` files with features and labels
+- Will FAIL FAST if real data is missing (no synthetic fallback)
+**Artifacts**: `metrics_small_ember.json`, `roc_small_ember.png`, `pr_small_ember.png`, `reliability_small_ember.png`, `confusion_small_ember.png`, `policy_small_ember.json`, `risk_register_small_ember.csv`, `comparison_smoke_small_ember.json`
+
+### Phase 3: Full EMBER-2024 (Real Data)
+Full-scale test using complete EMBER-2024 dataset:
+
+```bash
+# Run full EMBER test with real data
+aicra run-test --phase full --data-dir data/ember2024 --seed 42
+```
+
+**Behavior**: Uses LightGBM on complete EMBER-2024 dataset
+**Data**: Real EMBER-2024 JSONL files (all available data)
+**Requirements**:
+- `data/ember2024/` directory must exist
+- Must contain `*.jsonl` files with features and labels
+- Will FAIL FAST if real data is missing (no synthetic fallback)
+**Artifacts**: `metrics_full.json`, `roc_full.png`, `pr_full.png`, `reliability_full.png`, `confusion_full.png`, `policy_full.json`, `risk_register_full.csv`, `test_results_history.csv`, `phase_comparison.png`
+
+### Data Requirements
+
+**For small_ember and full phases, you MUST provide real EMBER-2024 data:**
+
+```
+data/ember2024/
+├── train_features.jsonl    # Training features (one JSON object per line)
+├── train_labels.jsonl      # Training labels (one JSON object per line)
+├── test_features.jsonl    # Test features (one JSON object per line)
+└── test_labels.jsonl      # Test labels (one JSON object per line)
+```
+
+**JSONL Format Example:**
+```json
+{"feature_0": 0.1, "feature_1": 0.2, "feature_2": 0.3, "family": "benign", "timestamp": "2024-01-01T00:00:00"}
+{"feature_0": 0.4, "feature_1": 0.5, "feature_2": 0.6, "family": "lockbit", "timestamp": "2024-01-01T01:00:00"}
+```
+
+**Label Format Example:**
+```json
+{"label": 0}
+{"label": 1}
+```
+
+**Error Handling:**
+- If `data/ember2024/` directory is missing: Clear error message with instructions
+- If no `*.jsonl` files found: Clear error message with expected structure
+- If invalid JSON in files: Graceful handling with warnings for invalid lines
+- **NO SYNTHETIC FALLBACK**: small_ember and full phases will always fail if real data is missing
+
+### Comparison and History
+
+The test runner automatically generates:
+- **Phase Comparison**: `comparison_smoke_small_ember.json` comparing smoke vs small EMBER results
+- **Test History**: `test_results_history.csv` tracking all phase results over time
+- **Progression Plots**: `phase_comparison.png` showing AUROC and Lift@5% progression across phases
+- **Data Summaries**: `data_summary_{phase}.json` with dataset statistics for each phase
 - Lift@5% > 1.0 (or Lift@10% > 1.0)
 - All required artifacts generated (metrics.json, plots, policy.json, register.csv)
 - Register contains ≥10 rows with required columns (susceptibility, bucket, techniques, controls)

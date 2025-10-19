@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 import joblib
 import mlflow
@@ -577,6 +578,221 @@ def list_runs(
 ) -> None:
     """List recent runs from the versions log."""
     list_recent_runs(limit=limit)
+
+
+@app.command()
+def run_test(
+    phase: str = typer.Option(..., help="Test phase: smoke, small_ember, or full"),
+    data_dir: str = typer.Option("data/ember2024", help="Data directory for EMBER-2024 JSONL files"),
+    sample_size: int = typer.Option(10000, help="Sample size for small_ember phase (ignored for full unless --no-sample)"),
+    seed: int = typer.Option(42, help="Random seed for reproducibility"),
+    debug: bool = typer.Option(False, help="Enable debug mode with deep diagnostics"),
+    time_split: bool = typer.Option(False, help="Use time-ordered split if timestamp column exists"),
+    no_sample: bool = typer.Option(False, help="Force full phase to use entire dataset (ignore sample_size)"),
+) -> None:
+    """Run automated training, testing, and reporting for sequential test phases."""
+    settings = get_settings()
+    
+    # Set up MLflow
+    mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
+    
+    # Validate phase
+    valid_phases = ["smoke", "small_ember", "full"]
+    if phase not in valid_phases:
+        typer.echo(f"Invalid phase: {phase}. Must be one of {valid_phases}", err=True)
+        raise typer.Exit(1)
+    
+    # Validate data requirements for non-smoke phases
+    if phase in ["small_ember", "full"]:
+        data_path = Path(data_dir)
+        if not data_path.exists():
+            typer.echo(f"❌ EMBER-2024 data directory not found: {data_path.absolute()}", err=True)
+            typer.echo(f"For {phase} phase, you must provide real EMBER-2024 data.", err=True)
+            typer.echo(f"Expected structure: {data_path}/*.jsonl", err=True)
+            typer.echo(f"Use: aicra run-test --phase {phase} --data-dir <path-to-ember-data>", err=True)
+            raise typer.Exit(1)
+        
+        jsonl_files = list(data_path.glob("*.jsonl"))
+        if not jsonl_files:
+            typer.echo(f"❌ No JSONL files found in {data_path.absolute()}", err=True)
+            typer.echo(f"For {phase} phase, you must provide real EMBER-2024 JSONL files.", err=True)
+            typer.echo(f"Expected files: {data_path}/*.jsonl", err=True)
+            typer.echo(f"Use: aicra run-test --phase {phase} --data-dir <path-to-ember-data>", err=True)
+            raise typer.Exit(1)
+    
+    # Handle sample_size for debug mode and full phase
+    if phase == "full":
+        if debug and sample_size != 10000:
+            typer.echo(f"🔍 DEBUG: Using sample size {sample_size} for full phase debugging")
+        elif not debug and not no_sample:
+            sample_size = None  # Use full dataset for production full phase
+            typer.echo("📊 FULL phase: Using entire dataset (use --no-sample to override)")
+        elif no_sample:
+            sample_size = None  # Explicitly use full dataset
+            typer.echo("📊 FULL phase: Using entire dataset (--no-sample flag)")
+        else:
+            sample_size = None  # Default to full dataset
+    
+    typer.echo(f"Running {phase} test phase...")
+    
+    # Import and run the test pipeline
+    from .pipelines.test_runner import TestRunnerPipeline
+    
+    test_pipeline = TestRunnerPipeline(settings)
+    success, summary = test_pipeline.run(
+        phase=phase,
+        data_dir=data_dir,
+        sample_size=sample_size,
+        seed=seed,
+        debug=debug,
+        time_split=time_split
+    )
+    
+    # Print results
+    typer.echo(summary)
+    
+    # Exit with appropriate code
+    if success:
+        typer.echo(f"✅ {phase.upper()} test PASSED")
+        raise typer.Exit(0)
+    else:
+        typer.echo(f"❌ {phase.upper()} test FAILED")
+        raise typer.Exit(1)
+
+
+@app.command()
+def validate_lookups(
+    phase: str = typer.Option(..., help="Test phase: smoke, small_ember, or full"),
+    data_dir: str = typer.Option("data/ember2024", help="Data directory for EMBER-2024 JSONL files"),
+    sample_size: int = typer.Option(10000, help="Sample size for small_ember phase"),
+    seed: int = typer.Option(42, help="Random seed for reproducibility"),
+) -> None:
+    """Validate lookup coverage without training."""
+    settings = get_settings()
+    
+    # Set up MLflow
+    mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
+    
+    # Validate phase
+    valid_phases = ["smoke", "small_ember", "full"]
+    if phase not in valid_phases:
+        typer.echo(f"Invalid phase: {phase}. Must be one of {valid_phases}", err=True)
+        raise typer.Exit(1)
+    
+    typer.echo(f"Validating lookup coverage for {phase} phase...")
+    
+    try:
+        # Load data for coverage validation
+        if phase == "smoke":
+            # Use synthetic data for smoke test
+            from .core.data import _synthetic_dataset
+            _, test_data = _synthetic_dataset(n=1000, d=256, seed=seed)
+            families = test_data.families.tolist()
+        else:
+            # Load real EMBER-2024 data
+            from .pipelines.data_loader import EMBERDataLoader
+            loader = EMBERDataLoader(settings)
+            features_df, labels_series, families_series, metadata = loader.load_ember_data(
+                data_dir=data_dir,
+                sample_size=sample_size if phase == "small_ember" else None,
+                seed=seed,
+                phase=phase
+            )
+            families = families_series.tolist()
+        
+        # Initialize mapping pipeline
+        from .pipelines.mapping import MappingPipeline
+        mapping_pipeline = MappingPipeline(settings, skip_mlflow=True)
+        
+        # Run batch mapping to compute coverage
+        mapping_results = mapping_pipeline.map_families_batch(families, phase)
+        
+        # Log coverage report
+        coverage_metrics = mapping_pipeline.log_coverage_report(phase)
+        
+        # Check coverage thresholds
+        coverage_ok = mapping_pipeline.check_coverage_thresholds(phase)
+        
+        # Print results
+        typer.echo(f"\n📊 Lookup Coverage Report for {phase.upper()} phase:")
+        typer.echo("=" * 50)
+        for metric, value in coverage_metrics.items():
+            typer.echo(f"{metric}: {value:.3f}")
+        
+        if coverage_ok:
+            typer.echo(f"\n✅ Lookup coverage validation PASSED for {phase.upper()}")
+            raise typer.Exit(0)
+        else:
+            typer.echo(f"\n❌ Lookup coverage validation FAILED for {phase.upper()}")
+            raise typer.Exit(1)
+            
+    except Exception as e:
+        typer.echo(f"❌ Lookup validation failed: {str(e)}", err=True)
+        raise typer.Exit(1)
+
+
+@app.command()
+def expand_lookups(
+    from_mitre: Optional[str] = typer.Option(None, help="Path to MITRE ATT&CK/D3FEND JSON bundles"),
+    output_dir: str = typer.Option("data/lookups", help="Output directory for YAML files"),
+    dry_run: bool = typer.Option(False, help="Show what would be done without making changes"),
+) -> None:
+    """Expand lookup files from MITRE ATT&CK/D3FEND data."""
+    settings = get_settings()
+    
+    if not from_mitre:
+        typer.echo("❌ --from-mitre path is required", err=True)
+        raise typer.Exit(1)
+    
+    mitre_path = Path(from_mitre)
+    if not mitre_path.exists():
+        typer.echo(f"❌ MITRE data path not found: {mitre_path}", err=True)
+        raise typer.Exit(1)
+    
+    output_path = Path(output_dir)
+    output_path.mkdir(parents=True, exist_ok=True)
+    
+    typer.echo(f"Expanding lookups from MITRE data: {mitre_path}")
+    typer.echo(f"Output directory: {output_path}")
+    
+    try:
+        # Import expansion utilities
+        from .utils.mitre_expander import MITREExpander
+        
+        expander = MITREExpander(mitre_path, output_path)
+        
+        if dry_run:
+            typer.echo("🔍 DRY RUN - No changes will be made")
+            changes = expander.analyze_changes()
+            typer.echo(f"Would add {changes['new_families']} new families")
+            typer.echo(f"Would add {changes['new_techniques']} new techniques")
+            typer.echo(f"Would add {changes['new_controls']} new controls")
+        else:
+            # Set up MLflow
+            mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
+            mlflow.set_experiment("lookup_expansion")
+            
+            with mlflow.start_run():
+                results = expander.expand_lookups()
+                
+                # Log results to MLflow
+                mlflow.log_param("mitre_source", str(mitre_path))
+                mlflow.log_param("output_dir", str(output_path))
+                mlflow.log_metric("new_families", results['new_families'])
+                mlflow.log_metric("new_techniques", results['new_techniques'])
+                mlflow.log_metric("new_controls", results['new_controls'])
+                
+                typer.echo(f"✅ Successfully expanded lookups:")
+                typer.echo(f"  - Added {results['new_families']} new families")
+                typer.echo(f"  - Added {results['new_techniques']} new techniques")
+                typer.echo(f"  - Added {results['new_controls']} new controls")
+                typer.echo(f"  - Updated versions: {results['versions']}")
+        
+        raise typer.Exit(0)
+        
+    except Exception as e:
+        typer.echo(f"❌ Lookup expansion failed: {str(e)}", err=True)
+        raise typer.Exit(1)
 
 
 @app.command()

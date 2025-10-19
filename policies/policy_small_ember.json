@@ -1,0 +1,6 @@
+{
+  "threshold": 0.4770661240516523,
+  "cost_false_negative": 100.0,
+  "cost_false_positive": 5.0,
+  "impact_default": 5000000.0
+}
