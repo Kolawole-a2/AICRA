@@ -131,7 +131,8 @@ dmypy.json
 # AICRA specific
 data/ember/
 data/ember2024/
-artifacts/
+artifacts/*
+!artifacts/.gitkeep
 models/
 logs/
 *.log
