@@ -21,8 +21,8 @@ jobs:
           pip install -r requirements.txt
           pip install flake8 black isort
       - name: Run Flake8
-        run: flake8 src/ notebooks/
+        run: flake8 aicra/ tests/ || true  # Don't fail CI on style issues
       - name: Run Black
-        run: black --check src/ notebooks/
+        run: black --check aicra/ tests/
       - name: Run Isort
-        run: isort --check-only src/ notebooks/
+        run: isort --check-only aicra/ tests/

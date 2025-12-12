@@ -4,8 +4,10 @@ services:
   aicra:
     build: .
     container_name: aicra-app
+    # Security: Bind to localhost only to prevent external access
+    # For production, front with authenticated reverse proxy (nginx/traefik)
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     volumes:
       - ./data:/app/data
       - ./artifacts:/app/artifacts
@@ -13,6 +15,9 @@ services:
     environment:
       - PYTHONPATH=/app
       - PYTHONUNBUFFERED=1
+      # Add authentication token (if API exists)
+      # For production, use secrets management (e.g., Docker secrets, env files)
+      - AICRA_API_TOKEN=${AICRA_API_TOKEN:-changeme_in_production}
     command: ["python", "-m", "aicra", "--help"]
     healthcheck:
       test: ["CMD", "python", "-c", "import aicra; print('AICRA is healthy')"]
@@ -24,14 +29,28 @@ services:
   mlflow:
     image: python:3.10-slim
     container_name: aicra-mlflow
+    # Security: Bind to localhost only to prevent external access
+    # For production, front with authenticated reverse proxy
     ports:
-      - "5000:5000"
+      - "127.0.0.1:5000:5000"
     volumes:
       - ./mlruns:/mlruns
     environment:
       - MLFLOW_BACKEND_STORE_URI=sqlite:///mlruns/mlflow.db
       - MLFLOW_DEFAULT_ARTIFACT_ROOT=/mlruns
-    command: ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000"]
+      # Add basic auth credentials (requires mlflow[extras] or custom auth middleware)
+      # For production, use secrets management
+      - MLFLOW_TRACKING_USERNAME=${MLFLOW_USERNAME:-admin}
+      - MLFLOW_TRACKING_PASSWORD=${MLFLOW_PASSWORD:-changeme_in_production}
+    command: 
+      - "mlflow"
+      - "server"
+      - "--host"
+      - "0.0.0.0"  # Internal to container (external access restricted by port binding)
+      - "--port"
+      - "5000"
+      # Note: MLflow basic auth requires additional setup (see MLflow docs)
+      # For production, use reverse proxy with authentication (nginx/traefik)
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 30s

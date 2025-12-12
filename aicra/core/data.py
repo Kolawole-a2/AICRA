@@ -83,16 +83,84 @@ def _synthetic_dataset(n: int = 5000, d: int = 256, seed: int = 0) -> tuple[Data
     return train, test
 
 
-def load_ember_2024() -> tuple[Dataset, Dataset]:
+def load_ember_2024(
+    time_ordered: bool = False,
+    train_time_end: Optional[pd.Timestamp] = None,
+    test_time_start: Optional[pd.Timestamp] = None
+) -> tuple[Dataset, Dataset]:
+    """
+    Load EMBER-2024 dataset with optional time-ordered split.
+    
+    Args:
+        time_ordered: If True, split by timestamp to ensure temporal ordering.
+        train_time_end: Maximum timestamp for training set (if None, uses 80% chronologically).
+        test_time_start: Minimum timestamp for test set (if None, uses data after train_time_end).
+    
+    Returns:
+        (train_dataset, test_dataset)
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+    
     settings = get_settings()
     train_feat = settings.ember_dir / "train_features.jsonl"
     train_lab = settings.ember_dir / "train_labels.jsonl"
     test_feat = settings.ember_dir / "test_features.jsonl"
     test_lab = settings.ember_dir / "test_labels.jsonl"
+    
     if all(p.exists() for p in [train_feat, train_lab, test_feat, test_lab]):
         train = _load_jsonl_pair(train_feat, train_lab)
         test = _load_jsonl_pair(test_feat, test_lab)
+        
+        # Combine train and test for time-ordered split if requested
+        if time_ordered:
+            # Combine all data
+            all_features = pd.concat([train.features, test.features], ignore_index=True)
+            all_labels = pd.concat([train.labels, test.labels], ignore_index=True)
+            all_families = pd.concat([train.families, test.families], ignore_index=True) if train.families is not None else None
+            all_timestamps = pd.concat([train.timestamps, test.timestamps], ignore_index=True)
+            
+            # Sort by timestamp
+            sort_idx = all_timestamps.argsort()
+            all_features = all_features.iloc[sort_idx].reset_index(drop=True)
+            all_labels = all_labels.iloc[sort_idx].reset_index(drop=True)
+            all_families = all_families.iloc[sort_idx].reset_index(drop=True) if all_families is not None else None
+            all_timestamps = all_timestamps.iloc[sort_idx].reset_index(drop=True)
+            
+            # Determine split point
+            if train_time_end is None:
+                # Default: 80% for training, 20% for testing
+                split_idx = int(len(all_features) * 0.8)
+                train_time_end = all_timestamps.iloc[split_idx]
+            else:
+                split_idx = (all_timestamps <= train_time_end).sum()
+            
+            if test_time_start is None:
+                test_time_start = all_timestamps.iloc[split_idx] if split_idx < len(all_timestamps) else all_timestamps.iloc[-1]
+            
+            # Split
+            train_mask = all_timestamps <= train_time_end
+            test_mask = all_timestamps >= test_time_start
+            
+            train = Dataset(
+                features=all_features[train_mask].reset_index(drop=True),
+                labels=all_labels[train_mask].reset_index(drop=True),
+                families=all_families[train_mask].reset_index(drop=True) if all_families is not None else None,
+                timestamps=all_timestamps[train_mask].reset_index(drop=True),
+            )
+            
+            test = Dataset(
+                features=all_features[test_mask].reset_index(drop=True),
+                labels=all_labels[test_mask].reset_index(drop=True),
+                families=all_families[test_mask].reset_index(drop=True) if all_families is not None else None,
+                timestamps=all_timestamps[test_mask].reset_index(drop=True),
+            )
+            
+            logger.info(f"Time-ordered split: train={len(train.features)} (max_ts={train.timestamps.max()}), "
+                       f"test={len(test.features)} (min_ts={test.timestamps.min()})")
+        
         return train, test
+    
     raise FileNotFoundError(
         "EMBER-2024 files not found. Expected jsonl pairs under data/ember2024/. "
         "Use scripts download_ember.py and feature_extractor.py to fetch and prepare real data."

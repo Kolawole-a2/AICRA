@@ -1,0 +1,3 @@
+asset_id,risk_score,predicted_label,true_label,technique_id
+asset_0000,0.3333608784461353,0,0,T1486
+asset_0001,0.3333653795971402,0,1,T1486

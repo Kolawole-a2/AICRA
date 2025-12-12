@@ -20,3 +20,4 @@ evidently>=0.4.0
 thrember>=0.1.0
 pyyaml>=6.0
 python-dotenv>=1.0.0
+sentence-transformers>=2.2.0

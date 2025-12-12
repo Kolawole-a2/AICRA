@@ -1,0 +1,61 @@
+{
+  "hashes": {
+    "deterministic_lookup_sha256": "46a0ac102ab150b8d2909b97190232f97b9e9583ae1d83b2a704ebf6408a9ee4",
+    "learned_mapping_sha256": "87816619570f80b598c933009d9c914887e8201c5efc2c61b9b459bcbadc30b6",
+    "reference_pairs_sha256": "46a0ac102ab150b8d2909b97190232f97b9e9583ae1d83b2a704ebf6408a9ee4"
+  },
+  "deterministic_mapping": {
+    "coverage_%": 100.0,
+    "consistency_%": 100.0,
+    "correctness_%": "N/A",
+    "pairs_count": 15
+  },
+  "learned_mapping": {
+    "coverage_%": 100.0,
+    "consistency_%": 100.0,
+    "correctness_%": "N/A",
+    "pairs_count": 15
+  },
+  "actionable_precision": {
+    "deterministic": {
+      "precision": 0.9941,
+      "f1": 0.9971,
+      "n_actionable": 512
+    },
+    "learned": {
+      "precision": 0.9941,
+      "f1": 0.9971,
+      "n_actionable": 512
+    },
+    "delta_precision": 0.0,
+    "delta_f1": 0.0,
+    "wilcoxon_pvalue": null
+  },
+  "variance_consistency": {
+    "deterministic": {
+      "baseline_var": 0.085074,
+      "mapped_var": 0.080118,
+      "variance_reduction": 0.004956,
+      "baseline_iqr": 0.4806,
+      "mapped_iqr": 0.456978,
+      "iqr_reduction": 0.023622
+    },
+    "learned": {
+      "baseline_var": 0.085074,
+      "mapped_var": 0.080118,
+      "variance_reduction": 0.004956,
+      "baseline_iqr": 0.4806,
+      "mapped_iqr": 0.456978,
+      "iqr_reduction": 0.023622
+    },
+    "delta_variance_reduction": 0.0,
+    "delta_iqr_reduction": 0.0
+  },
+  "model_baseline": {
+    "auroc": 0.9984300940438872,
+    "prauc": 0.99938730235757,
+    "brier": 0.054733,
+    "ece": 0.180211
+  },
+  "expected_loss_sum": null
+}

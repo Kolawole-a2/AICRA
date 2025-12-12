@@ -1,0 +1,17 @@
+{
+  "mapping_coverage(%)": 100.0,
+  "mapping_correctness(%)": 100.0,
+  "defense_attack_consistency(%)": 100.0,
+  "baseline_precision": 0.9616,
+  "mapped_precision": 0.9902,
+  "delta_precision": 0.0286,
+  "baseline_f1": 0.9327,
+  "mapped_f1": 0.9889,
+  "delta_f1": 0.0562,
+  "baseline_variance": 0.050031,
+  "mapped_variance": 0.088751,
+  "variance_reduction": -0.03872,
+  "baseline_IQR": 0.357525,
+  "mapped_IQR": 0.500175,
+  "iqr_reduction": -0.14265
+}

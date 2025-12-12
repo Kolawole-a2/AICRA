@@ -1,0 +1,51 @@
+================================================================================
+EMBER-2024 RANSOMWARE COVERAGE VALIDATION REPORT
+================================================================================
+
+VALIDATION DATE: 2025-12-04 21:21:24
+
+1. FAMILY COVERAGE
+--------------------------------------------------------------------------------
+Total ransomware families in EMBER: 48
+Families mapped in family_attack_map.csv: 48
+Coverage: 48/48 (100%)
+
+[PASS] All ransomware families are mapped
+
+2. ATTACK ID COVERAGE
+--------------------------------------------------------------------------------
+Attack IDs in family_map: 11
+Attack IDs in deterministic lookup: 46
+Coverage: 11/11 (100%)
+
+[PASS] All attack IDs from family_map are covered in deterministic lookup
+
+3. DETERMINISTIC LOOKUP STATISTICS
+--------------------------------------------------------------------------------
+Total mappings: 173
+Unique techniques: 46
+Unique defenses: 9
+All defense names populated: True
+
+Defenses used:
+  - D3-AI: Asset Inventory
+  - D3-AMED: Access Mediation
+  - D3-DE: Decoy Environment
+  - D3-DO: Decoy Object
+  - D3-FA: File Analysis
+  - D3-PE: Process Eviction
+  - D3-PM: Platform Monitoring
+  - D3-RA: Restore Access
+  - D3-UBA: User Behavior Analysis
+
+4. VALIDATION RESULT
+--------------------------------------------------------------------------------
+[PASS] VALIDATION PASSED
+
+The deterministic lookup table covers all ransomware attacks in EMBER-2024:
+  - All 48 ransomware families are mapped to ATT&CK techniques
+  - All 11 attack IDs from family_map are covered in deterministic lookup
+  - All defense names are clearly indicated
+  - Technique-specific defense mappings ensure accuracy
+
+================================================================================

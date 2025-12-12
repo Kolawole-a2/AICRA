@@ -524,7 +524,7 @@ class TestRunnerPipeline:
         return str(policy_path)
 
     def _generate_register(self, model_path: str, policy_path: str, test_data: Dataset, phase: str) -> str:
-        """Generate register for the given phase."""
+        """Generate register for the given phase with calibrated susceptibility scores."""
         import joblib
         model = joblib.load(model_path)
         
@@ -539,18 +539,28 @@ class TestRunnerPipeline:
             impact_default=policy_data["impact_default"]
         )
         
-        # Generate predictions
+        # Generate raw predictions p(ransomware)
         y_prob = model.predict_proba(test_data.features)
         
         # Ensure y_prob is 2D and extract positive class probabilities
         if y_prob.ndim == 1:
             y_prob = np.column_stack([1 - y_prob, y_prob])
-        y_prob_pos = y_prob[:, 1]
+        y_prob_raw = y_prob[:, 1]  # Raw p(ransomware)
         
-        # Create register dataframe
+        # Apply calibration to produce Susceptibility Score S∈[0,1]
+        calibrator_path = self.models_dir / f"calibrator_{phase}.joblib"
+        if calibrator_path.exists():
+            calibrator = joblib.load(calibrator_path)
+            susceptibility_scores = calibrator.transform(y_prob_raw)  # Calibrated S∈[0,1]
+        else:
+            # Fallback: use raw probabilities if calibrator not found
+            print(f"Warning: Calibrator not found at {calibrator_path}, using raw probabilities")
+            susceptibility_scores = y_prob_raw.clip(0.0, 1.0)
+        
+        # Create register dataframe with calibrated susceptibility scores
         register_df = pd.DataFrame({
             "family": test_data.families,
-            "probability": y_prob_pos,  # Use probability of positive class
+            "probability": susceptibility_scores,  # Calibrated Susceptibility Score S∈[0,1]
             "label": test_data.labels,
         })
         

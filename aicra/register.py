@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import yaml
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -62,6 +63,28 @@ def compute_register(
         include_lowest=True,
     )
     df["expected_loss"] = df["susceptibility"] * float(impact)
+    
+    # Load risk bucket controls and attach to buckets
+    controls_yaml_path = settings.data_dir / "lookups" / "risk_bucket_controls.yaml"
+    if controls_yaml_path.exists():
+        with open(controls_yaml_path, 'r', encoding='utf-8') as f:
+            bucket_controls_data = yaml.safe_load(f)
+        
+        risk_buckets = bucket_controls_data.get("risk_buckets", {})
+        
+        def get_controls_for_bucket(bucket):
+            if pd.isna(bucket):
+                return []
+            # Convert categorical to string if needed
+            bucket_str = str(bucket) if not isinstance(bucket, str) else bucket
+            bucket_data = risk_buckets.get(bucket_str, {})
+            return bucket_data.get("controls", [])
+        
+        # Convert categorical to string before applying to avoid hash issues
+        df["prescriptive_controls"] = df["susceptibility_bucket"].astype(str).apply(get_controls_for_bucket)
+    else:
+        # Fallback: empty controls if YAML not found
+        df["prescriptive_controls"] = df["susceptibility_bucket"].apply(lambda x: [])
     
     return df
 

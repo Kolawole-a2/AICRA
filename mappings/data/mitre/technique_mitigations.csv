@@ -1,0 +1,28 @@
+attack_id,mitigation_id,mitigation_name
+T1070,course-of-action--feff9142-e8c2-46f4-842b-bd6fb3d41157,Encrypt Sensitive Information
+T1070,course-of-action--20a2baeb-98c2-4901-bad7-dc62d0a03dea,Remote Data Storage
+T1070,course-of-action--987988f0-cf86-4680-a875-2f6456ab2448,Restrict File and Directory Permissions
+T1041,course-of-action--12241367-a8b7-49b4-b86e-2236901ba50c,Network Intrusion Prevention
+T1041,course-of-action--65401701-019d-44ff-b223-08d520bb0e7b,Data Loss Prevention
+T1021,course-of-action--1dcaeb21-9348-42ea-950a-f842aaf1ae1f,Limit Access to Resource Over Network
+T1021,course-of-action--cc2399fd-3cd3-4319-8d0a-fbd6420cdaf8,Audit
+T1021,course-of-action--93e7968a-9074-4eac-8ae9-9f5200ec3317,User Account Management
+T1021,course-of-action--eb88d97c-32f1-40be-80f0-d61a4b0b4b31,Disable or Remove Feature or Program
+T1021,course-of-action--b045d015-6bed-4490-bd38-56b41ece59a0,Multi-factor Authentication
+T1021,course-of-action--90c218c3-fbf8-4830-98a7-e8cfb7eaa485,Password Policies
+T1489,course-of-action--86598de0-b347-4928-9eb0-0acbfc21908c,Network Segmentation
+T1489,course-of-action--93e7968a-9074-4eac-8ae9-9f5200ec3317,User Account Management
+T1489,course-of-action--80a0e940-f683-4fbd-ac00-e9f935f2f808,Out-of-Band Communications Channel
+T1489,course-of-action--a2c36a5d-4058-475e-8e77-fff75e50d3b9,Restrict Registry Permissions
+T1489,course-of-action--987988f0-cf86-4680-a875-2f6456ab2448,Restrict File and Directory Permissions
+T1055,course-of-action--9bb9e696-bff8-4ae1-9454-961fc7d91d5f,Privileged Account Management
+T1055,course-of-action--90f39ee1-d5a3-4aaa-9f28-3b42815b0d46,Behavior Prevention on Endpoint
+T1490,course-of-action--47e0e9fe-96ce-4f65-8bb1-8be1feacb5db,Execution Prevention
+T1490,course-of-action--2f316f6c-ae42-44fe-adf8-150989e0f6d3,Operating System Configuration
+T1490,course-of-action--93e7968a-9074-4eac-8ae9-9f5200ec3317,User Account Management
+T1490,course-of-action--3efe43d1-6f3f-4fcb-ab39-4a730971f70b,Data Backup
+T1486,course-of-action--90f39ee1-d5a3-4aaa-9f28-3b42815b0d46,Behavior Prevention on Endpoint
+T1486,course-of-action--3efe43d1-6f3f-4fcb-ab39-4a730971f70b,Data Backup
+T1485,course-of-action--b045d015-6bed-4490-bd38-56b41ece59a0,Multi-factor Authentication
+T1485,course-of-action--3efe43d1-6f3f-4fcb-ab39-4a730971f70b,Data Backup
+T1485,course-of-action--93e7968a-9074-4eac-8ae9-9f5200ec3317,User Account Management

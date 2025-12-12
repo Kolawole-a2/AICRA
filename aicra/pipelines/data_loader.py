@@ -62,12 +62,14 @@ class EMBERDataLoader:
                 f"Use: aicra run-test --phase {phase} --data-dir <path-to-ember-data>"
             )
         
-        print(f"📁 Loading EMBER-2024 data from {len(jsonl_files)} JSONL files in {data_path}")
+        print(f"Loading EMBER-2024 data from {len(jsonl_files)} JSONL files in {data_path}")
         
         # Load and combine JSONL files
         all_data = []
-        for jsonl_file in jsonl_files:
-            print(f"  📄 Loading {jsonl_file.name}")
+        total_files = len(jsonl_files)
+        for file_idx, jsonl_file in enumerate(jsonl_files, 1):
+            if file_idx % 50 == 0 or file_idx == 1:
+                print(f"  Loading file {file_idx}/{total_files}: {jsonl_file.name}")
             try:
                 with open(jsonl_file, 'r', encoding='utf-8') as f:
                     for line_num, line in enumerate(f, 1):
@@ -75,10 +77,11 @@ class EMBERDataLoader:
                             data = json.loads(line.strip())
                             all_data.append(data)
                         except json.JSONDecodeError as e:
-                            print(f"  ⚠️  Skipping invalid JSON on line {line_num} in {jsonl_file.name}: {e}")
+                            if file_idx <= 5:  # Only show errors for first few files
+                                print(f"  WARNING: Skipping invalid JSON on line {line_num} in {jsonl_file.name}: {e}")
                             continue
             except Exception as e:
-                print(f"  ❌ Error reading {jsonl_file.name}: {e}")
+                print(f"  ERROR: Error reading {jsonl_file.name}: {e}")
                 continue
         
         if not all_data:
@@ -90,7 +93,7 @@ class EMBERDataLoader:
         
         # Convert to DataFrame
         df = pd.DataFrame(all_data)
-        print(f"📊 Loaded {len(df)} samples from EMBER-2024 data")
+        print(f"Loaded {len(df)} samples from EMBER-2024 data")
         
         # Validate schema
         self._validate_schema(df, phase)
@@ -104,7 +107,7 @@ class EMBERDataLoader:
         
         # Apply sampling if requested
         if sample_size is not None and len(features_df) > sample_size:
-            print(f"🎯 Sampling {sample_size} rows deterministically (seed={seed})")
+            print(f"Sampling {sample_size} rows deterministically (seed={seed})")
             np.random.seed(seed)
             sample_indices = np.random.choice(len(features_df), size=sample_size, replace=False)
             features_df = features_df.iloc[sample_indices].reset_index(drop=True)
@@ -217,7 +220,7 @@ class EMBERDataLoader:
         
         # Print summary to console
         print(f"\n📊 EMBER-2024 Data Summary ({phase.upper()}):")
-        print(f"  📁 Source: {metadata['data_dir']}")
+        print(f"  Source: {metadata['data_dir']}")
         print(f"  📈 Samples: {metadata['total_samples']:,}")
         print(f"  🎯 Features: {metadata['n_features']}")
         print(f"  ⚖️  Prevalence: {metadata['prevalence']:.3f} ({metadata['positive_samples']:,} positive, {metadata['negative_samples']:,} negative)")

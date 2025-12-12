@@ -1,0 +1,38 @@
+# H1 Classification Experiment Configuration
+#
+# This file defines parameters for the H1 experiment:
+# "Static PE features enable reliable ransomware classification with AUROC >= 0.95
+#  and operational precision suitable for banking environments."
+#
+# All paths are relative to the repository root.
+
+experiment:
+  name: "H1_Classification"
+  output_dir: "results/H1_classification"
+  
+model:
+  type: "lgbm"  # Options: "lgbm" or "ffnn"
+  use_pe_features: true
+  seeds: 5  # Number of ensemble models (for bagging)
+  
+evaluation:
+  operational_threshold: 0.5  # Threshold for computing precision/recall/F1
+  compute_lift_at: [0.01, 0.05, 0.10]  # Lift@k percentages (1%, 5%, 10%)
+  evaluate_out_of_family: true  # Evaluate generalization across malware families
+  
+data:
+  ember_dir: "data/ember2024"  # Path to EMBER-2024 dataset
+  # Expected files:
+  #   - train_features.jsonl
+  #   - train_labels.jsonl
+  #   - test_features.jsonl
+  #   - test_labels.jsonl
+
+reproducibility:
+  random_seed: 42  # Random seed for reproducibility
+  save_model: true  # Save trained model to models/h1_lgbm.joblib
+  save_predictions: false  # Save predictions to CSV (optional)
+
+targets:
+  min_auroc: 0.95  # Minimum AUROC to meet H1 hypothesis
+  min_precision: 0.90  # Minimum operational precision for banking environments

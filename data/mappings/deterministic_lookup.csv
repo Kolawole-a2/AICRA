@@ -1,0 +1,174 @@
+attack_id,attack_name,defense_id,defense_name,is_correct,source
+T1486,Data Encrypted for Impact,D3-RA,Restore Access,1,d3fend_ransomware_specific
+T1490,Inhibit System Recovery,D3-RA,Restore Access,1,d3fend_ransomware_specific
+T1485,Data Destruction,D3-RA,Restore Access,1,d3fend_ransomware_specific
+T1487,Disk Structure Wipe,D3-RA,Restore Access,1,d3fend_ransomware_specific
+T1488,Disk Content Wipe,D3-RA,Restore Access,1,d3fend_ransomware_specific
+T1485.001,Lifecycle-Triggered Deletion,D3-RA,Restore Access,1,d3fend_ransomware_specific
+T1486,Data Encrypted for Impact,D3-DO,Decoy Object,1,d3fend_ransomware_specific
+T1485,Data Destruction,D3-DO,Decoy Object,1,d3fend_ransomware_specific
+T1485.001,Lifecycle-Triggered Deletion,D3-DO,Decoy Object,1,d3fend_ransomware_specific
+T1486,Data Encrypted for Impact,D3-DE,Decoy Environment,1,d3fend_ransomware_specific
+T1486,Data Encrypted for Impact,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1485,Data Destruction,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1488,Disk Content Wipe,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1055,Process Injection,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1070,Indicator Removal,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1055.015,ListPlanting,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1070.006,Timestomp,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1055.003,Thread Execution Hijacking,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1070.003,Clear Command History,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1070.007,Clear Network Connection History and Configurations,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1055.011,Extra Window Memory Injection,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1055.014,VDSO Hijacking,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1070.009,Clear Persistence,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1055.013,Process Doppelgänging,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1055.005,Thread Local Storage,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1070.004,File Deletion,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1055.008,Ptrace System Calls,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1070.008,Clear Mailbox Data,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1070.005,Network Share Connection Removal,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1055.001,Dynamic-link Library Injection,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1055.002,Portable Executable Injection,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1070.010,Relocate Malware,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1070.002,Clear Linux or Mac System Logs,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1055.009,Proc Memory,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1070.001,Clear Windows Event Logs,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1055.004,Asynchronous Procedure Call,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1055.012,Process Hollowing,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1485.001,Lifecycle-Triggered Deletion,D3-FA,File Analysis,1,d3fend_ransomware_specific
+T1486,Data Encrypted for Impact,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1490,Inhibit System Recovery,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1487,Disk Structure Wipe,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1489,Service Stop,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1055,Process Injection,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1070,Indicator Removal,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1021,Remote Services,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1041,Exfiltration Over C2 Channel,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1496,Resource Hijacking,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1496.003,SMS Pumping,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1055.015,ListPlanting,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1021.001,Remote Desktop Protocol,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1070.006,Timestomp,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1055.003,Thread Execution Hijacking,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1070.003,Clear Command History,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1021.004,SSH,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1021.002,SMB/Windows Admin Shares,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1070.007,Clear Network Connection History and Configurations,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1055.011,Extra Window Memory Injection,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1055.014,VDSO Hijacking,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1070.009,Clear Persistence,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1496.004,Cloud Service Hijacking,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1055.013,Process Doppelgänging,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1055.005,Thread Local Storage,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1496.002,Bandwidth Hijacking,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1070.004,File Deletion,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1021.007,Cloud Services,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1055.008,Ptrace System Calls,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1070.008,Clear Mailbox Data,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1070.005,Network Share Connection Removal,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1055.001,Dynamic-link Library Injection,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1055.002,Portable Executable Injection,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1021.003,Distributed Component Object Model,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1070.010,Relocate Malware,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1070.002,Clear Linux or Mac System Logs,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1021.008,Direct Cloud VM Connections,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1055.009,Proc Memory,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1070.001,Clear Windows Event Logs,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1055.004,Asynchronous Procedure Call,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1055.012,Process Hollowing,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1021.005,VNC,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1021.006,Windows Remote Management,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1496.001,Compute Hijacking,D3-PM,Platform Monitoring,1,d3fend_ransomware_specific
+T1486,Data Encrypted for Impact,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1489,Service Stop,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1055,Process Injection,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1070,Indicator Removal,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1021,Remote Services,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1041,Exfiltration Over C2 Channel,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1496,Resource Hijacking,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1496.003,SMS Pumping,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1055.015,ListPlanting,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1021.001,Remote Desktop Protocol,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1070.006,Timestomp,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1055.003,Thread Execution Hijacking,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1070.003,Clear Command History,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1021.004,SSH,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1021.002,SMB/Windows Admin Shares,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1070.007,Clear Network Connection History and Configurations,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1055.011,Extra Window Memory Injection,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1055.014,VDSO Hijacking,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1070.009,Clear Persistence,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1496.004,Cloud Service Hijacking,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1055.013,Process Doppelgänging,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1055.005,Thread Local Storage,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1496.002,Bandwidth Hijacking,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1070.004,File Deletion,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1021.007,Cloud Services,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1055.008,Ptrace System Calls,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1070.008,Clear Mailbox Data,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1070.005,Network Share Connection Removal,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1055.001,Dynamic-link Library Injection,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1055.002,Portable Executable Injection,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1021.003,Distributed Component Object Model,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1070.010,Relocate Malware,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1070.002,Clear Linux or Mac System Logs,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1021.008,Direct Cloud VM Connections,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1055.009,Proc Memory,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1070.001,Clear Windows Event Logs,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1055.004,Asynchronous Procedure Call,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1055.012,Process Hollowing,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1021.005,VNC,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1021.006,Windows Remote Management,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1496.001,Compute Hijacking,D3-UBA,User Behavior Analysis,1,d3fend_ransomware_specific
+T1486,Data Encrypted for Impact,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1490,Inhibit System Recovery,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1489,Service Stop,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1070,Indicator Removal,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1021,Remote Services,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1041,Exfiltration Over C2 Channel,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1496,Resource Hijacking,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1496.003,SMS Pumping,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1021.001,Remote Desktop Protocol,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1070.006,Timestomp,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1070.003,Clear Command History,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1021.004,SSH,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1021.002,SMB/Windows Admin Shares,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1070.007,Clear Network Connection History and Configurations,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1070.009,Clear Persistence,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1496.004,Cloud Service Hijacking,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1496.002,Bandwidth Hijacking,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1070.004,File Deletion,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1021.007,Cloud Services,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1070.008,Clear Mailbox Data,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1070.005,Network Share Connection Removal,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1021.003,Distributed Component Object Model,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1070.010,Relocate Malware,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1070.002,Clear Linux or Mac System Logs,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1021.008,Direct Cloud VM Connections,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1070.001,Clear Windows Event Logs,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1021.005,VNC,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1021.006,Windows Remote Management,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1496.001,Compute Hijacking,D3-AI,Asset Inventory,1,d3fend_ransomware_specific
+T1055,Process Injection,D3-PE,Process Eviction,1,d3fend_ransomware_specific
+T1055.015,ListPlanting,D3-PE,Process Eviction,1,d3fend_ransomware_specific
+T1055.003,Thread Execution Hijacking,D3-PE,Process Eviction,1,d3fend_ransomware_specific
+T1055.011,Extra Window Memory Injection,D3-PE,Process Eviction,1,d3fend_ransomware_specific
+T1055.014,VDSO Hijacking,D3-PE,Process Eviction,1,d3fend_ransomware_specific
+T1055.013,Process Doppelgänging,D3-PE,Process Eviction,1,d3fend_ransomware_specific
+T1055.005,Thread Local Storage,D3-PE,Process Eviction,1,d3fend_ransomware_specific
+T1055.008,Ptrace System Calls,D3-PE,Process Eviction,1,d3fend_ransomware_specific
+T1055.001,Dynamic-link Library Injection,D3-PE,Process Eviction,1,d3fend_ransomware_specific
+T1055.002,Portable Executable Injection,D3-PE,Process Eviction,1,d3fend_ransomware_specific
+T1055.009,Proc Memory,D3-PE,Process Eviction,1,d3fend_ransomware_specific
+T1055.004,Asynchronous Procedure Call,D3-PE,Process Eviction,1,d3fend_ransomware_specific
+T1055.012,Process Hollowing,D3-PE,Process Eviction,1,d3fend_ransomware_specific
+T1021,Remote Services,D3-AMED,Access Mediation,1,d3fend_ransomware_specific
+T1021.001,Remote Desktop Protocol,D3-AMED,Access Mediation,1,d3fend_ransomware_specific
+T1021.004,SSH,D3-AMED,Access Mediation,1,d3fend_ransomware_specific
+T1021.002,SMB/Windows Admin Shares,D3-AMED,Access Mediation,1,d3fend_ransomware_specific
+T1021.007,Cloud Services,D3-AMED,Access Mediation,1,d3fend_ransomware_specific
+T1021.003,Distributed Component Object Model,D3-AMED,Access Mediation,1,d3fend_ransomware_specific
+T1021.008,Direct Cloud VM Connections,D3-AMED,Access Mediation,1,d3fend_ransomware_specific
+T1021.005,VNC,D3-AMED,Access Mediation,1,d3fend_ransomware_specific
+T1021.006,Windows Remote Management,D3-AMED,Access Mediation,1,d3fend_ransomware_specific

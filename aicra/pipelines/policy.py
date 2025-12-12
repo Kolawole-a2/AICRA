@@ -32,12 +32,26 @@ class Policy:
     model_id: str = ""
     calibration_id: str = ""
     lookup_versions: Dict[str, str] = None
+    # Banking-specific parameters
+    impact_ranges: Dict[str, Dict[str, float]] = None  # {"endpoint": {"min": 1e5, "max": 1e7}, ...}
+    scenario_impacts: Dict[str, float] = None  # {"data_breach": 5e6, "ransomware_encryption": 1e7, ...}
+    customer_segment_impacts: Dict[str, float] = None  # {"retail": 1e5, "commercial": 1e7, ...}
+    loss_per_endpoint: float = 10000.0
+    scenario_tags: List[str] = None
     
     def __post_init__(self):
         if self.timestamp == "":
             self.timestamp = datetime.now().isoformat()
         if self.lookup_versions is None:
             self.lookup_versions = {}
+        if self.impact_ranges is None:
+            self.impact_ranges = {}
+        if self.scenario_impacts is None:
+            self.scenario_impacts = {}
+        if self.customer_segment_impacts is None:
+            self.customer_segment_impacts = {}
+        if self.scenario_tags is None:
+            self.scenario_tags = []
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
@@ -133,7 +147,8 @@ class PolicyPipeline:
         y_prob: np.ndarray,
         model_id: str = "",
         calibration_id: str = "",
-        impact_table_path: Optional[Path] = None
+        impact_table_path: Optional[Path] = None,
+        banking_config_path: Optional[Path] = None
     ) -> Policy:
         """Create cost-sensitive policy."""
         
@@ -148,15 +163,46 @@ class PolicyPipeline:
             "risk_bucket_controls": "1.0.0"
         }
         
+        # Load banking-specific config
+        if banking_config_path and banking_config_path.exists():
+            with open(banking_config_path, 'r', encoding='utf-8') as f:
+                banking_config = yaml.safe_load(f)
+        else:
+            # Default banking configuration
+            banking_config = {
+                "impact_ranges": {
+                    "endpoint": {"min": 100000, "max": 10000000},
+                    "server": {"min": 500000, "max": 50000000},
+                    "database": {"min": 1000000, "max": 100000000}
+                },
+                "scenario_impacts": {
+                    "data_breach": 5000000,
+                    "ransomware_encryption": 5000000,  # Banking ransomware breach cost: $5M
+                    "operational_disruption": 2000000
+                },
+                "customer_segment_impacts": {
+                    "retail": 100000,
+                    "commercial": 10000000,
+                    "enterprise": 50000000
+                },
+                "loss_per_endpoint": 10000.0,
+                "scenario_tags": ["ransomware_encryption", "data_breach", "operational_disruption"]
+            }
+        
         # Create policy
         policy = Policy(
             threshold=optimal_threshold,
-            cost_false_negative=self.settings.cost_fn,
-            cost_false_positive=self.settings.cost_fp,
+            cost_false_negative=self.settings.cost_fn,  # Should be 100.0+ for banking
+            cost_false_positive=self.settings.cost_fp,   # Should be 1.0 for banking
             impact_default=self.settings.impact_default,
             model_id=model_id,
             calibration_id=calibration_id,
-            lookup_versions=lookup_versions
+            lookup_versions=lookup_versions,
+            impact_ranges=banking_config.get("impact_ranges", {}),
+            scenario_impacts=banking_config.get("scenario_impacts", {}),
+            customer_segment_impacts=banking_config.get("customer_segment_impacts", {}),
+            loss_per_endpoint=banking_config.get("loss_per_endpoint", 10000.0),
+            scenario_tags=banking_config.get("scenario_tags", [])
         )
         
         return policy

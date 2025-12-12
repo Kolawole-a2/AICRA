@@ -1,0 +1,27 @@
+# H3 Evaluation Split Configuration
+# 
+# This file defines all evaluation splits to be used in the H3 experiment.
+# Each split should have a risk_scores CSV file with at least:
+#   - asset_id
+#   - risk_score (calibrated p(ransomware) ∈ [0,1])
+#   - predicted_label (1/0)
+#   - true_label (1/0)
+#   - technique_id (ATT&CK id for the sample)
+#
+# Paths are relative to the repository root.
+
+splits:
+  # Main split with 10,000 samples
+  main: "results/main/risk_scores.csv"
+  
+  # EMBER-2024 dataset splits
+  small_ember: "results/small_ember/risk_scores.csv"
+  full_ember: "results/full_ember/risk_scores.csv"
+  
+  # Smoke test dataset split
+  smoke_test: "results/smoke_test/risk_scores.csv"
+  
+  # Example splits - update these paths to match your actual evaluation outputs
+  # time_test: "results/time_test/risk_scores.csv"
+  # oof_test: "results/oof_test/risk_scores.csv"
+  # seed1_time_test: "results/seed1/time_test/risk_scores.csv"

@@ -1,0 +1,874 @@
+{
+  "per_split_results": [
+    {
+      "split": "main",
+      "n_samples": 10000,
+      "n_techniques": 1,
+      "diagnostics": {
+        "file_path": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\results\\main\\risk_scores.csv",
+        "total_rows": 10000,
+        "valid_technique_rows": 0,
+        "invalid_technique_rows": 0,
+        "valid_rows": 10000,
+        "invalid_rows": 0,
+        "unique_valid_techniques": 1,
+        "risk_score_stats": {
+          "mean": 0.4595578263074629,
+          "std": 0.45046318698788546,
+          "min": 0.0033104361263645,
+          "max": 0.9042692805633136,
+          "unique_values": 139
+        },
+        "unique_invalid_techniques": 0,
+        "invalid_ids": []
+      },
+      "deterministic": {
+        "mapping_metrics": {
+          "coverage_%": 100.0,
+          "correctness_%": null,
+          "dac_%": 100.0
+        },
+        "actionable_metrics": {
+          "actionable_precision": 1.0,
+          "actionable_f1": 1.0,
+          "n_actionable": 5064
+        },
+        "consistency_metrics": {
+          "baseline_variance": 0.20291708283128265,
+          "baseline_iqr": 0.9009588297517803,
+          "mapped_variance": 0.20291708283128265,
+          "mapped_iqr": 0.9009588297517803,
+          "variance_reduction": 0.0,
+          "iqr_reduction": 0.0
+        },
+        "mapping_interpretation": {
+          "precision_improved": true,
+          "f1_improved": false,
+          "variance_interpretation": "decreased by 0.0%. Decreased variance indicates more consistent risk scores.",
+          "iqr_interpretation": "decreased by 0.0%. Decreased IQR indicates more compact risk score distribution.",
+          "distribution_shift_ks_statistic": null,
+          "distribution_shift_ks_pvalue": null,
+          "distribution_shift_mw_statistic": null,
+          "distribution_shift_mw_pvalue": null,
+          "significant_shift": false,
+          "warnings": [],
+          "contradictions": [
+            "F1 score did not improve after mapping"
+          ]
+        }
+      },
+      "learned": {
+        "mapping_metrics": {
+          "coverage_%": 100.0,
+          "correctness_%": null,
+          "dac_%": 0.0
+        },
+        "actionable_metrics": {
+          "actionable_precision": 0.0,
+          "actionable_f1": 0.0,
+          "n_actionable": 0
+        },
+        "consistency_metrics": {
+          "baseline_variance": 0.20291708283128265,
+          "baseline_iqr": 0.9009588297517803,
+          "mapped_variance": 0.20291708283128265,
+          "mapped_iqr": 0.9009588297517803,
+          "variance_reduction": 0.0,
+          "iqr_reduction": 0.0
+        },
+        "mapping_interpretation": {
+          "precision_improved": false,
+          "f1_improved": false,
+          "variance_interpretation": "decreased by 0.0%. Decreased variance indicates more consistent risk scores.",
+          "iqr_interpretation": "decreased by 0.0%. Decreased IQR indicates more compact risk score distribution.",
+          "distribution_shift_ks_statistic": null,
+          "distribution_shift_ks_pvalue": null,
+          "distribution_shift_mw_statistic": null,
+          "distribution_shift_mw_pvalue": null,
+          "significant_shift": false,
+          "warnings": [],
+          "contradictions": [
+            "Precision did not improve after mapping",
+            "F1 score did not improve after mapping"
+          ]
+        }
+      },
+      "baseline_metrics": {
+        "auroc": 0.501337929987259,
+        "pr_auc": 0.4745302276406045,
+        "brier_score": 0.45258905947297734,
+        "ece": 0.4503861010470609
+      },
+      "deltas": {
+        "delta_dac_%": 100.0,
+        "delta_coverage_%": 0.0,
+        "delta_actionable_precision": 1.0,
+        "delta_actionable_f1": 1.0,
+        "delta_variance_reduction": 0.0,
+        "delta_iqr_reduction": 0.0
+      }
+    },
+    {
+      "split": "small_ember",
+      "n_samples": 2000,
+      "n_techniques": 2,
+      "diagnostics": {
+        "file_path": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\results\\small_ember\\risk_scores.csv",
+        "total_rows": 2000,
+        "valid_technique_rows": 0,
+        "invalid_technique_rows": 0,
+        "valid_rows": 2000,
+        "invalid_rows": 0,
+        "unique_valid_techniques": 2,
+        "risk_score_stats": {
+          "mean": 0.45469278428132004,
+          "std": 0.45058921249669365,
+          "min": 0.0033104361263645,
+          "max": 0.9042692805633136,
+          "unique_values": 141
+        },
+        "unique_invalid_techniques": 0,
+        "invalid_ids": []
+      },
+      "deterministic": {
+        "mapping_metrics": {
+          "coverage_%": 100.0,
+          "correctness_%": null,
+          "dac_%": 100.0
+        },
+        "actionable_metrics": {
+          "actionable_precision": 1.0,
+          "actionable_f1": 1.0,
+          "n_actionable": 1002
+        },
+        "consistency_metrics": {
+          "baseline_variance": 0.20303063841839056,
+          "baseline_iqr": 0.9009588297517803,
+          "mapped_variance": 0.20303063841839056,
+          "mapped_iqr": 0.9009588297517803,
+          "variance_reduction": 0.0,
+          "iqr_reduction": 0.0
+        },
+        "mapping_interpretation": {
+          "precision_improved": true,
+          "f1_improved": false,
+          "variance_interpretation": "decreased by 0.0%. Decreased variance indicates more consistent risk scores.",
+          "iqr_interpretation": "decreased by 0.0%. Decreased IQR indicates more compact risk score distribution.",
+          "distribution_shift_ks_statistic": null,
+          "distribution_shift_ks_pvalue": null,
+          "distribution_shift_mw_statistic": null,
+          "distribution_shift_mw_pvalue": null,
+          "significant_shift": false,
+          "warnings": [],
+          "contradictions": [
+            "F1 score did not improve after mapping"
+          ]
+        }
+      },
+      "learned": {
+        "mapping_metrics": {
+          "coverage_%": 100.0,
+          "correctness_%": null,
+          "dac_%": 0.0
+        },
+        "actionable_metrics": {
+          "actionable_precision": 0.0,
+          "actionable_f1": 0.0,
+          "n_actionable": 0
+        },
+        "consistency_metrics": {
+          "baseline_variance": 0.20303063841839056,
+          "baseline_iqr": 0.9009588297517803,
+          "mapped_variance": 0.20303063841839056,
+          "mapped_iqr": 0.9009588297517803,
+          "variance_reduction": 0.0,
+          "iqr_reduction": 0.0
+        },
+        "mapping_interpretation": {
+          "precision_improved": false,
+          "f1_improved": false,
+          "variance_interpretation": "decreased by 0.0%. Decreased variance indicates more consistent risk scores.",
+          "iqr_interpretation": "decreased by 0.0%. Decreased IQR indicates more compact risk score distribution.",
+          "distribution_shift_ks_statistic": null,
+          "distribution_shift_ks_pvalue": null,
+          "distribution_shift_mw_statistic": null,
+          "distribution_shift_mw_pvalue": null,
+          "significant_shift": false,
+          "warnings": [],
+          "contradictions": [
+            "Precision did not improve after mapping",
+            "F1 score did not improve after mapping"
+          ]
+        }
+      },
+      "baseline_metrics": {
+        "auroc": 0.8306825712392314,
+        "pr_auc": 0.49001996007984033,
+        "brier_score": 0.2111784344200935,
+        "ece": 0.20919278428132015
+      },
+      "deltas": {
+        "delta_dac_%": 100.0,
+        "delta_coverage_%": 0.0,
+        "delta_actionable_precision": 1.0,
+        "delta_actionable_f1": 1.0,
+        "delta_variance_reduction": 0.0,
+        "delta_iqr_reduction": 0.0
+      }
+    },
+    {
+      "split": "full_ember",
+      "n_samples": 20002,
+      "n_techniques": 1,
+      "diagnostics": {
+        "file_path": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\results\\full_ember\\risk_scores.csv",
+        "total_rows": 20002,
+        "valid_technique_rows": 0,
+        "invalid_technique_rows": 0,
+        "valid_rows": 20002,
+        "invalid_rows": 0,
+        "unique_valid_techniques": 1,
+        "risk_score_stats": {
+          "mean": 0.4550981419369619,
+          "std": 0.4504867606491759,
+          "min": 0.0033104361263645,
+          "max": 0.9042692805633136,
+          "unique_values": 141
+        },
+        "unique_invalid_techniques": 0,
+        "invalid_ids": []
+      },
+      "deterministic": {
+        "mapping_metrics": {
+          "coverage_%": 100.0,
+          "correctness_%": null,
+          "dac_%": 100.0
+        },
+        "actionable_metrics": {
+          "actionable_precision": 1.0,
+          "actionable_f1": 1.0,
+          "n_actionable": 10030
+        },
+        "consistency_metrics": {
+          "baseline_variance": 0.2029383215201879,
+          "baseline_iqr": 0.9009588297517803,
+          "mapped_variance": 0.2029383215201879,
+          "mapped_iqr": 0.9009588297517803,
+          "variance_reduction": 0.0,
+          "iqr_reduction": 0.0
+        },
+        "mapping_interpretation": {
+          "precision_improved": true,
+          "f1_improved": false,
+          "variance_interpretation": "decreased by 0.0%. Decreased variance indicates more consistent risk scores.",
+          "iqr_interpretation": "decreased by 0.0%. Decreased IQR indicates more compact risk score distribution.",
+          "distribution_shift_ks_statistic": null,
+          "distribution_shift_ks_pvalue": null,
+          "distribution_shift_mw_statistic": null,
+          "distribution_shift_mw_pvalue": null,
+          "significant_shift": false,
+          "warnings": [],
+          "contradictions": [
+            "F1 score did not improve after mapping"
+          ]
+        }
+      },
+      "learned": {
+        "mapping_metrics": {
+          "coverage_%": 100.0,
+          "correctness_%": null,
+          "dac_%": 0.0
+        },
+        "actionable_metrics": {
+          "actionable_precision": 0.0,
+          "actionable_f1": 0.0,
+          "n_actionable": 0
+        },
+        "consistency_metrics": {
+          "baseline_variance": 0.2029383215201879,
+          "baseline_iqr": 0.9009588297517803,
+          "mapped_variance": 0.2029383215201879,
+          "mapped_iqr": 0.9009588297517803,
+          "variance_reduction": 0.0,
+          "iqr_reduction": 0.0
+        },
+        "mapping_interpretation": {
+          "precision_improved": false,
+          "f1_improved": false,
+          "variance_interpretation": "decreased by 0.0%. Decreased variance indicates more consistent risk scores.",
+          "iqr_interpretation": "decreased by 0.0%. Decreased IQR indicates more compact risk score distribution.",
+          "distribution_shift_ks_statistic": null,
+          "distribution_shift_ks_pvalue": null,
+          "distribution_shift_mw_statistic": null,
+          "distribution_shift_mw_pvalue": null,
+          "significant_shift": false,
+          "warnings": [],
+          "contradictions": [
+            "Precision did not improve after mapping",
+            "F1 score did not improve after mapping"
+          ]
+        }
+      },
+      "baseline_metrics": {
+        "auroc": 0.4977586637640533,
+        "pr_auc": 0.47662151715004286,
+        "brier_score": 0.4545824563924616,
+        "ece": 0.4521932173321147
+      },
+      "deltas": {
+        "delta_dac_%": 100.0,
+        "delta_coverage_%": 0.0,
+        "delta_actionable_precision": 1.0,
+        "delta_actionable_f1": 1.0,
+        "delta_variance_reduction": 0.0,
+        "delta_iqr_reduction": 0.0
+      }
+    },
+    {
+      "split": "smoke_test",
+      "n_samples": 2,
+      "n_techniques": 1,
+      "diagnostics": {
+        "file_path": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\results\\smoke_test\\risk_scores.csv",
+        "total_rows": 2,
+        "valid_technique_rows": 0,
+        "invalid_technique_rows": 0,
+        "valid_rows": 2,
+        "invalid_rows": 0,
+        "unique_valid_techniques": 1,
+        "risk_score_stats": {
+          "mean": 0.3333631290216378,
+          "std": 3.1827943986849435e-06,
+          "min": 0.3333608784461353,
+          "max": 0.3333653795971402,
+          "unique_values": 2
+        },
+        "unique_invalid_techniques": 0,
+        "invalid_ids": []
+      },
+      "deterministic": {
+        "mapping_metrics": {
+          "coverage_%": 100.0,
+          "correctness_%": null,
+          "dac_%": 100.0
+        },
+        "actionable_metrics": {
+          "actionable_precision": 0.0,
+          "actionable_f1": 0.0,
+          "n_actionable": 0
+        },
+        "consistency_metrics": {
+          "baseline_variance": 1.013018018430025e-11,
+          "baseline_iqr": 2.250575502460439e-06,
+          "mapped_variance": 1.013018018430025e-11,
+          "mapped_iqr": 2.250575502460439e-06,
+          "variance_reduction": 0.0,
+          "iqr_reduction": 0.0
+        },
+        "mapping_interpretation": {
+          "precision_improved": false,
+          "f1_improved": false,
+          "variance_interpretation": "decreased by 0.0%. Decreased variance indicates more consistent risk scores.",
+          "iqr_interpretation": "decreased by 0.0%. Decreased IQR indicates more compact risk score distribution.",
+          "distribution_shift_ks_statistic": null,
+          "distribution_shift_ks_pvalue": null,
+          "distribution_shift_mw_statistic": null,
+          "distribution_shift_mw_pvalue": null,
+          "significant_shift": false,
+          "warnings": [],
+          "contradictions": [
+            "Precision did not improve after mapping",
+            "F1 score did not improve after mapping"
+          ]
+        }
+      },
+      "learned": {
+        "mapping_metrics": {
+          "coverage_%": 100.0,
+          "correctness_%": null,
+          "dac_%": 0.0
+        },
+        "actionable_metrics": {
+          "actionable_precision": 0.0,
+          "actionable_f1": 0.0,
+          "n_actionable": 0
+        },
+        "consistency_metrics": {
+          "baseline_variance": 1.013018018430025e-11,
+          "baseline_iqr": 2.250575502460439e-06,
+          "mapped_variance": 1.013018018430025e-11,
+          "mapped_iqr": 2.250575502460439e-06,
+          "variance_reduction": 0.0,
+          "iqr_reduction": 0.0
+        },
+        "mapping_interpretation": {
+          "precision_improved": false,
+          "f1_improved": false,
+          "variance_interpretation": "decreased by 0.0%. Decreased variance indicates more consistent risk scores.",
+          "iqr_interpretation": "decreased by 0.0%. Decreased IQR indicates more compact risk score distribution.",
+          "distribution_shift_ks_statistic": null,
+          "distribution_shift_ks_pvalue": null,
+          "distribution_shift_mw_statistic": null,
+          "distribution_shift_mw_pvalue": null,
+          "significant_shift": false,
+          "warnings": [],
+          "contradictions": [
+            "Precision did not improve after mapping",
+            "F1 score did not improve after mapping"
+          ]
+        }
+      },
+      "baseline_metrics": {
+        "auroc": 1.0,
+        "pr_auc": 1.0,
+        "brier_score": 0.27776559619902197,
+        "ece": 0.16663687097836222
+      },
+      "deltas": {
+        "delta_dac_%": 100.0,
+        "delta_coverage_%": 0.0,
+        "delta_actionable_precision": 0.0,
+        "delta_actionable_f1": 0.0,
+        "delta_variance_reduction": 0.0,
+        "delta_iqr_reduction": 0.0
+      }
+    }
+  ],
+  "aggregated_metrics": {
+    "deterministic": {
+      "dac_%": {
+        "mean": 100.0,
+        "std": 0.0
+      },
+      "coverage_%": {
+        "mean": 100.0,
+        "std": 0.0
+      },
+      "actionable_precision": {
+        "mean": 0.75,
+        "std": 0.5
+      },
+      "actionable_f1": {
+        "mean": 0.75,
+        "std": 0.5
+      },
+      "variance_reduction": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "iqr_reduction": {
+        "mean": 0.0,
+        "std": 0.0
+      }
+    },
+    "learned": {
+      "dac_%": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "coverage_%": {
+        "mean": 100.0,
+        "std": 0.0
+      },
+      "actionable_precision": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "actionable_f1": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "variance_reduction": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "iqr_reduction": {
+        "mean": 0.0,
+        "std": 0.0
+      }
+    },
+    "deltas": {
+      "delta_dac_%": {
+        "mean": 100.0,
+        "std": 0.0,
+        "ci_95": [
+          100.0,
+          100.0
+        ]
+      },
+      "delta_actionable_precision": {
+        "mean": 0.75,
+        "std": 0.5,
+        "ci_95": [
+          0.25,
+          1.0
+        ]
+      },
+      "delta_actionable_f1": {
+        "mean": 0.75,
+        "std": 0.5,
+        "ci_95": [
+          0.25,
+          1.0
+        ]
+      },
+      "delta_variance_reduction": {
+        "mean": 0.0,
+        "std": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ]
+      },
+      "delta_iqr_reduction": {
+        "mean": 0.0,
+        "std": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "statistical_tests": {
+      "dac": {
+        "ttest": {
+          "statistic": Infinity,
+          "pvalue": 0.0,
+          "note": "Tests learned DAC vs deterministic baseline (100%)"
+        },
+        "wilcoxon": {
+          "statistic": 0.0,
+          "pvalue": 0.125
+        },
+        "spearman_vs_precision": {
+          "rho_learned": null,
+          "pvalue_learned": null,
+          "note": "Undefined if DAC is constant across splits"
+        },
+        "spearman_vs_variance_reduction": {
+          "rho_learned": null,
+          "pvalue_learned": null,
+          "note": "Undefined if DAC is constant across splits"
+        }
+      },
+      "actionable_precision": {
+        "ttest": {
+          "statistic": 3.0,
+          "pvalue": 0.05766888562243731
+        },
+        "wilcoxon": {
+          "statistic": 0.0,
+          "pvalue": 0.0832645166635504
+        }
+      },
+      "variance_reduction": {
+        "ttest": {
+          "statistic": NaN,
+          "pvalue": NaN
+        },
+        "wilcoxon": {
+          "statistic": null,
+          "pvalue": null
+        }
+      }
+    }
+  },
+  "file_hashes": {
+    "deterministic": "a7780cfe106057cdb615df7a658e4781b61a5185eab13f6a70b4dfb8c963ed31",
+    "learned": "34d6cdc4696521d6989a23dd1a24dd5442828a3c690d56620905e7634136e546",
+    "reference": "46a0ac102ab150b8d2909b97190232f97b9e9583ae1d83b2a704ebf6408a9ee4"
+  },
+  "splits_evaluated": [
+    "main",
+    "small_ember",
+    "full_ember",
+    "smoke_test"
+  ],
+  "splits_skipped": [],
+  "splits_failed": [],
+  "splits_config": {
+    "main": "results/main/risk_scores.csv",
+    "small_ember": "results/small_ember/risk_scores.csv",
+    "full_ember": "results/full_ember/risk_scores.csv",
+    "smoke_test": "results/smoke_test/risk_scores.csv"
+  },
+  "split_diagnostics": {
+    "main": {
+      "file_path": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\results\\main\\risk_scores.csv",
+      "total_rows": 10000,
+      "valid_technique_rows": 0,
+      "invalid_technique_rows": 0,
+      "valid_rows": 10000,
+      "invalid_rows": 0,
+      "unique_valid_techniques": 1,
+      "risk_score_stats": {
+        "mean": 0.4595578263074629,
+        "std": 0.45046318698788546,
+        "min": 0.0033104361263645,
+        "max": 0.9042692805633136,
+        "unique_values": 139
+      },
+      "unique_invalid_techniques": 0,
+      "invalid_ids": []
+    },
+    "small_ember": {
+      "file_path": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\results\\small_ember\\risk_scores.csv",
+      "total_rows": 2000,
+      "valid_technique_rows": 0,
+      "invalid_technique_rows": 0,
+      "valid_rows": 2000,
+      "invalid_rows": 0,
+      "unique_valid_techniques": 2,
+      "risk_score_stats": {
+        "mean": 0.45469278428132004,
+        "std": 0.45058921249669365,
+        "min": 0.0033104361263645,
+        "max": 0.9042692805633136,
+        "unique_values": 141
+      },
+      "unique_invalid_techniques": 0,
+      "invalid_ids": []
+    },
+    "full_ember": {
+      "file_path": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\results\\full_ember\\risk_scores.csv",
+      "total_rows": 20002,
+      "valid_technique_rows": 0,
+      "invalid_technique_rows": 0,
+      "valid_rows": 20002,
+      "invalid_rows": 0,
+      "unique_valid_techniques": 1,
+      "risk_score_stats": {
+        "mean": 0.4550981419369619,
+        "std": 0.4504867606491759,
+        "min": 0.0033104361263645,
+        "max": 0.9042692805633136,
+        "unique_values": 141
+      },
+      "unique_invalid_techniques": 0,
+      "invalid_ids": []
+    },
+    "smoke_test": {
+      "file_path": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\results\\smoke_test\\risk_scores.csv",
+      "total_rows": 2,
+      "valid_technique_rows": 0,
+      "invalid_technique_rows": 0,
+      "valid_rows": 2,
+      "invalid_rows": 0,
+      "unique_valid_techniques": 1,
+      "risk_score_stats": {
+        "mean": 0.3333631290216378,
+        "std": 3.1827943986849435e-06,
+        "min": 0.3333608784461353,
+        "max": 0.3333653795971402,
+        "unique_values": 2
+      },
+      "unique_invalid_techniques": 0,
+      "invalid_ids": []
+    }
+  },
+  "splits_evaluation_summary": {
+    "total_splits_in_config": 4,
+    "successfully_evaluated": 4,
+    "skipped_no_valid_techniques": 0,
+    "failed_with_errors": 0,
+    "technique_validation_enabled": true
+  },
+  "mapping_overlap": {
+    "between_det_and_learned": {
+      "global_jaccard": 0.0,
+      "fraction_exact_match_techniques": 0.0,
+      "total_det_pairs": 173,
+      "total_learned_pairs": 190,
+      "intersection_pairs": 0,
+      "common_techniques_count": 46,
+      "exact_match_techniques_count": 0
+    },
+    "det_vs_reference": {
+      "total_det_pairs": 173,
+      "total_reference_pairs": 15,
+      "intersection_pairs": 0,
+      "jaccard": 0.0
+    },
+    "learned_vs_reference": {
+      "total_learned_pairs": 190,
+      "total_reference_pairs": 15,
+      "intersection_pairs": 11,
+      "jaccard": 0.05670103092783505
+    },
+    "risk_score_coverage": {
+      "total_techniques_in_risk_scores": 2,
+      "techniques_with_mappings": 2,
+      "exact_match_count": 0,
+      "exact_match_fraction": 0.0,
+      "partial_overlap_count": 0,
+      "disjoint_count": 2
+    }
+  },
+  "mapping_behavior": {
+    "learned_is_broader": true,
+    "learned_pairs_count": 190,
+    "deterministic_pairs_count": 173,
+    "learned_only_pairs_count": 190,
+    "techniques_with_extra_learned_controls": 47,
+    "techniques_with_only_ransomware_controls": 0,
+    "total_techniques_in_learned": 47,
+    "total_techniques_in_deterministic": 46
+  },
+  "deterministic_mapping_info": {
+    "path": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\data\\mappings\\deterministic_attack_defense_lookup.csv",
+    "sha256": "a7780cfe106057cdb615df7a658e4781b61a5185eab13f6a70b4dfb8c963ed31",
+    "n_pairs": 173,
+    "n_unique_attack_techniques": 46,
+    "n_unique_defense_controls": 9,
+    "sample_pairs": [
+      {
+        "technique_id": "T1486",
+        "control_id": "D3-RA"
+      },
+      {
+        "technique_id": "T1490",
+        "control_id": "D3-RA"
+      },
+      {
+        "technique_id": "T1485",
+        "control_id": "D3-RA"
+      },
+      {
+        "technique_id": "T1487",
+        "control_id": "D3-RA"
+      },
+      {
+        "technique_id": "T1488",
+        "control_id": "D3-RA"
+      },
+      {
+        "technique_id": "T1485.001",
+        "control_id": "D3-RA"
+      },
+      {
+        "technique_id": "T1486",
+        "control_id": "D3-DO"
+      },
+      {
+        "technique_id": "T1485",
+        "control_id": "D3-DO"
+      },
+      {
+        "technique_id": "T1485.001",
+        "control_id": "D3-DO"
+      },
+      {
+        "technique_id": "T1486",
+        "control_id": "D3-DE"
+      }
+    ]
+  },
+  "learned_mapping_info": {
+    "path": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\data\\mappings\\learned_mapping.csv",
+    "sha256": "34d6cdc4696521d6989a23dd1a24dd5442828a3c690d56620905e7634136e546",
+    "n_pairs": 190,
+    "n_unique_attack_techniques": 47,
+    "n_unique_defense_controls": 79,
+    "sample_pairs": [
+      {
+        "technique_id": "T1055.011",
+        "control_id": "D3-PLA"
+      },
+      {
+        "technique_id": "T1055.011",
+        "control_id": "D3-PSEP"
+      },
+      {
+        "technique_id": "T1055.011",
+        "control_id": "D3-HBPI"
+      },
+      {
+        "technique_id": "T1055.011",
+        "control_id": "D3-PCSV"
+      },
+      {
+        "technique_id": "T1021.005",
+        "control_id": "D3-RFAM"
+      },
+      {
+        "technique_id": "T1021.005",
+        "control_id": "D3-TBA"
+      },
+      {
+        "technique_id": "T1021.005",
+        "control_id": "D3-CHN"
+      },
+      {
+        "technique_id": "T1021.005",
+        "control_id": "D3-PWA"
+      },
+      {
+        "technique_id": "T1485.001",
+        "control_id": "D3-CIA"
+      },
+      {
+        "technique_id": "T1485.001",
+        "control_id": "D3-DF"
+      }
+    ],
+    "construction_method": "embedding_based_heuristic",
+    "construction_details": {
+      "uses_deterministic_csv": true,
+      "uses_deterministic_as_labels": false,
+      "uses_reference_pairs": false,
+      "uses_ontology_structure": true,
+      "uses_text_embeddings": true,
+      "uses_similarity_scores": true,
+      "description": "Learned mapping is constructed using sentence-transformers to compute semantic similarity between ATT&CK technique descriptions and D3FEND control descriptions. The deterministic CSV is used ONLY to extract unique attack/defense names for text descriptions. The mapping pairs are generated PURELY from embedding similarity scores (top-k most similar controls per technique). It does NOT use deterministic pairs or reference pairs as labels or supervision, ensuring no data leakage for DAC evaluation."
+    }
+  },
+  "reference_pairs_info": {
+    "path": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\d3fend_reference_pairs.csv",
+    "sha256": "46a0ac102ab150b8d2909b97190232f97b9e9583ae1d83b2a704ebf6408a9ee4",
+    "n_pairs": 15,
+    "n_unique_attack_techniques": 5,
+    "n_unique_defense_controls": 11,
+    "sample_pairs": [
+      {
+        "technique_id": "T1486",
+        "control_id": "D3-BDR"
+      },
+      {
+        "technique_id": "T1486",
+        "control_id": "D3-BAC"
+      },
+      {
+        "technique_id": "T1486",
+        "control_id": "D3-SAW"
+      },
+      {
+        "technique_id": "T1490",
+        "control_id": "D3-BDR"
+      },
+      {
+        "technique_id": "T1490",
+        "control_id": "D3-BAC"
+      },
+      {
+        "technique_id": "T1490",
+        "control_id": "D3-SAW"
+      },
+      {
+        "technique_id": "T1059",
+        "control_id": "D3-SAW"
+      },
+      {
+        "technique_id": "T1059",
+        "control_id": "D3-CR"
+      },
+      {
+        "technique_id": "T1059",
+        "control_id": "D3-AL"
+      },
+      {
+        "technique_id": "T1021",
+        "control_id": "D3-NFP"
+      }
+    ]
+  }
+}

@@ -1,0 +1,44 @@
+# H2 Calibration and Thresholding Experiment Configuration
+#
+# This file defines parameters for the H2 experiment:
+# "Calibration and cost-aware thresholding produce more decision-aligned
+#  susceptibility scores than uncalibrated F1-optimized thresholds."
+#
+# All paths are relative to the repository root.
+
+experiment:
+  name: "H2_Calibration_Thresholds"
+  output_dir: "results/H2_calibration_thresholds"
+  
+calibration:
+  method: "auto"  # Options: "platt", "isotonic", "auto"
+  # "auto" selects the best method based on validation performance
+  val_split: 0.1  # Fraction of training data to use for validation (10%)
+  
+threshold_optimization:
+  cost_fn: 10.0  # Cost of false negative (banking: high cost for missing ransomware)
+  cost_fp: 1.0   # Cost of false positive (banking: lower cost for false alarms)
+  # Expected loss = (cost_fn * FN + cost_fp * FP) / total_samples
+  
+data:
+  ember_dir: "data/ember2024"  # Path to EMBER-2024 dataset
+  # Expected files:
+  #   - train_features.jsonl
+  #   - train_labels.jsonl
+  #   - test_features.jsonl
+  #   - test_labels.jsonl
+
+model:
+  # H2 requires the model trained in H1
+  model_path: "models/h1_lgbm.joblib"  # Path to H1 trained model
+  fallback_path: "models/bagged_lightgbm.joblib"  # Fallback if h1_lgbm.joblib not found
+
+reproducibility:
+  random_seed: 42  # Random seed for reproducibility (should match H1 if applicable)
+  save_calibrator: false  # Save calibration model (optional)
+
+metrics:
+  compute_brier: true  # Compute Brier score before/after calibration
+  compute_ece: true  # Compute Expected Calibration Error before/after
+  compare_thresholds: true  # Compare F1-optimized vs cost-optimal thresholds
+  compute_expected_loss: true  # Compute expected loss at each threshold
