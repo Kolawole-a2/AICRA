@@ -131,17 +131,49 @@ dmypy.json
 # AICRA specific
 data/ember/
 data/ember2024/
+data/ember2024_real/
+data/
+datasets/
 artifacts/
 models/
 logs/
+outputs/
+checkpoints/
+mlruns/
 *.log
 pip-audit-report.json
+
+# Large Binary/Data Files (DO NOT TRACK)
+*.jsonl
+*.npz
+*.npy
+*.pkl
+*.pickle
+*.joblib
+*.pt
+*.pth
+*.h5
+*.hdf5
+*.onnx
+*.parquet
+*.feather
+*.arrow
+*.zip
+*.7z
+*.tar.gz
+*.csv.gz
+*.json.gz
+*.jsonl.gz
 
 # Results folder - keep structure but exclude large files
 results/*/bagged_lightgbm.joblib
 results/*/calibrator.joblib
 results/*/*.png
 results/*/impact.csv
+results/*/risk_scores.csv
+results/*/*.parquet
+results/*/*.pkl
+results/*/*.npz
 # Keep versions_log.csv and folder structure
 !results/.gitkeep
 !results/versions_log.csv
