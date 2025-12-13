@@ -206,13 +206,28 @@ pre-commit install
 
 ### Data Requirements
 
-For H1 and H2 experiments, you need EMBER-2024 data files in `data/ember2024/`:
-- `train_features.jsonl`
-- `train_labels.jsonl`
-- `test_features.jsonl`
-- `test_labels.jsonl`
+**Important**: Large datasets are NOT stored in Git. See [Data Availability](#data-availability) section below.
+
+For H1 and H2 experiments, you need EMBER-2024 data files. The dataset should be placed in `data/ember2024_real/` (or set `AICRA_EMBER2024_DIR` environment variable).
 
 For H3 experiments, you need risk score CSV files as specified in `config/h3_splits.yaml`.
+
+**To set up the EMBER 2024 dataset:**
+```bash
+# Check if dataset is available
+bash scripts/fetch_data.sh  # Linux/Mac
+.\scripts\fetch_data.ps1    # Windows
+
+# If missing, follow the instructions provided by the script
+# See docs/DATA.md for detailed information
+```
+
+---
+
+## Data Availability
+The full EMBER-2024 JSONL dataset is not stored in this repository. Place it locally at `data/ember2024_real/` or set `AICRA_EMBER2024_DIR`. See `docs/DATA.md`. Use:
+- Windows: `scripts/fetch_data.ps1`
+- Bash: `scripts/fetch_data.sh`
 
 ---
 
@@ -734,6 +749,7 @@ python -m aicra.experiments.h3_evaluation \
 ---
 
 ## Reproducibility
+Experiment outputs (e.g., artifacts/results/models) are intentionally ignored by Git. Re-run experiments to regenerate outputs.
 
 ### Configuration Management
 

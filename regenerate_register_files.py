@@ -70,20 +70,13 @@ except Exception as e:
 
 # Step 3: Check data directory
 print("\n[3] Checking EMBER data directory...")
-# Try ember2024_real first (full dataset), then fallback to other paths
-data_dir = None
-alt_paths = [Path("data/ember2024_real"), Path("data/ember2024"), settings.data_dir or Path("data/ember2024")]
-for alt_path in alt_paths:
-    if alt_path and alt_path.exists():
-        jsonl_files = list(alt_path.glob("*.jsonl"))
-        if jsonl_files:
-            data_dir = alt_path
-            print(f"  Found {len(jsonl_files)} JSONL files in {data_dir}")
-            break
-
-if data_dir is None:
-    print(f"  ERROR: No EMBER data directory with JSONL files found.")
-    print(f"  Tried: data/ember2024_real, data/ember2024, {settings.data_dir}")
+try:
+    from aicra.utils.data_paths import get_ember2024_dir
+    data_dir = get_ember2024_dir()
+    jsonl_files = list(data_dir.glob("*_train.jsonl"))
+    print(f"  Found {len(jsonl_files)} training JSONL files in {data_dir}")
+except FileNotFoundError as e:
+    print(f"  ERROR: {e}")
     sys.exit(1)
 
 # Step 4: Load data loader
