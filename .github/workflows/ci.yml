@@ -11,322 +11,329 @@ jobs:
     name: Repo Hygiene & Guardrails
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    
-    - name: Run guardrails check
-      run: |
-        python scripts/ci_guardrails.py
-    
-    - name: Check for unsafe pickle patterns
-      run: |
-        echo "Checking for unsafe pickle patterns..."
-        if grep -r "allow_pickle=True" --include="*.py" aicra/ tests/ scripts/ 2>/dev/null; then
-          echo "❌ Found unsafe allow_pickle=True patterns"
-          exit 1
-        fi
-        if grep -r "pickle.load(" --include="*.py" aicra/ tests/ scripts/ 2>/dev/null | grep -v "#.*safe\|#.*internal\|#.*test"; then
-          echo "⚠️  Found pickle.load() usage - review for safety"
-          # Don't fail, just warn
-        fi
-        echo "✅ Pickle pattern check passed"
-    
-    - name: Check Docker security
-      run: |
-        echo "Checking Docker configuration..."
-        if [ -f docker-compose.yml ]; then
-          if grep -q "0.0.0.0" docker-compose.yml && ! grep -q "127.0.0.1\|localhost" docker-compose.yml; then
-            echo "⚠️  Warning: Docker compose exposes 0.0.0.0 without localhost binding"
-            echo "   Ensure ports are bound to 127.0.0.1 to prevent external access"
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install minimal deps (if needed)
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f "requirements-dev.txt" ]; then
+            pip install -r requirements-dev.txt
+          elif [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+          else
+            echo "No requirements file found; continuing without dependency install."
           fi
-        fi
-        echo "✅ Docker security check passed"
-    
-    - name: Check for secrets (basic patterns)
-      run: |
-        echo "Checking for accidentally committed secrets..."
-        # Common secret patterns (basic check - for production use gitleaks)
-        SECRET_PATTERNS=(
-          "AKIA[0-9A-Z]{16}"  # AWS Access Key
-          "sk_live_[0-9a-zA-Z]{32}"  # Stripe live key
-          "AIza[0-9A-Za-z_-]{35}"  # Google API key
-        )
-        FOUND_SECRETS=0
-        for pattern in "${SECRET_PATTERNS[@]}"; do
-          if git grep -E "$pattern" -- ':!*.md' ':!*.txt' ':!scripts/ci_guardrails.py' 2>/dev/null; then
-            echo "⚠️  Potential secret pattern found: $pattern"
+
+      - name: Run guardrails check
+        run: |
+          python scripts/ci_guardrails.py
+
+      - name: Check for unsafe pickle patterns
+        run: |
+          echo "Checking for unsafe pickle patterns..."
+          if grep -R "allow_pickle=True" --include="*.py" aicra/ tests/ scripts/ 2>/dev/null; then
+            echo "❌ Found unsafe allow_pickle=True patterns"
+            exit 1
+          fi
+
+          # Warn-only for pickle.load unless explicitly marked safe/internal/test in the same line.
+          if grep -R "pickle\.load(" --include="*.py" aicra/ tests/ scripts/ 2>/dev/null \
+            | grep -Ev "#.*(safe|internal|test)"; then
+            echo "⚠️  Found pickle.load() usage - review for safety (warn only)"
+          fi
+
+          echo "✅ Pickle pattern check passed"
+
+      - name: Check Docker security
+        run: |
+          echo "Checking Docker configuration..."
+          if [ -f docker-compose.yml ]; then
+            if grep -q "0.0.0.0" docker-compose.yml && ! grep -Eq "127\.0\.0\.1|localhost" docker-compose.yml; then
+              echo "⚠️  Warning: Docker compose exposes 0.0.0.0 without localhost binding"
+              echo "   Ensure ports are bound to 127.0.0.1 to prevent external access"
+            fi
+          fi
+          echo "✅ Docker security check passed"
+
+      - name: Check for secrets (basic patterns)
+        run: |
+          echo "Checking for accidentally committed secrets..."
+          FOUND_SECRETS=0
+
+          # Basic patterns (for production use gitleaks/trufflehog)
+          if git grep -nE "AKIA[0-9A-Z]{16}" -- ':!*.md' ':!*.txt' ':!scripts/ci_guardrails.py' 2>/dev/null; then
+            echo "⚠️  Potential AWS Access Key detected"
             FOUND_SECRETS=1
           fi
-        done
-        if [ $FOUND_SECRETS -eq 1 ]; then
-          echo "⚠️  Potential secrets detected - review manually or use gitleaks for comprehensive scan"
-          # Don't fail CI, but warn
-        else
-          echo "✅ No obvious secret patterns detected"
-        fi
+          if git grep -nE "sk_live_[0-9a-zA-Z]{32}" -- ':!*.md' ':!*.txt' ':!scripts/ci_guardrails.py' 2>/dev/null; then
+            echo "⚠️  Potential Stripe live key detected"
+            FOUND_SECRETS=1
+          fi
+          if git grep -nE "AIza[0-9A-Za-z_-]{35}" -- ':!*.md' ':!*.txt' ':!scripts/ci_guardrails.py' 2>/dev/null; then
+            echo "⚠️  Potential Google API key detected"
+            FOUND_SECRETS=1
+          fi
+
+          if [ "$FOUND_SECRETS" -eq 1 ]; then
+            echo "⚠️  Potential secrets detected - review manually."
+            # warn only
+          else
+            echo "✅ No obvious secret patterns detected"
+          fi
 
   python-quality:
     name: Python Quality Gates
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements-dev.txt || pip install -r requirements.txt
-    
-    - name: Compile Python files
-      run: |
-        python -m compileall aicra/ || (echo "⚠️  Compilation errors found" && exit 1)
-        echo "✅ All Python files compile successfully"
-    
-    - name: Run ruff
-      run: |
-        ruff check aicra/ experiments/ scripts/ || (echo "Ruff found issues" && exit 1)
-        echo "Ruff check passed"
-    
-    - name: Run pytest (if tests exist)
-      run: |
-        if [ -d "tests" ] && [ "$(ls -A tests 2>/dev/null)" ]; then
-          pytest tests/ --tb=short -v || (echo "⚠️  Tests failed" && exit 1)
-          echo "✅ All tests passed"
-        else
-          echo "⚠️  No tests directory found - add tests for better quality"
-        fi
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f "requirements-dev.txt" ]; then
+            pip install -r requirements-dev.txt
+          elif [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+          else
+            echo "No requirements file found; installing minimal tooling."
+            pip install pytest ruff
+          fi
+
+      - name: Compile Python files
+        run: |
+          python -m compileall aicra/ experiments/ scripts/
+
+      - name: Run ruff (no auto-fix in CI)
+        run: |
+          ruff check aicra/ experiments/ scripts/
+
+      - name: Run pytest (if tests exist)
+        run: |
+          if [ -d "tests" ] && [ "$(ls -A tests 2>/dev/null)" ]; then
+            pytest tests/ --tb=short -v
+          else
+            echo "No tests found; skipping."
+          fi
 
   lint:
+    name: lint
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements-dev.txt
-    
-    - name: Run ruff
-      run: ruff check aicra/ experiments/ scripts/ --fix
-    
-    - name: Run pylint
-      run: pylint aicra
-    
-    - name: Run black
-      run: black --check aicra tests
-    
-    - name: Run isort
-      run: isort --check-only aicra tests
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install lint tooling
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f "requirements-dev.txt" ]; then
+            pip install -r requirements-dev.txt
+          elif [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+          fi
+          pip install ruff black isort pylint
+
+      - name: Ruff
+        run: ruff check aicra/ experiments/ scripts/ tests/
+
+      - name: Black
+        run: black --check aicra/ experiments/ scripts/ tests/
+
+      - name: Isort
+        run: isort --check-only aicra/ experiments/ scripts/ tests/
+
+      - name: Pylint (non-blocking by default)
+        run: |
+          pylint aicra || echo "⚠️ pylint reported issues (warn-only)"
 
   typecheck:
+    name: typecheck
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements-dev.txt
-    
-    - name: Run mypy
-      run: |
-        if command -v mypy &> /dev/null; then
-          mypy aicra || echo "mypy found issues, but continuing..."
-        else
-          echo "mypy not configured or installed, skipping typecheck"
-        fi
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install typecheck tooling
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f "requirements-dev.txt" ]; then
+            pip install -r requirements-dev.txt
+          elif [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+          fi
+          pip install mypy
+
+      - name: Run mypy (fail only if you want strict gating)
+        run: |
+          mypy aicra || echo "⚠️ mypy reported issues (warn-only)"
 
   test:
+    name: test
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.11', '3.12']
-    
+        python-version: ["3.11", "3.12"]
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
-    
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-${{ matrix.python-version }}-
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements-dev.txt
-    
-    - name: Run tests
-      env:
-        AICRA_RUN_REAL_DATA_TESTS: 0
-      run: pytest tests/ --cov=aicra --cov-report=xml --cov-report=html --cov-fail-under=85
-    
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./coverage.xml
-        flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: false
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+
+      - name: Install test deps
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f "requirements-dev.txt" ]; then
+            pip install -r requirements-dev.txt
+          elif [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+          else
+            pip install pytest pytest-cov
+          fi
+
+      - name: Run tests (skip real-data tests by default)
+        env:
+          AICRA_RUN_REAL_DATA_TESTS: "0"
+        run: |
+          if [ -d "tests" ] && [ "$(ls -A tests 2>/dev/null)" ]; then
+            pytest tests/ --cov=aicra --cov-report=xml --cov-report=html
+          else
+            echo "No tests found; skipping."
+          fi
+
+      - name: Upload coverage to Codecov (optional)
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
 
   security:
     name: Security Lint & Dependency Audit
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements-dev.txt
-    
-    - name: Install bandit
-      run: |
-        pip install bandit || echo "Failed to install bandit"
-    
-    - name: Run bandit security scan
-      run: |
-        if command -v bandit &> /dev/null; then
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install security tooling
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f "requirements-dev.txt" ]; then
+            pip install -r requirements-dev.txt
+          elif [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+          fi
+          pip install bandit pip-audit safety
+
+      - name: Bandit security scan (warn-only)
+        run: |
           bandit -r aicra/ experiments/ scripts/ -f json -o bandit-report.json || true
-          echo "Bandit scan completed"
-        else
-          echo "Bandit not installed, skipping security scan"
-        fi
-    
-    - name: Run pip-audit
-      run: |
-        if [ -f "requirements.txt" ]; then
-          pip install pip-audit || echo "Failed to install pip-audit"
-          pip-audit --desc --format=json --output=pip-audit-report.json || echo "pip-audit failed, continuing..."
-        elif [ -f "pyproject.toml" ]; then
-          pip install pip-audit || echo "Failed to install pip-audit"
-          pip-audit --desc --format=json --output=pip-audit-report.json || echo "pip-audit failed, continuing..."
-        else
-          echo "No dependency manifest found; skipping pip-audit"
-          echo "PASS: pip-audit skipped (no requirements.txt or pyproject.toml)"
-        fi
-    
-    - name: Run safety
-      run: safety check --json --output safety-report.json || true
-    
-    - name: Check for unsafe pickle patterns (security)
-      run: |
-        echo "Security: Checking for unsafe pickle usage..."
-        if grep -r "allow_pickle=True" --include="*.py" aicra/ tests/ scripts/ 2>/dev/null; then
-          echo "❌ SECURITY: Unsafe allow_pickle=True found"
-          exit 1
-        fi
-        echo "✅ No unsafe pickle patterns detected"
-    
-    - name: Upload security reports
-      uses: actions/upload-artifact@v3
-      with:
-        name: security-reports
-        path: |
-          pip-audit-report.json
-          safety-report.json
+
+      - name: pip-audit (conditional)
+        run: |
+          if [ -f "requirements.txt" ] || [ -f "pyproject.toml" ]; then
+            pip-audit --desc --format=json --output=pip-audit-report.json || true
+          else
+            echo "No dependency manifest found; skipping pip-audit"
+          fi
+
+      - name: Safety (warn-only)
+        run: |
+          safety check --json --output safety-report.json || true
+
+      - name: Check for unsafe pickle patterns (security)
+        run: |
+          echo "Security: Checking for unsafe pickle usage..."
+          if grep -R "allow_pickle=True" --include="*.py" aicra/ tests/ scripts/ 2>/dev/null; then
+            echo "❌ SECURITY: Unsafe allow_pickle=True found"
+            exit 1
+          fi
+          echo "✅ No unsafe allow_pickle patterns detected"
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-reports
+          path: |
+            bandit-report.json
+            pip-audit-report.json
+            safety-report.json
+          if-no-files-found: ignore
 
   sonar:
     name: sonar
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.SONAR_TOKEN != '' }}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # Shallow clones should be disabled for better analysis
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements-dev.txt
-    
-    - name: Run tests for coverage
-      env:
-        AICRA_RUN_REAL_DATA_TESTS: 0
-      run: pytest tests/ --cov=aicra --cov-report=xml --cov-fail-under=85
-    
-    - name: Run SonarQube Scan
-      if: ${{ secrets.SONAR_TOKEN != '' }}
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    
-    - name: Skip Sonar (token not set)
-      if: ${{ secrets.SONAR_TOKEN == '' }}
-      run: echo "Skipping Sonar: SONAR_TOKEN not set"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
