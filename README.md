@@ -1,6 +1,6 @@
 # AICRA – Artificial Intelligence–Powered Cyber Risk Advisor for Endpoint Security in U.S. Banking Organizations
 
-[![CI](https://github.com/aicra/aicra/workflows/CI/badge.svg)](https://github.com/aicra/aicra/actions)
+[![CI](https://github.com/Kolawole-a2/AICRA/actions/workflows/ci.yml/badge.svg)](https://github.com/Kolawole-a2/AICRA/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/aicra/aicra/branch/main/graph/badge.svg)](https://codecov.io/gh/aicra/aicra)
 [![PyPI version](https://badge.fury.io/py/aicra.svg)](https://badge.fury.io/py/aicra)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
