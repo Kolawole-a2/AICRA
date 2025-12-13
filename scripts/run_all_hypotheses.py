@@ -119,7 +119,7 @@ def run_h3_experiment(repo_root: Path, output_dir: Path | None = None) -> Path:
         yaml_path = repo_root / "data" / "lookups" / "attack_to_d3fend.yaml"
         create_reference_pairs_csv(yaml_path, ref_pairs)
 
-    results = run_h3_evaluation(
+    run_h3_evaluation(
         splits_config_path=splits_config,
         det_mapping_path=det_mapping,
         learned_mapping_path=learned_mapping,
