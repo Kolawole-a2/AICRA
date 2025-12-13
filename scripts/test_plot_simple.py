@@ -70,7 +70,7 @@ for bar, val, split in zip(bars_det, det_dac, splits, strict=False):
         fontsize=12,
         fontweight="bold",
         color="darkgreen",
-        bbox=dict(boxstyle="round", facecolor="white", alpha=0.8),
+        bbox={"boxstyle": "round", "facecolor": "white", "alpha": 0.8},
     )
 
 for bar, val, split in zip(bars_learned, learned_dac, splits, strict=False):
@@ -84,7 +84,7 @@ for bar, val, split in zip(bars_learned, learned_dac, splits, strict=False):
         fontsize=12,
         fontweight="bold",
         color="darkblue",
-        bbox=dict(boxstyle="round", facecolor="white", alpha=0.8),
+        bbox={"boxstyle": "round", "facecolor": "white", "alpha": 0.8},
     )
 
 ax.set_xlabel("Split", fontsize=14, fontweight="bold")
@@ -108,7 +108,7 @@ ax.text(
     transform=ax.transAxes,
     fontsize=10,
     verticalalignment="top",
-    bbox=dict(boxstyle="round", facecolor="yellow", alpha=0.7),
+    bbox={"boxstyle": "round", "facecolor": "yellow", "alpha": 0.7},
 )
 
 plt.tight_layout()
