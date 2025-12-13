@@ -238,7 +238,7 @@ class MitreParser:
 
         # Map techniques to countermeasures based on D3FEND data
         new_mappings_added = 0
-        for technique_id, technique_info in attack_data.get("techniques", {}).items():
+        for technique_id, _technique_info in attack_data.get("techniques", {}).items():
             if technique_id not in mappings:
                 # Find relevant D3FEND countermeasures
                 countermeasures = []

@@ -101,10 +101,8 @@ def compute_expected_loss(
     """
     y_pred = (y_prob >= threshold).astype(int)
 
-    tn = np.sum((y_pred == 0) & (y_true == 0))
     fp = np.sum((y_pred == 1) & (y_true == 0))
     fn = np.sum((y_pred == 0) & (y_true == 1))
-    tp = np.sum((y_pred == 1) & (y_true == 1))
 
     total_loss = (cost_fn * fn) + (cost_fp * fp)
     total_samples = len(y_true)

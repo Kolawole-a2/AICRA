@@ -263,14 +263,12 @@ def main():
     )
 
     # Run temporal evaluation
-    temporal_results = evaluate_temporal_holdout(
-        args.model, train_time_end, test_time_start, args.output
-    )
+    evaluate_temporal_holdout(args.model, train_time_end, test_time_start, args.output)
 
     # For OOF+temporal, use provided train families or extract from H1 results
     if args.train_families:
         train_families = set(args.train_families)
-        oof_temporal_results = evaluate_out_of_family_temporal(
+        evaluate_out_of_family_temporal(
             args.model, train_families, train_time_end, test_time_start, args.output
         )
     else:

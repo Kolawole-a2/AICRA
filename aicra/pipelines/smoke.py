@@ -372,7 +372,6 @@ class SmokeTestPipeline:
             features = df.drop(columns=["label", "family", "file_path"])
             labels = df["label"].values
             families = df["family"].values
-            file_paths = df["file_path"].values
 
             test_data = Dataset(
                 features=features,
@@ -556,7 +555,7 @@ class SmokeTestPipeline:
 
         # Apply calibration
         logits_val = np.log(y_prob_val_pos / (1 - y_prob_val_pos + 1e-15))
-        y_prob_calibrated = lr.predict_proba(logits_val.reshape(-1, 1))[:, 1]
+        lr.predict_proba(logits_val.reshape(-1, 1))[:, 1]
 
         # Create simple calibrator
         calibrator = SimpleCalibrator(lr)
@@ -606,10 +605,8 @@ class SmokeTestPipeline:
             y_pred = (y_prob_calibrated >= t).astype(int)
 
             # Calculate confusion matrix manually
-            tn = np.sum((y_pred == 0) & (test_data.labels.values == 0))
             fp = np.sum((y_pred == 1) & (test_data.labels.values == 0))
             fn = np.sum((y_pred == 0) & (test_data.labels.values == 1))
-            tp = np.sum((y_pred == 1) & (test_data.labels.values == 1))
 
             current_cost = (cost_fn * fn) + (cost_fp * fp)
 
@@ -655,7 +652,7 @@ class SmokeTestPipeline:
 
         # Generate calibrated predictions
         y_prob = model.predict_proba(test_data.features)
-        y_prob_calibrated = calibrator.transform(y_prob)
+        calibrator.transform(y_prob)
 
         # Simple policy creation
         policy_data = {

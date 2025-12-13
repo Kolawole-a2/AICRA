@@ -248,7 +248,7 @@ def optimize_threshold(
     console.print("Optimizing prediction threshold...")
 
     settings = Settings()
-    optimizer = CostOptimizer(settings)
+    CostOptimizer(settings)
 
     try:
         # Load model and data
@@ -277,7 +277,7 @@ def generate_model_card(
     console.print("Generating model card...")
 
     settings = Settings()
-    generator = ModelCardGenerator(settings)
+    ModelCardGenerator(settings)
 
     try:
         # Generate model card

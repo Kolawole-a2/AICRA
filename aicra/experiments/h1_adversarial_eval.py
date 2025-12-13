@@ -210,7 +210,6 @@ def evaluate_mimicry_attack(
 
     # Compute benign distribution statistics
     benign_mean = X_benign.mean(axis=0)
-    benign_std = X_benign.std(axis=0)
 
     # Baseline predictions (unperturbed ransomware)
     y_prob_baseline = model.predict_proba(pd.DataFrame(X_ransomware))

@@ -46,8 +46,8 @@ class PEFeatureBuilder:
 
         # Return as dictionary with byte_hist_ prefix
         features = {}
-        for i in range(self.byte_histogram_bins):
-            features[f"byte_hist_{i:03d}"] = float(histogram[i])
+        for _i in range(self.byte_histogram_bins):
+            features[f"byte_hist_{_i:03d}"] = float(histogram[_i])
 
         return features
 
@@ -108,8 +108,8 @@ class PEFeatureBuilder:
             section_sizes = []
             section_flags = []
 
-            for i in range(min(num_sections, 16)):  # Limit to 16 sections for safety
-                section_offset = section_header_offset + (i * 40)
+            for _i in range(min(num_sections, 16)):  # Limit to 16 sections for safety
+                section_offset = section_header_offset + (_i * 40)
                 if section_offset + 40 > len(pe_data):
                     break
 
@@ -265,8 +265,8 @@ class PEFeatureBuilder:
             opt_header_offset = coff_header_offset + 20
             section_header_offset = opt_header_offset + 96
 
-            for i in range(min(num_sections, 16)):  # Limit for safety
-                section_offset = section_header_offset + (i * 40)
+            for _i in range(min(num_sections, 16)):  # Limit for safety
+                section_offset = section_header_offset + (_i * 40)
                 if section_offset + 40 > len(pe_data):
                     break
 
@@ -310,8 +310,8 @@ class PEFeatureBuilder:
         }
 
         # Add default byte histogram
-        for i in range(self.byte_histogram_bins):
-            features[f"byte_hist_{i:03d}"] = 0.0
+        for _i in range(self.byte_histogram_bins):
+            features[f"byte_hist_{_i:03d}"] = 0.0
 
         return features
 
@@ -323,7 +323,7 @@ def build_pe_features(
     builder = PEFeatureBuilder()
     feature_rows = []
 
-    for idx, row in dataframe.iterrows():
+    for _idx, row in dataframe.iterrows():
         try:
             with open(row[file_path_column], "rb") as f:
                 pe_data = f.read()
@@ -341,8 +341,8 @@ def build_pe_features(
 
     # Ensure all columns are present and fill missing values
     expected_columns = set()
-    for i in range(256):
-        expected_columns.add(f"byte_hist_{i:03d}")
+    for _i in range(256):
+        expected_columns.add(f"byte_hist_{_i:03d}")
 
     expected_columns.update(
         [

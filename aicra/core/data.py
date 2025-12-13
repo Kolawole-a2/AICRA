@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -100,8 +99,8 @@ def _synthetic_dataset(
 
 def load_ember_2024(
     time_ordered: bool = False,
-    train_time_end: Optional[pd.Timestamp] = None,
-    test_time_start: Optional[pd.Timestamp] = None,
+    train_time_end: pd.Timestamp | None = None,
+    test_time_start: pd.Timestamp | None = None,
 ) -> tuple[Dataset, Dataset]:
     """
     Load EMBER-2024 dataset with optional time-ordered split.

@@ -199,10 +199,8 @@ def run_h1_classification_experiment(
 
     # Handle both 1D (BaggedLightGBM) and 2D (standard sklearn) outputs
     if prob_train.ndim == 1:
-        y_prob_train = prob_train
         y_prob_test = prob_test
     else:
-        y_prob_train = prob_train[:, 1]
         y_prob_test = prob_test[:, 1]
 
     # Compute metrics

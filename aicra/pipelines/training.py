@@ -139,13 +139,12 @@ class TrainingPipeline:
         """Train small FFNN with focal loss."""
         try:
             import torch
-            import torch.nn as nn
             import torch.optim as optim
             from torch.utils.data import DataLoader, TensorDataset
-        except ImportError:
+        except ImportError as err:
             raise ImportError(
                 "PyTorch is required for FFNN training. Install with: pip install torch"
-            )
+            ) from err
 
         # Generate seeds
         np.random.seed(self.settings.random_seed)
@@ -172,7 +171,7 @@ class TrainingPipeline:
 
             # Training loop
             model.train()
-            for epoch in range(50):  # Small number of epochs
+            for _epoch in range(50):  # Small number of epochs
                 for batch_X, batch_y in dataloader:
                     optimizer.zero_grad()
                     outputs = model(batch_X)
@@ -191,10 +190,10 @@ class SmallFFNN:
     def __init__(self, input_dim: int, hidden_dim: int = 128):
         try:
             import torch.nn as nn
-        except ImportError:
+        except ImportError as err:
             raise ImportError(
                 "PyTorch is required for FFNN. Install with: pip install torch"
-            )
+            ) from err
 
         self.network = nn.Sequential(
             nn.Linear(input_dim, hidden_dim),
@@ -216,10 +215,10 @@ class FocalLoss:
     def __init__(self, alpha: float = 0.75, gamma: float = 2.0):
         try:
             import torch.nn as nn
-        except ImportError:
+        except ImportError as err:
             raise ImportError(
                 "PyTorch is required for FocalLoss. Install with: pip install torch"
-            )
+            ) from err
 
         self.alpha = alpha
         self.gamma = gamma

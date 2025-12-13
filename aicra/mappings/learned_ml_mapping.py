@@ -325,23 +325,17 @@ def generate_learned_mapping(
 
     # Split for evaluation (optional, but useful for metrics)
     if test_size > 0:
-        X_train, X_test, y_train, y_test, train_attacks, test_attacks = (
-            train_test_split(
-                X,
-                y,
-                training_attacks["attack_id"].values,
-                test_size=test_size,
-                random_state=RANDOM_SEED,
-                shuffle=True,
-            )
+        X_train, X_test, y_train, y_test, _, _ = train_test_split(
+            X,
+            y,
+            training_attacks["attack_id"].values,
+            test_size=test_size,
+            random_state=RANDOM_SEED,
+            shuffle=True,
         )
     else:
         X_train, X_test = X, X
         y_train, y_test = y, y
-        train_attacks, test_attacks = (
-            training_attacks["attack_id"].values,
-            training_attacks["attack_id"].values,
-        )
 
     # Train classifier
     classifier, train_metrics = train_classifier(X_train, y_train, mlb)
@@ -378,19 +372,12 @@ def generate_learned_mapping(
         )
     )
 
-    for i, attack_id in enumerate(all_attacks["attack_id"]):
+    for _i, attack_id in enumerate(all_attacks["attack_id"]):
         attack_name = all_attacks[all_attacks["attack_id"] == attack_id][
             "attack_name"
         ].iloc[0]
-        defense_ids = predicted_defenses[i]
-        confidences = confidence_scores[i]
-
-        # Get defense indices for predicted defenses
-        defense_indices = [
-            mlb.classes_.tolist().index(did)
-            for did in defense_ids
-            if did in mlb.classes_
-        ]
+        defense_ids = predicted_defenses[_i]
+        confidences = confidence_scores[_i]
 
         for defense_id in defense_ids:
             if defense_id in defense_id_to_name:
@@ -541,7 +528,7 @@ def prepare_text_features(
 
     # Prepare text features
     texts = []
-    for idx, row in df_attacks.iterrows():
+    for _idx, row in df_attacks.iterrows():
         text_parts = [str(row["attack_name"]) if pd.notna(row["attack_name"]) else ""]
 
         # Check for description columns (attack_desc, attack_description, description)
@@ -709,7 +696,7 @@ def _prepare_attack_text(df_attacks: pd.DataFrame) -> list[str]:
         List of text strings (one per attack)
     """
     texts = []
-    for idx, row in df_attacks.iterrows():
+    for _idx, row in df_attacks.iterrows():
         text_parts = [str(row["attack_name"]) if pd.notna(row["attack_name"]) else ""]
 
         # Check for description columns (attack_desc, attack_description, description)
@@ -778,12 +765,12 @@ def build_learned_mapping_table(
     mapping_rows = []
     defense_classes = mlb.classes_
 
-    for i, (_, row) in enumerate(df_attacks.iterrows()):
+    for _i, (_, row) in enumerate(df_attacks.iterrows()):
         attack_id = row["attack_id"]
         attack_name = row["attack_name"] if pd.notna(row["attack_name"]) else ""
 
         # Get scores for this attack across all defense classes
-        attack_scores = scores[i]
+        attack_scores = scores[_i]
 
         # Rank defenses by score descending
         ranked_indices = np.argsort(attack_scores)[::-1]

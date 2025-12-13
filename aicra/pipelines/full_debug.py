@@ -259,7 +259,7 @@ class FullDebugPipeline:
 
         # Clean features (remove constant/near-constant)
         train_clean = self._clean_features(train_data)
-        test_clean = self._clean_features(test_data)
+        self._clean_features(test_data)
 
         # Determine optimal parameters based on feature count
         n_features = len(train_clean.columns)

@@ -146,14 +146,14 @@ def compute_dac(
     logger.info(f"Computing DAC for {mapping_type} mapping")
 
     # Convert to sets of tuples for efficient comparison
-    mapping_pairs = set(
+    mapping_pairs = {
         tuple(row)
         for row in mapping_df[["technique_id", "control_id"]].dropna().values.tolist()
-    )
-    reference_pairs = set(
+    }
+    reference_pairs = {
         tuple(row)
         for row in reference_df[["technique_id", "control_id"]].dropna().values.tolist()
-    )
+    }
 
     # Count correctly aligned pairs (intersection)
     correct_pairs = mapping_pairs & reference_pairs

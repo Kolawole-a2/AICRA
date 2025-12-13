@@ -66,7 +66,6 @@ from ..core.benchmarks import (
 )
 from ..metrics.dac import (
     compute_coverage,
-    compute_dac,
 )
 from ..utils.technique_validator import (
     extract_valid_techniques_from_mapping,
@@ -284,16 +283,16 @@ def _compute_dac_local(
         DAC value in [0, 1], where 1.0 = perfect agreement with deterministic
     """
     # Convert to sets of tuples
-    mapping_pairs = set(
+    mapping_pairs = {
         tuple(row)
         for row in mapping_df[["technique_id", "control_id"]].dropna().values.tolist()
-    )
-    det_pairs = set(
+    }
+    det_pairs = {
         tuple(row)
         for row in deterministic_df[["technique_id", "control_id"]]
         .dropna()
         .values.tolist()
-    )
+    }
 
     # For deterministic mapping: DAC = 100% by definition
     # Check if this is the deterministic mapping by comparing object identity or content
@@ -340,14 +339,14 @@ def compute_dac_external(
         DAC_external value in [0, 1], where 1.0 = all reference pairs are in mapping
     """
     # Convert to sets of tuples
-    mapping_pairs = set(
+    mapping_pairs = {
         tuple(row)
         for row in mapping_df[["technique_id", "control_id"]].dropna().values.tolist()
-    )
-    ref_pairs = set(
+    }
+    ref_pairs = {
         tuple(row)
         for row in ref_pairs_df[["technique_id", "control_id"]].dropna().values.tolist()
-    )
+    }
 
     if len(ref_pairs) == 0:
         logger.warning("Reference pairs are empty, DAC_external undefined")
@@ -404,22 +403,24 @@ def compute_mapping_metrics(
         is_deterministic = mapping_df is deterministic_df
         if not is_deterministic:
             # Also check by content: if all pairs match, it's deterministic
-            mapping_pairs = set(
+            mapping_pairs = {
                 tuple(row)
                 for row in mapping_df[["technique_id", "control_id"]]
                 .dropna()
                 .values.tolist()
-            )
-            det_pairs = set(
+            }
+            det_pairs = {
                 tuple(row)
                 for row in deterministic_df[["technique_id", "control_id"]]
                 .dropna()
                 .values.tolist()
-            )
+            }
             is_deterministic = mapping_pairs == det_pairs
 
         mapping_type = "deterministic" if is_deterministic else "learned"
-        dac = _compute_dac_local(mapping_df, deterministic_df, mapping_type=mapping_type)
+        dac = _compute_dac_local(
+            mapping_df, deterministic_df, mapping_type=mapping_type
+        )
 
     # Correctness: % of pairs flagged as validated (if validated column exists)
     correctness = None
@@ -464,12 +465,12 @@ def compute_actionable_metrics(
         deterministic_mapping: Deterministic mapping DataFrame (ransomware-focused ground truth)
     """
     # Build deterministic mapping set (ransomware-focused ground truth) as strings
-    det_pairs_set = set(
+    det_pairs_set = {
         (str(row["technique_id"]), str(row["control_id"]))
         for _, row in deterministic_mapping[["technique_id", "control_id"]]
         .dropna()
         .iterrows()
-    )
+    }
 
     # Build mapping: technique_id -> set of control_ids (as strings)
     mapping_dict = {}
@@ -481,10 +482,10 @@ def compute_actionable_metrics(
         mapping_dict[tech].add(ctrl)
 
     # Check if this IS the deterministic mapping (all pairs match)
-    mapping_pairs_set = set(
+    mapping_pairs_set = {
         (str(row["technique_id"]), str(row["control_id"]))
         for _, row in mapping_df[["technique_id", "control_id"]].dropna().iterrows()
-    )
+    }
     is_deterministic = mapping_pairs_set == det_pairs_set
 
     # For each positive prediction, check if mapping recommends ransomware-relevant controls
@@ -1707,7 +1708,6 @@ def create_plots(all_results: list[dict], aggregated: dict, output_dir: Path) ->
         aggregated["learned"]["variance_reduction"]["std"],
     ]
 
-    x_pos = np.arange(len(metrics))
     width = 0.35
 
     for ax, metric, det_mean, det_std, learned_mean, learned_std in zip(
@@ -2724,20 +2724,20 @@ def run_h3_evaluation(
     logger.info("=" * 80)
 
     # Convert to sets of pairs for comparison
-    det_pairs = set(
+    det_pairs = {
         tuple(row)
         for row in det_mapping[["technique_id", "control_id"]].dropna().values.tolist()
-    )
-    learned_pairs = set(
+    }
+    learned_pairs = {
         tuple(row)
         for row in learned_mapping[["technique_id", "control_id"]]
         .dropna()
         .values.tolist()
-    )
-    ref_pairs_set = set(
+    }
+    ref_pairs_set = {
         tuple(row)
         for row in ref_pairs[["technique_id", "control_id"]].dropna().values.tolist()
-    )
+    }
 
     intersection = det_pairs & learned_pairs
     only_in_det = det_pairs - learned_pairs
@@ -3692,7 +3692,7 @@ def run_h3_evaluation(
                     drop_invalid=True,
                 )
                 # Apply deterministic mapping adjustment for diagnostic plots
-                det_consistency = compute_score_consistency(risk_df, det_mapping)
+                compute_score_consistency(risk_df, det_mapping)
                 create_diagnostic_plots(
                     risk_df, output_dir, split_name=split_name, mapping_df=det_mapping
                 )
@@ -3713,7 +3713,7 @@ def run_h3_evaluation(
                     valid_techniques=all_valid_techniques,
                     drop_invalid=True,
                 )
-                det_consistency = compute_score_consistency(risk_df, det_mapping)
+                compute_score_consistency(risk_df, det_mapping)
                 create_diagnostic_plots(
                     risk_df, output_dir, split_name="combined", mapping_df=det_mapping
                 )
