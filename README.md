@@ -1114,6 +1114,13 @@ aicra/
 
 ## Additional Documentation
 
+### Research Artifacts for Review
+
+- **Results Summary**: `docs/RESULTS_SUMMARY.md` - Research-ready results tables and interpretation for H1, H2, H3
+- **Threats to Validity**: `docs/THREATS_TO_VALIDITY.md` - Internal, external, construct, and temporal validity threats with mitigations
+- **Reviewer Guide**: `docs/REVIEWER_GUIDE.md` - Navigation guide, reproduction instructions, and common reviewer questions
+- **Final Audit Checklist**: `docs/FINAL_AUDIT_CHECKLIST.md` - Comprehensive checklist for submission review and examiner audit
+
 ### Experimental Design & Novelty
 
 - **Threshold/Calibration Novelty**: `docs/novelty_threshold_calibration.md` - Explains how AICRA's threshold optimization goes beyond standard cost-optimization
