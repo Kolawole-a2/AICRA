@@ -390,7 +390,9 @@ All baseline values are derived from verifiable academic sources and standard ma
 | **H2** | Combined | 100% | Expected Loss reduction | **-65.4%** |
 | **H3** | Faria et al. (2013) | 35% | Coverage improvement | **+48.1%** |
 | **H3** | Euzenat & Shvaiko (2013) | 30% | Consistency improvement | **+60.0%** |
-| **H3** | Combined | 100% | Variance reduction | **-47%** |
+| **H3** | Combined | 100% | Variance reduction | **0.0%** (see note) |
+
+**Note on H3 Variance Reduction:** Variance reduction is 0.0% because all ATT&CK techniques in the evaluation splits have mapped D3FEND controls in both deterministic and learned mappings, so no score adjustments occur. See `docs/H3_RECONCILIATION_REPORT.md` for detailed explanation.
 
 **See `SOURCE_CONTRIBUTION_AND_AICRA_IMPROVEMENTS.md` for complete breakdown with all sources and detailed metrics.**
 
@@ -530,11 +532,11 @@ After running H2, check `results/H2_calibration_thresholds/H2_summary.md` for:
 - MITRE ATT&CK. **Type:** Framework/Knowledge Base (no DOI available). https://attack.mitre.org/ (Attack technique ontology)
 
 **AICRA Improvements:**
-- **Deterministic mapping increases ATT&CK–D3FEND mapping coverage by 30% and reduces risk-score variance by 47%.**
-- Coverage increase: +25-35%
-- Variance reduction: 40-50%
-- Alert fatigue reduction: 20%
-- Defense–attack consistency improvement: 30%
+- **Deterministic mapping increases ATT&CK–D3FEND mapping coverage by 48.1% and achieves 100% Defense-Attack Consistency (DAC).**
+- Coverage increase: +48.1% (from 67.5% baseline to 100%)
+- Consistency (DAC) improvement: +60.0% (from 62.5% baseline to 100%)
+- Variance reduction: 0.0% (all techniques have mapped controls, so no score adjustments occur; see `docs/H3_RECONCILIATION_REPORT.md` for details)
+- Alert fatigue reduction: 20% (estimated from consistency improvements)
 
 **Example Output:**
 After running H3, check `results/H3_full_evaluation/H3_full_summary.md` for:
@@ -762,9 +764,10 @@ python -m aicra.experiments.h3_evaluation \
 **Expected Output:**
 - `H3_full_results.json` - Complete metrics with mapping comparisons
 - `H3_full_summary.md` - Human-readable summary with % improvements
-- Coverage improvement: % increase
-- Variance reduction: % decrease
-- Alert fatigue reduction: % decrease
+- Coverage improvement: +48.1% (deterministic vs learned)
+- Consistency (DAC) improvement: +60.0% (deterministic achieves 100% by definition)
+- Variance reduction: 0.0% (see `docs/H3_RECONCILIATION_REPORT.md` for explanation)
+- Alert fatigue reduction: 20% (estimated)
 
 **Key Metrics to Check:**
 - `aggregated_metrics.improvements.coverage_improvement_pct` - Coverage % improvement
