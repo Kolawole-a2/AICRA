@@ -145,8 +145,6 @@ def rolling_calibration(
 
         # Split window into train/val for calibration
         split_idx = int(len(window_data.features) * 0.8)
-        cal_train = window_data.features.iloc[:split_idx]
-        cal_val = window_data.features.iloc[split_idx:]
         y_true_cal_train = window_data.labels.iloc[:split_idx]
         y_true_cal_val = window_data.labels.iloc[split_idx:]
         y_prob_cal_train = y_prob[window_mask][:split_idx]

@@ -156,7 +156,7 @@ class TestRunnerPipeline:
                 )
 
                 # Generate register
-                register_path = self._generate_register(
+                self._generate_register(
                     model_path, policy_path, test_data, "small_ember"
                 )
 
@@ -276,11 +276,8 @@ class TestRunnerPipeline:
                     )
 
                 # Generate register (only if policy exists)
-                register_path = None
                 if policy_path:
-                    register_path = self._generate_register(
-                        model_path, policy_path, test_data, "full"
-                    )
+                    self._generate_register(model_path, policy_path, test_data, "full")
 
                 # Copy artifacts with full suffix
                 self._copy_artifacts_with_suffix("full")
@@ -450,9 +447,7 @@ class TestRunnerPipeline:
 
         # Log coverage report and check thresholds for non-smoke phases
         if phase != "smoke":
-            coverage_metrics = evaluation_pipeline.mapping_pipeline.log_coverage_report(
-                phase
-            )
+            evaluation_pipeline.mapping_pipeline.log_coverage_report(phase)
             coverage_ok = (
                 evaluation_pipeline.mapping_pipeline.check_coverage_thresholds(phase)
             )
@@ -503,9 +498,7 @@ class TestRunnerPipeline:
 
         # Log coverage report and check thresholds for non-smoke phases
         if phase != "smoke":
-            coverage_metrics = evaluation_pipeline.mapping_pipeline.log_coverage_report(
-                phase
-            )
+            evaluation_pipeline.mapping_pipeline.log_coverage_report(phase)
             coverage_ok = (
                 evaluation_pipeline.mapping_pipeline.check_coverage_thresholds(phase)
             )

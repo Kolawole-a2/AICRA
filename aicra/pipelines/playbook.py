@@ -82,7 +82,7 @@ def generate_attack_playbook(
 
             try:
                 techniques = ast.literal_eval(techniques)
-            except (ValueError, SyntaxError, TypeError):
+            except (ValueError, SyntaxError):
                 techniques = []
 
         controls = row.get("d3fend_controls", [])
@@ -91,7 +91,7 @@ def generate_attack_playbook(
 
             try:
                 controls = ast.literal_eval(controls)
-            except:
+            except (ValueError, SyntaxError):
                 controls = []
 
         prescriptive_controls = row.get("prescriptive_controls", [])
@@ -100,7 +100,7 @@ def generate_attack_playbook(
 
             try:
                 prescriptive_controls = ast.literal_eval(prescriptive_controls)
-            except (ValueError, SyntaxError, TypeError):
+            except (ValueError, SyntaxError):
                 prescriptive_controls = []
 
         playbook["high_risk_assets"].append(
@@ -130,7 +130,7 @@ def generate_attack_playbook(
 
             try:
                 techniques = ast.literal_eval(techniques)
-            except (ValueError, SyntaxError, TypeError):
+            except (ValueError, SyntaxError):
                 techniques = []
 
         controls = row.get("d3fend_controls", [])
@@ -139,7 +139,7 @@ def generate_attack_playbook(
 
             try:
                 controls = ast.literal_eval(controls)
-            except (ValueError, SyntaxError, TypeError):
+            except (ValueError, SyntaxError):
                 controls = []
 
         prescriptive_controls = row.get("prescriptive_controls", [])
@@ -148,7 +148,7 @@ def generate_attack_playbook(
 
             try:
                 prescriptive_controls = ast.literal_eval(prescriptive_controls)
-            except (ValueError, SyntaxError, TypeError):
+            except (ValueError, SyntaxError):
                 prescriptive_controls = []
 
         playbook["medium_risk_assets"].append(
