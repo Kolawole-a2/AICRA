@@ -59,7 +59,7 @@ def run_h2_experiment(repo_root: Path, output_dir: Path | None = None) -> Path:
     if output_dir is None:
         output_dir = repo_root / "results" / "H2_calibration_thresholds"
 
-    metrics = run_h2_calibration_thresholds_experiment(
+    run_h2_calibration_thresholds_experiment(
         output_dir=output_dir,
         cost_fn=10.0,
         cost_fp=1.0,
