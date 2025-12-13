@@ -110,7 +110,10 @@ with open(log_file, "w", encoding="utf-8") as log:
             fontweight="bold",
             color="darkgreen",
             bbox={
-                "boxstyle": "round", "facecolor": "white", "edgecolor": "green", "linewidth": 2
+                "boxstyle": "round",
+                "facecolor": "white",
+                "edgecolor": "green",
+                "linewidth": 2,
             },
         )
     for bar, val in zip(bars2, learned_dac, strict=False):
@@ -124,7 +127,10 @@ with open(log_file, "w", encoding="utf-8") as log:
             fontweight="bold",
             color="darkblue",
             bbox={
-                "boxstyle": "round", "facecolor": "white", "edgecolor": "blue", "linewidth": 2
+                "boxstyle": "round",
+                "facecolor": "white",
+                "edgecolor": "blue",
+                "linewidth": 2,
             },
         )
     ax.set_xlabel("Split", fontsize=16, fontweight="bold")
@@ -178,7 +184,10 @@ with open(log_file, "w", encoding="utf-8") as log:
             fontweight="bold",
             color="darkgreen",
             bbox={
-                "boxstyle": "round", "facecolor": "white", "edgecolor": "green", "linewidth": 2
+                "boxstyle": "round",
+                "facecolor": "white",
+                "edgecolor": "green",
+                "linewidth": 2,
             },
         )
     for bar, val in zip(bars2, learned_precision, strict=False):
@@ -192,7 +201,10 @@ with open(log_file, "w", encoding="utf-8") as log:
             fontweight="bold",
             color="darkblue",
             bbox={
-                "boxstyle": "round", "facecolor": "white", "edgecolor": "blue", "linewidth": 2
+                "boxstyle": "round",
+                "facecolor": "white",
+                "edgecolor": "blue",
+                "linewidth": 2,
             },
         )
     ax.set_xlabel("Split", fontsize=16, fontweight="bold")
