@@ -249,6 +249,64 @@ def run_h2_calibration_thresholds_experiment(
     ece_calibrated = compute_ece(y_true_test, y_prob_test_calibrated)
     
     # ========================================================================
+    # TEMPORAL CALIBRATION CHECK (H2 Requirement)
+    # ========================================================================
+    temporal_calibration_check = {}
+    if hasattr(test_data, 'timestamps') and test_data.timestamps is not None and \
+       hasattr(val_data, 'timestamps') and val_data.timestamps is not None:
+        logger.info("Performing temporal calibration check...")
+        
+        # Verify temporal ordering: calibration data (train/val) should be earlier than test
+        val_max_ts = val_data.timestamps.max()
+        test_min_ts = test_data.timestamps.min()
+        
+        if val_max_ts < test_min_ts:
+            logger.info(f"✅ Temporal ordering verified: calibration max_ts={val_max_ts}, test min_ts={test_min_ts}")
+            
+            # Compute calibration metrics on validation set (earlier window)
+            brier_val_uncal = brier_score_loss(y_true_val, y_prob_val)
+            brier_val_cal = brier_score_loss(y_true_val, calibrator.transform(y_prob_val))
+            ece_val_uncal = compute_ece(y_true_val, y_prob_val)
+            ece_val_cal = compute_ece(y_true_val, calibrator.transform(y_prob_val))
+            
+            # Compare: calibration on earlier window vs test on later window
+            temporal_calibration_check = {
+                "temporal_ordering_verified": True,
+                "calibration_window_max_ts": str(val_max_ts),
+                "test_window_min_ts": str(test_min_ts),
+                "calibration_on_earlier_window": {
+                    "brier_uncalibrated": float(brier_val_uncal),
+                    "brier_calibrated": float(brier_val_cal),
+                    "ece_uncalibrated": float(ece_val_uncal),
+                    "ece_calibrated": float(ece_val_cal),
+                },
+                "test_on_later_window": {
+                    "brier_uncalibrated": float(brier_uncalibrated),
+                    "brier_calibrated": float(brier_calibrated),
+                    "ece_uncalibrated": float(ece_uncalibrated),
+                    "ece_calibrated": float(ece_calibrated),
+                },
+                "calibration_transferability": {
+                    "brier_delta": float(brier_calibrated - brier_val_cal),
+                    "ece_delta": float(ece_calibrated - ece_val_cal),
+                    "note": "Positive delta indicates calibration degrades on later window (expected for temporal shift)",
+                },
+            }
+            logger.info(f"Temporal calibration: Brier val={brier_val_cal:.4f}, test={brier_calibrated:.4f}, delta={temporal_calibration_check['calibration_transferability']['brier_delta']:.4f}")
+        else:
+            logger.warning(f"⚠️  Temporal ordering issue: calibration max_ts={val_max_ts} >= test min_ts={test_min_ts}")
+            temporal_calibration_check = {
+                "temporal_ordering_verified": False,
+                "warning": "Calibration and test windows may overlap temporally",
+            }
+    else:
+        logger.warning("⚠️  Timestamps not available for temporal calibration check")
+        temporal_calibration_check = {
+            "temporal_ordering_verified": False,
+            "warning": "Timestamps not available in dataset",
+        }
+    
+    # ========================================================================
     # % IMPROVEMENT CALCULATIONS (H2 Requirement)
     # ========================================================================
     h2_improvements = compute_h2_improvements(
@@ -306,6 +364,7 @@ def run_h2_calibration_thresholds_experiment(
             "baseline_brier": h2_improvements['baseline_brier'],
             "baseline_ece": h2_improvements['baseline_ece'],
             "method": calibration_method,
+            "temporal_calibration_check": temporal_calibration_check,
         },
         
         # ====================================================================

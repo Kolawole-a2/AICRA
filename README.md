@@ -239,11 +239,14 @@ The full EMBER-2024 JSONL dataset is not stored in this repository. Place it loc
 
 **Command**:
 ```bash
+# Standardized entrypoint (recommended)
+python experiments/h1_train_eval.py
+
+# Or using module interface
 python -m aicra.experiments.h1_classification
+
 # Or using the convenience script:
 python run_h1_h2_experiments.py
-# Or with config file:
-python -m aicra.experiments.h1_classification --config config/h1_config.yaml
 ```
 
 **Configuration**: Edit `config/h1_config.yaml` to customize experiment parameters (model type, thresholds, etc.).
@@ -271,7 +274,12 @@ python -m aicra.experiments.h1_classification --config config/h1_config.yaml
 
 **Command**:
 ```bash
+# Standardized entrypoint (recommended)
+python experiments/h2_calibration_eval.py
+
+# Or using module interface
 python -m aicra.experiments.h2_calibration_thresholds
+
 # Or using the convenience script:
 python run_h1_h2_experiments.py
 ```
@@ -297,7 +305,12 @@ python run_h1_h2_experiments.py
 
 **Command**:
 ```bash
+# Standardized entrypoint (recommended)
+python experiments/h3_mapping_compare.py
+
+# Or using module interface
 python -m aicra.experiments.h3_evaluation --config config/h3_splits.yaml
+
 # Or using the entry point script:
 python run_h3_evaluation.py
 ```
@@ -341,7 +354,19 @@ This will:
 
 ---
 
-## Benchmarks vs AICRA Improvements (with Percentages)
+## Benchmarks and % Improvements
+
+After running experiments, consolidated benchmark improvement reports are automatically generated:
+
+- **`artifacts/benchmark_improvements.csv`** - Machine-readable table with all % improvements
+- **`artifacts/benchmark_improvements.md`** - Human-readable summary
+
+To regenerate the report manually:
+```bash
+python -m aicra.utils.benchmark_reporter
+```
+
+For detailed step-by-step reproduction instructions, see **`docs/EXPERIMENTS.md`**.
 
 ### Benchmark Sources and Methodology
 
@@ -750,6 +775,25 @@ python -m aicra.experiments.h3_evaluation \
 
 ## Reproducibility
 Experiment outputs (e.g., artifacts/results/models) are intentionally ignored by Git. Re-run experiments to regenerate outputs.
+
+### Imbalanced Data Handling
+
+All experiments use robust strategies to handle class imbalance:
+
+- **H1 (LightGBM)**: 
+  - `class_weight="balanced"` for automatic class weight adjustment
+  - `scale_pos_weight` computed as `n_neg / n_pos` for positive class weighting
+  - Banking-optimized threshold (FN cost >> FP cost) for operational deployment
+  
+- **H2 (Calibration)**: 
+  - Isotonic calibration applied to uncalibrated predictions
+  - Temporal calibration check: calibrate on earlier window, test on later window
+  
+- **H3 (Mapping)**: 
+  - Risk score variance reduction through deterministic mapping
+  - Score consistency metrics (variance, IQR) computed per split
+
+The specific strategy used in each experiment is logged in `experiment_metadata.json` and `metrics.json` files.
 
 ### Configuration Management
 

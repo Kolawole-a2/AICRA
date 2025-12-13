@@ -2136,6 +2136,83 @@ def run_h3_evaluation(
     logger.info(f"Only in deterministic: {len(only_in_det)}")
     logger.info(f"Only in learned: {len(only_in_learned)}")
     
+    # ========================================================================
+    # GUARD AGAINST LEARNED == DETERMINISTIC BUG (H3 Requirement)
+    # ========================================================================
+    logger.info("=" * 80)
+    logger.info("Checking for learned == deterministic bug...")
+    logger.info("=" * 80)
+    
+    # Check if learned mapping is identical to deterministic mapping
+    if det_pairs == learned_pairs:
+        error_msg = (
+            "CRITICAL ERROR: Learned mapping is IDENTICAL to deterministic mapping!\n\n"
+            "This indicates a bug in the mapping generation pipeline. The learned mapping\n"
+            "should be different from the deterministic mapping (it should be generated\n"
+            "using embedding-based heuristics, not copied from the deterministic lookup).\n\n"
+            f"Deterministic pairs: {len(det_pairs)}\n"
+            f"Learned pairs: {len(learned_pairs)}\n"
+            f"Intersection: {len(intersection)} (100% match)\n\n"
+            "SOLUTION:\n"
+            "1. Verify that the learned mapping file is generated correctly\n"
+            "2. Check that the learned mapping generation script does not copy deterministic pairs\n"
+            "3. Regenerate the learned mapping using embedding-based heuristics\n\n"
+            f"Deterministic file: {det_mapping_path}\n"
+            f"Learned file: {learned_mapping_path}\n"
+        )
+        logger.error("=" * 80)
+        logger.error(error_msg)
+        logger.error("=" * 80)
+        
+        # Write diagnostic report
+        integrity_report = {
+            "status": "FAILED",
+            "error": "learned_mapping_identical_to_deterministic",
+            "message": error_msg,
+            "deterministic_pairs_count": len(det_pairs),
+            "learned_pairs_count": len(learned_pairs),
+            "intersection_count": len(intersection),
+            "deterministic_file": str(det_mapping_path),
+            "learned_file": str(learned_mapping_path),
+            "deterministic_hash": file_hashes.get("deterministic", "unknown"),
+            "learned_hash": file_hashes.get("learned", "unknown"),
+        }
+        
+        integrity_report_path = output_dir / "h3_mapping_integrity.json"
+        with open(integrity_report_path, "w", encoding="utf-8") as f:
+            json.dump(integrity_report, f, indent=2)
+        logger.error(f"Diagnostic report saved to: {integrity_report_path}")
+        
+        raise RuntimeError("Learned mapping is identical to deterministic mapping. This is a bug.")
+    
+    # Check if they're very similar (warn if >95% overlap)
+    overlap_pct = (len(intersection) / len(det_pairs) * 100) if len(det_pairs) > 0 else 0.0
+    if overlap_pct > 95.0:
+        logger.warning(f"⚠️  WARNING: Learned mapping has {overlap_pct:.1f}% overlap with deterministic mapping")
+        logger.warning("   This is unusually high - verify that learned mapping is generated correctly")
+    
+    # Write integrity report (success case)
+    integrity_report = {
+        "status": "PASSED",
+        "deterministic_pairs_count": len(det_pairs),
+        "learned_pairs_count": len(learned_pairs),
+        "intersection_count": len(intersection),
+        "overlap_percentage": overlap_pct,
+        "only_in_deterministic_count": len(only_in_det),
+        "only_in_learned_count": len(only_in_learned),
+        "deterministic_file": str(det_mapping_path),
+        "learned_file": str(learned_mapping_path),
+        "deterministic_hash": file_hashes.get("deterministic", "unknown"),
+        "learned_hash": file_hashes.get("learned", "unknown"),
+        "validation_message": "Learned mapping is distinct from deterministic mapping (as expected)",
+    }
+    
+    integrity_report_path = output_dir / "h3_mapping_integrity.json"
+    with open(integrity_report_path, "w", encoding="utf-8") as f:
+        json.dump(integrity_report, f, indent=2)
+    logger.info(f"✅ Mapping integrity check passed. Report saved to: {integrity_report_path}")
+    logger.info("=" * 80)
+    
     # SANITY CHECK 1: Reference pairs must NOT be identical to deterministic mapping
     det_hash = compute_file_hash(det_mapping_path)
     ref_hash = compute_file_hash(ref_pairs_path)

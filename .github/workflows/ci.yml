@@ -7,6 +7,111 @@ on:
     branches: [ main, develop ]
 
 jobs:
+  guardrails:
+    name: Repo Hygiene & Guardrails
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Run guardrails check
+      run: |
+        python scripts/ci_guardrails.py
+    
+    - name: Check for unsafe pickle patterns
+      run: |
+        echo "Checking for unsafe pickle patterns..."
+        if grep -r "allow_pickle=True" --include="*.py" aicra/ tests/ scripts/ 2>/dev/null; then
+          echo "❌ Found unsafe allow_pickle=True patterns"
+          exit 1
+        fi
+        if grep -r "pickle.load(" --include="*.py" aicra/ tests/ scripts/ 2>/dev/null | grep -v "#.*safe\|#.*internal\|#.*test"; then
+          echo "⚠️  Found pickle.load() usage - review for safety"
+          # Don't fail, just warn
+        fi
+        echo "✅ Pickle pattern check passed"
+    
+    - name: Check Docker security
+      run: |
+        echo "Checking Docker configuration..."
+        if [ -f docker-compose.yml ]; then
+          if grep -q "0.0.0.0" docker-compose.yml && ! grep -q "127.0.0.1\|localhost" docker-compose.yml; then
+            echo "⚠️  Warning: Docker compose exposes 0.0.0.0 without localhost binding"
+            echo "   Ensure ports are bound to 127.0.0.1 to prevent external access"
+          fi
+        fi
+        echo "✅ Docker security check passed"
+    
+    - name: Check for secrets (basic patterns)
+      run: |
+        echo "Checking for accidentally committed secrets..."
+        # Common secret patterns (basic check - for production use gitleaks)
+        SECRET_PATTERNS=(
+          "AKIA[0-9A-Z]{16}"  # AWS Access Key
+          "sk_live_[0-9a-zA-Z]{32}"  # Stripe live key
+          "AIza[0-9A-Za-z_-]{35}"  # Google API key
+        )
+        FOUND_SECRETS=0
+        for pattern in "${SECRET_PATTERNS[@]}"; do
+          if git grep -E "$pattern" -- ':!*.md' ':!*.txt' ':!scripts/ci_guardrails.py' 2>/dev/null; then
+            echo "⚠️  Potential secret pattern found: $pattern"
+            FOUND_SECRETS=1
+          fi
+        done
+        if [ $FOUND_SECRETS -eq 1 ]; then
+          echo "⚠️  Potential secrets detected - review manually or use gitleaks for comprehensive scan"
+          # Don't fail CI, but warn
+        else
+          echo "✅ No obvious secret patterns detected"
+        fi
+
+  python-quality:
+    name: Python Quality Gates
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-dev.txt || pip install -r requirements.txt
+    
+    - name: Compile Python files
+      run: |
+        python -m compileall aicra/ || (echo "⚠️  Compilation errors found" && exit 1)
+        echo "✅ All Python files compile successfully"
+    
+    - name: Run ruff
+      run: |
+        ruff check aicra/ tests/ || (echo "⚠️  Ruff found issues" && exit 1)
+        echo "✅ Ruff check passed"
+    
+    - name: Run pytest (if tests exist)
+      run: |
+        if [ -d "tests" ] && [ "$(ls -A tests 2>/dev/null)" ]; then
+          pytest tests/ --tb=short -v || (echo "⚠️  Tests failed" && exit 1)
+          echo "✅ All tests passed"
+        else
+          echo "⚠️  No tests directory found - add tests for better quality"
+        fi
+
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -107,6 +212,7 @@ jobs:
         fail_ci_if_error: false
 
   security:
+    name: Security Lint & Dependency Audit
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -134,6 +240,15 @@ jobs:
     
     - name: Run safety
       run: safety check --json --output safety-report.json || true
+    
+    - name: Check for unsafe pickle patterns (security)
+      run: |
+        echo "Security: Checking for unsafe pickle usage..."
+        if grep -r "allow_pickle=True" --include="*.py" aicra/ tests/ scripts/ 2>/dev/null; then
+          echo "❌ SECURITY: Unsafe allow_pickle=True found"
+          exit 1
+        fi
+        echo "✅ No unsafe pickle patterns detected"
     
     - name: Upload security reports
       uses: actions/upload-artifact@v3
