@@ -1,4 +1,4 @@
-# AICRA – Artificial Intelligence–Powered Cyber Risk Advisor for Endpoint Security in U.S. Banking Organizations
+# AICRA – Machine Learning-Based Cyber Risk Advisor for Endpoint Security in U.S. Banking Organizations
 
 [![CI](https://github.com/Kolawole-a2/AICRA/actions/workflows/ci.yml/badge.svg)](https://github.com/Kolawole-a2/AICRA/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/aicra/aicra/branch/main/graph/badge.svg)](https://codecov.io/gh/aicra/aicra)
@@ -8,7 +8,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-**AI-driven cyber risk advisor that predicts ransomware and endpoint threats, calibrates risk scores, and aligns MITRE ATT&CK techniques to D3FEND countermeasures for U.S. banking endpoint security.**
+** Machine Learning-Based cyber risk advisor that predicts ransomware and endpoint threats, calibrates risk scores, and aligns MITRE ATT&CK techniques to D3FEND countermeasures for U.S. banking endpoint security.**
 
 ---
 
