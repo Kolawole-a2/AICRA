@@ -59,7 +59,7 @@ bars_learned = ax.bar(
 )
 
 # Add value labels
-for bar, val, split in zip(bars_det, det_dac, splits, strict=False):
+for bar, val, _split in zip(bars_det, det_dac, splits, strict=False):
     height = bar.get_height()
     ax.text(
         bar.get_x() + bar.get_width() / 2.0,
@@ -73,7 +73,7 @@ for bar, val, split in zip(bars_det, det_dac, splits, strict=False):
         bbox={"boxstyle": "round", "facecolor": "white", "alpha": 0.8},
     )
 
-for bar, val, split in zip(bars_learned, learned_dac, splits, strict=False):
+for bar, val, _split in zip(bars_learned, learned_dac, splits, strict=False):
     height = bar.get_height()
     ax.text(
         bar.get_x() + bar.get_width() / 2.0,
