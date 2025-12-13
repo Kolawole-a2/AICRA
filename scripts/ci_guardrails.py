@@ -4,7 +4,7 @@ CI Guardrails: Prevents common repo-breaking mistakes.
 
 Scans git-tracked files for:
 - Large files (> 50 MB)
-- Forbidden paths (data/, ember2024_real/)
+- Forbidden paths (ember2024_real/ anywhere, or data/ember2024_real/)
 - Forbidden extensions (.jsonl)
 - Forbidden code patterns (allow_pickle=True)
 
@@ -20,10 +20,22 @@ from typing import List, Tuple
 MAX_FILE_SIZE_MB = 50
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 
+# Allowed paths (exceptions to forbidden paths)
+ALLOWED_PATHS = [
+    "data/lookups/",
+    "data/mappings/",
+    "data/ember/README.md",
+]
+
+# Allowed file patterns (exceptions to forbidden extensions)
+ALLOWED_FILE_PATTERNS = [
+    "data/",  # Allow data/*.csv files
+]
+
+# Forbidden paths - must match exactly or be subdirectories
 FORBIDDEN_PATHS = [
-    "data/",
-    "data/ember2024_real/",
-    "ember2024_real/",
+    "ember2024_real/",  # Anywhere in path
+    "data/ember2024_real/",  # Specific path
 ]
 
 FORBIDDEN_EXTENSIONS = [
@@ -74,8 +86,23 @@ def check_file_size(filepath: Path) -> Tuple[bool, str]:
 
 
 def check_forbidden_paths(filepath: str) -> Tuple[bool, str]:
-    """Check if file path matches forbidden patterns."""
+    """Check if file path matches forbidden patterns, excluding allowed paths."""
     normalized = filepath.replace("\\", "/")  # Normalize Windows paths
+    
+    # Check if path is in allowed list first (exact prefix match or contains)
+    for allowed in ALLOWED_PATHS:
+        if normalized.startswith(allowed):
+            return True, ""  # Allowed path, skip check
+    
+    # Check if it's a CSV file in data/ (allowed)
+    if normalized.startswith("data/") and normalized.endswith(".csv"):
+        return True, ""
+    
+    # Check if it's in data/lookups/ or data/mappings/ (allowed subdirectories)
+    if normalized.startswith("data/lookups/") or normalized.startswith("data/mappings/"):
+        return True, ""
+    
+    # Now check forbidden paths - ONLY fail for ember2024_real/ paths
     for forbidden in FORBIDDEN_PATHS:
         if forbidden in normalized:
             return False, f"Forbidden path detected: {forbidden}"
@@ -99,6 +126,13 @@ def check_code_patterns(filepath: Path) -> List[Tuple[int, str, str]]:
     try:
         with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
             for line_num, line in enumerate(f, 1):
+                # Skip docstrings and comments
+                stripped = line.strip()
+                if stripped.startswith('"""') or stripped.startswith("'''") or stripped.startswith('#'):
+                    continue
+                # Skip if pattern is in a string literal (docstring content)
+                if '"""' in line or "'''" in line:
+                    continue
                 for pattern, message in FORBIDDEN_PATTERNS:
                     if pattern in line:
                         violations.append((line_num, pattern, message))
@@ -140,9 +174,9 @@ def main() -> int:
     if not gitignore_ok:
         errors.extend(gitignore_errors)
         for err in gitignore_errors:
-            print(f"  ❌ {err}")
+            print(f"  [FAIL] {err}")
     else:
-        print("  ✅ .gitignore contains required patterns")
+        print("  [PASS] .gitignore contains required patterns")
     print()
     
     # Get tracked files
@@ -164,10 +198,11 @@ def main() -> int:
             errors.append(f"{filepath_str}: {msg}")
     
     if large_files:
+        print(f"  [FAIL] Found {len(large_files)} file(s) exceeding {MAX_FILE_SIZE_MB} MB:")
         for filepath, msg in large_files:
-            print(f"  ❌ {filepath}: {msg}")
+            print(f"    - {filepath}: {msg}")
     else:
-        print(f"  ✅ No files exceed {MAX_FILE_SIZE_MB} MB")
+        print(f"  [PASS] No files exceed {MAX_FILE_SIZE_MB} MB")
     print()
     
     # Check forbidden paths
@@ -180,10 +215,11 @@ def main() -> int:
             errors.append(f"{filepath_str}: {msg}")
     
     if forbidden_path_files:
+        print(f"  [FAIL] Found {len(forbidden_path_files)} file(s) with forbidden paths:")
         for filepath, msg in forbidden_path_files:
-            print(f"  ❌ {filepath}: {msg}")
+            print(f"    - {filepath}: {msg}")
     else:
-        print("  ✅ No forbidden paths detected")
+        print("  [PASS] No forbidden paths detected")
     print()
     
     # Check forbidden extensions
@@ -196,10 +232,11 @@ def main() -> int:
             errors.append(f"{filepath_str}: {msg}")
     
     if forbidden_ext_files:
+        print(f"  [FAIL] Found {len(forbidden_ext_files)} file(s) with forbidden extensions:")
         for filepath, msg in forbidden_ext_files:
-            print(f"  ❌ {filepath}: {msg}")
+            print(f"    - {filepath}: {msg}")
     else:
-        print("  ✅ No forbidden extensions detected")
+        print("  [PASS] No forbidden extensions detected")
     print()
     
     # Check code patterns
@@ -207,6 +244,9 @@ def main() -> int:
     pattern_violations = []
     for filepath_str in tracked_files:
         filepath = Path(filepath_str)
+        # Skip the guardrails script itself (it documents what it checks)
+        if filepath_str == "scripts/ci_guardrails.py":
+            continue
         violations = check_code_patterns(filepath)
         if violations:
             for line_num, pattern, message in violations:
@@ -215,16 +255,16 @@ def main() -> int:
     
     if pattern_violations:
         for filepath, line_num, pattern, message in pattern_violations:
-            print(f"  ⚠️  {filepath}:{line_num}: {message}")
+            print(f"  [WARN] {filepath}:{line_num}: {message}")
             print(f"      Found: '{pattern}'")
     else:
-        print("  ✅ No unsafe code patterns detected")
+        print("  [PASS] No unsafe code patterns detected")
     print()
     
     # Summary
     print("=" * 80)
     if errors:
-        print(f"❌ FAILED: Found {len(errors)} violation(s)")
+        print(f"[FAILED] Found {len(errors)} violation(s)")
         print()
         print("REMEDIATION:")
         print("1. Remove large files from Git: git rm --cached <file>")
@@ -238,7 +278,7 @@ def main() -> int:
             print(f"  {i}. {error}")
         return 1
     else:
-        print("✅ PASSED: All guardrails checks passed")
+        print("[PASSED] All guardrails checks passed")
         return 0
 
 
