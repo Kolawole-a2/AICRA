@@ -164,7 +164,7 @@ class MITREExpander:
 
         # Merge with existing mappings
         updated_mappings = self.existing_techniques.copy()
-        for technique_id, technique_name in techniques.items():
+        for technique_id, _technique_name in techniques.items():
             if technique_id not in updated_mappings:
                 # Add to a generic family for now
                 if "Generic" not in updated_mappings:
@@ -203,7 +203,7 @@ class MITREExpander:
 
         # Merge with existing mappings
         updated_mappings = self.existing_controls.copy()
-        for control_id, control_name in controls.items():
+        for control_id, _control_name in controls.items():
             if control_id not in updated_mappings:
                 # Add to a generic technique for now
                 if "T0000" not in updated_mappings:

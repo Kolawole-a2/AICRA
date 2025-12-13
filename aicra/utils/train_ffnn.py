@@ -65,7 +65,7 @@ def safe_load_npz(path: Path, required_keys: list[str] | None = None) -> dict:
 
         return result
     except (KeyError, TypeError, OSError) as e:
-        raise ValueError(f"Invalid .npz file structure in {path}: {e}")
+        raise ValueError(f"Invalid .npz file structure in {path}: {e}") from e
 
 
 class SmallFFNN(nn.Module):

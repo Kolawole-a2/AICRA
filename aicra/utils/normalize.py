@@ -6,17 +6,60 @@ import re
 import unicodedata
 from functools import lru_cache
 
+# Pre-compile common regex patterns at module level
+_PUNCTUATION_PATTERN = re.compile(r"[^\w\s-]")
+_WHITESPACE_PATTERN = re.compile(r"\s+")
+_HYPHEN_PATTERN = re.compile(r"-+")
+
+
+@lru_cache(maxsize=1000)
+def _normalize_cached(raw_family: str) -> str:
+    """
+    Internal cached normalization function.
+
+    Args:
+        raw_family: Raw family name from data
+
+    Returns:
+        Normalized family name
+    """
+    if not raw_family or not isinstance(raw_family, str):
+        return "unknown"
+
+    # Step 1: Unicode normalization (NFKC)
+    normalized = unicodedata.normalize("NFKC", raw_family)
+
+    # Step 2: Case folding
+    normalized = normalized.casefold()
+
+    # Step 3: Remove punctuation (keep alphanumeric, spaces, hyphens)
+    normalized = _PUNCTUATION_PATTERN.sub("", normalized)
+
+    # Step 4: Normalize whitespace
+    normalized = _WHITESPACE_PATTERN.sub(" ", normalized)
+
+    # Step 5: Normalize hyphens
+    normalized = _HYPHEN_PATTERN.sub("-", normalized)
+
+    # Step 6: Strip and collapse
+    normalized = normalized.strip()
+
+    # Step 7: Handle empty result
+    if not normalized:
+        return "unknown"
+
+    return normalized
+
 
 class FamilyNormalizer:
     """Normalizes malware family names for consistent mapping."""
 
     def __init__(self):
         # Pre-compile common regex patterns
-        self._punctuation_pattern = re.compile(r"[^\w\s-]")
-        self._whitespace_pattern = re.compile(r"\s+")
-        self._hyphen_pattern = re.compile(r"-+")
+        self._punctuation_pattern = _PUNCTUATION_PATTERN
+        self._whitespace_pattern = _WHITESPACE_PATTERN
+        self._hyphen_pattern = _HYPHEN_PATTERN
 
-    @lru_cache(maxsize=1000)
     def normalize(self, raw_family: str) -> str:
         """
         Normalize a raw malware family name.
@@ -27,32 +70,7 @@ class FamilyNormalizer:
         Returns:
             Normalized family name
         """
-        if not raw_family or not isinstance(raw_family, str):
-            return "unknown"
-
-        # Step 1: Unicode normalization (NFKC)
-        normalized = unicodedata.normalize("NFKC", raw_family)
-
-        # Step 2: Case folding
-        normalized = normalized.casefold()
-
-        # Step 3: Remove punctuation (keep alphanumeric, spaces, hyphens)
-        normalized = self._punctuation_pattern.sub("", normalized)
-
-        # Step 4: Normalize whitespace
-        normalized = self._whitespace_pattern.sub(" ", normalized)
-
-        # Step 5: Normalize hyphens
-        normalized = self._hyphen_pattern.sub("-", normalized)
-
-        # Step 6: Strip and collapse
-        normalized = normalized.strip()
-
-        # Step 7: Handle empty result
-        if not normalized:
-            return "unknown"
-
-        return normalized
+        return _normalize_cached(raw_family)
 
     def normalize_batch(self, raw_families: list[str]) -> list[str]:
         """

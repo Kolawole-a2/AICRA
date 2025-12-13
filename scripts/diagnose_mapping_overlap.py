@@ -142,7 +142,7 @@ def diagnose_mapping_overlap(
     splits_config_path: Path,
     repo_root: Path,
     output_dir: Path,
-    risk_scores_path: Optional[Path] = None,
+    risk_scores_path: Path | None = None,
 ) -> dict:
     """
     Diagnose overlap between deterministic and learned mappings.
@@ -237,9 +237,9 @@ def diagnose_mapping_overlap(
         overlap_type = classify_technique_overlap(det_controls, learned_controls)
         technique_classifications[tech] = {
             "overlap_type": overlap_type,
-            "det_controls": sorted(list(det_controls)),
-            "learned_controls": sorted(list(learned_controls)),
-            "intersection": sorted(list(det_controls & learned_controls)),
+            "det_controls": sorted(det_controls),
+            "learned_controls": sorted(learned_controls),
+            "intersection": sorted(det_controls & learned_controls),
             "jaccard": compute_jaccard(det_controls, learned_controls),
         }
 

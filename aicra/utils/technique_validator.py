@@ -143,7 +143,7 @@ def validate_technique_column(
     normalized_ids = []
     invalid_mask = []
 
-    for idx, tech_id in enumerate(df[technique_col]):
+    for _idx, tech_id in enumerate(df[technique_col]):
         is_valid, normalized = validate_technique_id(tech_id, valid_techniques)
 
         if is_valid and normalized is not None:
@@ -163,10 +163,10 @@ def validate_technique_column(
     diagnostics["valid_rows"] = sum(1 for x in normalized_ids if x is not None)
     diagnostics["invalid_rows"] = sum(1 for x in normalized_ids if x is None)
     diagnostics["unique_valid_techniques"] = len(
-        set(x for x in normalized_ids if x is not None)
+        {x for x in normalized_ids if x is not None}
     )
     diagnostics["unique_invalid_techniques"] = len(
-        set(x for x in df[technique_col] if x not in normalized_ids)
+        {x for x in df[technique_col] if x not in normalized_ids}
     )
 
     # Drop invalid rows if requested

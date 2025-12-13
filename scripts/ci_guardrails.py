@@ -174,7 +174,6 @@ def main() -> int:
     print()
 
     errors = []
-    warnings = []
 
     # Check .gitignore first
     print("[1/5] Checking .gitignore rules...")

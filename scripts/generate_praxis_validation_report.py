@@ -238,9 +238,7 @@ def generate_h2_section(h2_results: dict[str, Any], baselines: dict[str, float])
 
     # Extract AICRA metrics
     cal = h2_results.get("calibration", {})
-    aicra_brier_uncal = cal.get("brier_uncalibrated", 0.0)
     aicra_brier_cal = cal.get("brier_calibrated", 0.0)
-    aicra_ece_uncal = cal.get("ece_uncalibrated", 0.0)
     aicra_ece_cal = cal.get("ece_calibrated", 0.0)
 
     cost_opt = h2_results.get("cost_optimized", {})
@@ -326,14 +324,6 @@ def generate_h3_section(h3_results: dict[str, Any], baselines: dict[str, float])
     # Variance reduction
     det_var_red = det.get("variance_reduction", {}).get("mean", 0.0)
     learned_var_red = learned.get("variance_reduction", {}).get("mean", 0.0)
-
-    # Calculate improvements vs baseline (naive mapping)
-    dac_improvement = calculate_percentage_improvement(
-        det_dac_int, baselines["dac_internal"]
-    )
-    precision_improvement = calculate_percentage_improvement(
-        det_precision, baselines["actionable_precision"]
-    )
 
     # Deterministic vs learned
     dac_det_vs_learned = det_dac_int - learned_dac_int

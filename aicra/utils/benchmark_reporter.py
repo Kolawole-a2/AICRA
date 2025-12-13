@@ -244,7 +244,7 @@ def generate_benchmark_improvements_table(
                 baseline = row["baseline_value"]
                 aicra = row["aicra_value"]
                 improvement = row["improvement_pct"]
-                if isinstance(improvement, (int, float)):
+                if isinstance(improvement, int | float):
                     improvement_str = f"{improvement:.2f}%"
                 else:
                     improvement_str = str(improvement)
@@ -266,7 +266,7 @@ def generate_benchmark_improvements_table(
                 baseline = row["baseline_value"]
                 aicra = row["aicra_value"]
                 improvement = row["improvement_pct"]
-                if isinstance(improvement, (int, float)):
+                if isinstance(improvement, int | float):
                     improvement_str = f"{improvement:.2f}%"
                 else:
                     improvement_str = str(improvement)
@@ -292,7 +292,7 @@ def generate_benchmark_improvements_table(
                 baseline = row["baseline_value"]
                 aicra = row["aicra_value"]
                 improvement = row["improvement_pct"]
-                if isinstance(improvement, (int, float)):
+                if isinstance(improvement, int | float):
                     improvement_str = f"{improvement:.2f}%"
                 else:
                     improvement_str = str(improvement)

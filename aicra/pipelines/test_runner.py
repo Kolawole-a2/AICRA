@@ -94,7 +94,7 @@ class TestRunnerPipeline:
         # Ensure no active run
         try:
             mlflow.end_run()
-        except:
+        except Exception:
             pass
 
         with mlflow.start_run(tags={"phase": "smoke"}):
@@ -129,7 +129,7 @@ class TestRunnerPipeline:
         # Ensure no active run
         try:
             mlflow.end_run()
-        except:
+        except Exception:
             pass
 
         with mlflow.start_run(tags={"phase": "small_ember"}):
@@ -199,7 +199,7 @@ class TestRunnerPipeline:
         # Ensure no active run
         try:
             mlflow.end_run()
-        except:
+        except Exception:
             pass
 
         with mlflow.start_run(tags={"phase": "full", "debug": debug}):

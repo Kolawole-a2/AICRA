@@ -146,7 +146,7 @@ class MappingPipeline:
             if technique in self.attack_to_d3fend_dict:
                 countermeasures.update(self.attack_to_d3fend_dict[technique])
 
-        return sorted(list(countermeasures))
+        return sorted(countermeasures)
 
     def get_complete_mapping(self, raw_tag: str) -> dict[str, list[str]]:
         """Get complete mapping from raw tag to techniques and countermeasures."""
@@ -239,9 +239,9 @@ class MappingPipeline:
             .agg(
                 {
                     "canonical_family": "first",
-                    "techniques": lambda x: list(set([t for t in x if t])),
+                    "techniques": lambda x: list({t for t in x if t}),
                     "d3fend_controls": lambda x: list(
-                        set([c for controls in x for c in controls if c])
+                        {c for controls in x for c in controls if c}
                     ),
                 }
             )

@@ -39,11 +39,14 @@ class EvaluationPipeline:
         model_name: str = "bagged_lightgbm",
         timestamp_column: str | None = None,
         family_column: str | None = None,
-        k_values: list[int] = [1, 5, 10],
+        k_values: list[int] | None = None,
         is_smoke_test: bool = False,
         skip_mlflow: bool = False,
     ) -> Metrics:
         """Evaluate model and generate artifacts."""
+
+        if k_values is None:
+            k_values = [1, 5, 10]
 
         # Time-ordered split if timestamp exists
         if timestamp_column and timestamp_column in test_data.features.columns:
@@ -389,7 +392,7 @@ class EvaluationPipeline:
                     f"Lift@{k}% = {lifts[k_idx]:.2f}",
                     xy=(k, lifts[k_idx]),
                     xytext=(k + 5, lifts[k_idx] + 0.1),
-                    arrowprops=dict(arrowstyle="->", color="red"),
+                    arrowprops={"arrowstyle": "->", "color": "red"},
                 )
 
         plt.xlabel("Percentage of Samples (%)")

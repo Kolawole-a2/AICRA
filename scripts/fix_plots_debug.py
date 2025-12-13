@@ -96,7 +96,7 @@ bars2 = ax.bar(
 )
 
 # Add value labels
-for i, (bar, val) in enumerate(zip(bars1, det_dac_arr, strict=False)):
+for _i, (bar, val) in enumerate(zip(bars1, det_dac_arr, strict=False)):
     height = bar.get_height()
     ax.text(
         bar.get_x() + bar.get_width() / 2.0,
@@ -109,7 +109,7 @@ for i, (bar, val) in enumerate(zip(bars1, det_dac_arr, strict=False)):
         color="darkgreen",
     )
 
-for i, (bar, val) in enumerate(zip(bars2, learned_dac_arr, strict=False)):
+for _i, (bar, val) in enumerate(zip(bars2, learned_dac_arr, strict=False)):
     height = bar.get_height()
     ax.text(
         bar.get_x() + bar.get_width() / 2.0,

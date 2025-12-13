@@ -23,7 +23,7 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 
-from ..core.data import load_ember_2024
+from ..core.data import Dataset, load_ember_2024
 from ..core.evaluation import expected_calibration_error
 
 logger = logging.getLogger(__name__)

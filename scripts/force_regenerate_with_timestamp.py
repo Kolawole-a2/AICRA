@@ -113,7 +113,7 @@ for bar, val in zip(bars1, det_dac, strict=False):
         fontsize=14,
         fontweight="bold",
         color="darkgreen",
-        bbox=dict(boxstyle="round", facecolor="white", edgecolor="green", linewidth=2),
+        bbox={"boxstyle": "round", "facecolor": "white", "edgecolor": "green", "linewidth": 2},
     )
 
 for bar, val in zip(bars2, learned_dac, strict=False):
@@ -127,7 +127,7 @@ for bar, val in zip(bars2, learned_dac, strict=False):
         fontsize=14,
         fontweight="bold",
         color="darkblue",
-        bbox=dict(boxstyle="round", facecolor="white", edgecolor="blue", linewidth=2),
+        bbox={"boxstyle": "round", "facecolor": "white", "edgecolor": "blue", "linewidth": 2},
     )
 
 ax.set_xlabel("Split", fontsize=16, fontweight="bold")

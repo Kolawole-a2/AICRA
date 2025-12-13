@@ -260,7 +260,7 @@ def load_risk_scores(
     return df, diagnostics
 
 
-def compute_dac(
+def _compute_dac_local(
     mapping_df: pd.DataFrame,
     deterministic_df: pd.DataFrame,
     mapping_type: str = "unknown",
@@ -419,7 +419,7 @@ def compute_mapping_metrics(
             is_deterministic = mapping_pairs == det_pairs
 
         mapping_type = "deterministic" if is_deterministic else "learned"
-        dac = compute_dac(mapping_df, deterministic_df, mapping_type=mapping_type)
+        dac = _compute_dac_local(mapping_df, deterministic_df, mapping_type=mapping_type)
 
     # Correctness: % of pairs flagged as validated (if validated column exists)
     correctness = None

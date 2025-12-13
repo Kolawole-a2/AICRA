@@ -111,7 +111,7 @@ bars2 = ax.bar(
     linewidth=1,
 )
 # Value labels - deterministic (green)
-for i, bar in enumerate(bars1):
+for _i, bar in enumerate(bars1):
     height = bar.get_height()
     ax.text(
         bar.get_x() + bar.get_width() / 2.0,
@@ -124,7 +124,7 @@ for i, bar in enumerate(bars1):
         color="darkgreen",
     )
 # Value labels - learned (blue)
-for i, bar in enumerate(bars2):
+for _i, bar in enumerate(bars2):
     height = bar.get_height()
     ax.text(
         bar.get_x() + bar.get_width() / 2.0,

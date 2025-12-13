@@ -34,7 +34,7 @@ def run_h1_experiment(repo_root: Path, output_dir: Path | None = None) -> Path:
     if output_dir is None:
         output_dir = repo_root / "results" / "H1_classification"
 
-    metrics = run_h1_classification_experiment(
+    run_h1_classification_experiment(
         output_dir=output_dir,
         model_type="lgbm",
         operational_threshold=0.5,

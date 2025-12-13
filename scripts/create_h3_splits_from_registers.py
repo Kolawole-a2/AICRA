@@ -19,7 +19,7 @@ def extract_technique_id(attack_techniques_str):
         if isinstance(techniques, list) and len(techniques) > 0:
             return str(techniques[0])
         return None
-    except:
+    except (ValueError, SyntaxError, TypeError, AttributeError):
         return None
 
 

@@ -30,8 +30,6 @@ def data(
     seed: int = typer.Option(42, help="Random seed"),
 ):
     """Data management commands."""
-    settings = Settings()
-
     if action == "fetch":
         console.print("Fetching EMBER 2024 dataset...")
         # Implementation would go here
@@ -83,7 +81,7 @@ def train(
 
     except Exception as e:
         console.print(f"❌ Training failed: {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -126,7 +124,7 @@ def eval(
 
     except Exception as e:
         console.print(f"❌ Evaluation failed: {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -138,8 +136,6 @@ def predict(
 ):
     """Make predictions on new data."""
     console.print("Making predictions...")
-
-    settings = Settings()
 
     try:
         # Load model
@@ -154,7 +150,7 @@ def predict(
 
     except Exception as e:
         console.print(f"❌ Prediction failed: {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -197,7 +193,7 @@ def drift(
 
     except Exception as e:
         console.print(f"❌ Drift analysis failed: {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -235,7 +231,7 @@ def calibrate(
 
     except Exception as e:
         console.print(f"❌ Calibration failed: {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -269,7 +265,7 @@ def optimize_threshold(
 
     except Exception as e:
         console.print(f"❌ Threshold optimization failed: {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -292,7 +288,7 @@ def generate_model_card(
 
     except Exception as e:
         console.print(f"❌ Model card generation failed: {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 if __name__ == "__main__":

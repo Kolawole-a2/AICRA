@@ -31,7 +31,7 @@ def extract_technique_id(x):
     try:
         techs = ast.literal_eval(x) if isinstance(x, str) else x
         return str(techs[0]) if isinstance(techs, list) and len(techs) > 0 else "T1486"
-    except:
+    except (ValueError, SyntaxError, TypeError):
         return "T1486"
 
 

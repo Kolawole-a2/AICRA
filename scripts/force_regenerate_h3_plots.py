@@ -42,12 +42,12 @@ learned_prec = [
 ]
 
 print("\nDAC values per split:")
-for s, d, l in zip(splits, det_dac, learned_dac, strict=False):
-    print(f"  {s}: det={d}%, learned={l}%")
+for s, d, learned in zip(splits, det_dac, learned_dac, strict=False):
+    print(f"  {s}: det={d}%, learned={learned}%")
 
 print("\nPrecision values per split:")
-for s, d, l in zip(splits, det_prec, learned_prec, strict=False):
-    print(f"  {s}: det={d:.4f}, learned={l:.4f}")
+for s, d, learned in zip(splits, det_prec, learned_prec, strict=False):
+    print(f"  {s}: det={d:.4f}, learned={learned:.4f}")
 
 print("\nAggregated metrics:")
 print(

@@ -309,10 +309,13 @@ class PolicyPipeline:
     def compute_lift_at_k_report(
         self,
         df: pd.DataFrame,
-        k_values: list[int] = [1, 5, 10],
+        k_values: list[int] | None = None,
         output_path: Path | None = None,
     ) -> dict[str, Any]:
         """Compute Lift@k report for operational efficiency."""
+
+        if k_values is None:
+            k_values = [1, 5, 10]
 
         # Sort by probability descending
         sorted_df = df.sort_values("probability", ascending=False)

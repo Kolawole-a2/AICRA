@@ -70,8 +70,8 @@ def evaluate_robustness(
     model,
     X_test: np.ndarray,
     y_test: np.ndarray,
-    perturbation_strengths: list[float] = [0.01, 0.05, 0.1, 0.2],
-    perturbation_types: list[str] = ["gaussian", "uniform", "mimicry"],
+    perturbation_strengths: list[float] | None = None,
+    perturbation_types: list[str] | None = None,
 ) -> dict:
     """
     Evaluate model robustness under various perturbations.
@@ -89,6 +89,11 @@ def evaluate_robustness(
     logger.info("=" * 80)
     logger.info("Adversarial Robustness Evaluation")
     logger.info("=" * 80)
+
+    if perturbation_strengths is None:
+        perturbation_strengths = [0.01, 0.05, 0.1, 0.2]
+    if perturbation_types is None:
+        perturbation_types = ["gaussian", "uniform", "mimicry"]
 
     # Baseline metrics (no perturbation)
     y_prob_baseline = model.predict_proba(pd.DataFrame(X_test))
