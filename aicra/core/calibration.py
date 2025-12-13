@@ -15,14 +15,20 @@ class Calibrator:
     method: str
     model: IsotonicRegression | LogisticRegression
 
-    def fit(self, probs: np.ndarray[Any, np.dtype[np.floating]], y: np.ndarray[Any, np.dtype[np.integer]]) -> Calibrator:
+    def fit(
+        self,
+        probs: np.ndarray[Any, np.dtype[np.floating]],
+        y: np.ndarray[Any, np.dtype[np.integer]],
+    ) -> Calibrator:
         if self.method == "isotonic":
             self.model.fit(probs, y)
         else:
             self.model.fit(probs.reshape(-1, 1), y)
         return self
 
-    def transform(self, probs: np.ndarray[Any, np.dtype[np.floating]]) -> np.ndarray[Any, np.dtype[np.floating]]:
+    def transform(
+        self, probs: np.ndarray[Any, np.dtype[np.floating]]
+    ) -> np.ndarray[Any, np.dtype[np.floating]]:
         if self.method == "isotonic":
             return self.model.transform(probs)
         return self.model.predict_proba(probs.reshape(-1, 1))[:, 1]

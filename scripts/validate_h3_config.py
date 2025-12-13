@@ -29,15 +29,15 @@ def validate_h3_config(repo_root: Path) -> bool:
     print("=" * 80)
     print("H3 Configuration Validation")
     print("=" * 80)
-    
+
     all_valid = True
-    
+
     # Check file paths
     det_mapping = repo_root / "data" / "mappings" / "deterministic_lookup.csv"
     learned_mapping = repo_root / "data" / "mappings" / "learned_mapping.csv"
     ref_pairs = repo_root / "d3fend_reference_pairs.csv"
     splits_config = repo_root / "config" / "h3_splits.yaml"
-    
+
     # Check files exist
     print("\n1. Checking file existence...")
     for name, path in [
@@ -51,32 +51,32 @@ def validate_h3_config(repo_root: Path) -> bool:
         else:
             print(f"   ✗ {name}: NOT FOUND at {path}")
             all_valid = False
-    
+
     if not all_valid:
         print("\n❌ Some required files are missing!")
         return False
-    
+
     # Check reference pairs vs deterministic
     print("\n2. Checking reference pairs vs deterministic mapping...")
     det_hash = compute_file_hash(det_mapping)
     ref_hash = compute_file_hash(ref_pairs)
-    
+
     print(f"   Deterministic hash: {det_hash[:32]}...")
     print(f"   Reference hash:     {ref_hash[:32]}...")
-    
+
     if det_hash == ref_hash:
         print("   ✗ ERROR: Reference pairs file is IDENTICAL to deterministic mapping!")
         print("   Solution: Run 'python scripts/create_reference_pairs.py'")
         all_valid = False
     else:
         print("   ✓ Reference pairs are different from deterministic mapping")
-    
+
     # Check learned mapping vs deterministic
     print("\n3. Checking learned mapping vs deterministic mapping...")
     try:
         det_df = pd.read_csv(det_mapping)
         lrn_df = pd.read_csv(learned_mapping)
-        
+
         # Normalize column names
         det_cols = []
         if "attack_id" in det_df.columns:
@@ -86,28 +86,40 @@ def validate_h3_config(repo_root: Path) -> bool:
         else:
             print("   ✗ ERROR: Cannot identify columns in deterministic mapping")
             all_valid = False
-        
+
         if all_valid and det_cols:
-            det_pairs = set(zip(det_df[det_cols[0]], det_df[det_cols[1]]))
-            lrn_pairs = set(zip(lrn_df["technique_id"], lrn_df["control_id"]))
-            
+            det_pairs = set(zip(det_df[det_cols[0]], det_df[det_cols[1]], strict=False))
+            lrn_pairs = set(
+                zip(lrn_df["technique_id"], lrn_df["control_id"], strict=False)
+            )
+
             print(f"   Deterministic pairs: {len(det_pairs)}")
             print(f"   Learned pairs: {len(lrn_pairs)}")
             print(f"   Intersection: {len(det_pairs & lrn_pairs)}")
             print(f"   Only in deterministic: {len(det_pairs - lrn_pairs)}")
             print(f"   Only in learned: {len(lrn_pairs - det_pairs)}")
-            
-            if len(det_pairs - lrn_pairs) == 0 and len(lrn_pairs - det_pairs) == 0 and len(det_pairs) > 0:
-                print("   ✗ ERROR: Learned mapping is IDENTICAL to deterministic mapping!")
+
+            if (
+                len(det_pairs - lrn_pairs) == 0
+                and len(lrn_pairs - det_pairs) == 0
+                and len(det_pairs) > 0
+            ):
+                print(
+                    "   ✗ ERROR: Learned mapping is IDENTICAL to deterministic mapping!"
+                )
                 print("   Solution: Run 'python generate_learned_mapping.py'")
                 all_valid = False
             else:
-                overlap_pct = (len(det_pairs & lrn_pairs) / len(det_pairs) * 100) if len(det_pairs) > 0 else 0
+                overlap_pct = (
+                    (len(det_pairs & lrn_pairs) / len(det_pairs) * 100)
+                    if len(det_pairs) > 0
+                    else 0
+                )
                 print(f"   ✓ Mappings are different (overlap: {overlap_pct:.1f}%)")
     except Exception as e:
         print(f"   ✗ ERROR: Failed to compare mappings: {e}")
         all_valid = False
-    
+
     # Summary
     print("\n" + "=" * 80)
     if all_valid:
@@ -125,6 +137,6 @@ if __name__ == "__main__":
     repo_root = Path.cwd()
     if len(sys.argv) > 1:
         repo_root = Path(sys.argv[1])
-    
+
     is_valid = validate_h3_config(repo_root)
     sys.exit(0 if is_valid else 1)

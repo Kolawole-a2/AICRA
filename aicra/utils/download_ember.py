@@ -33,7 +33,9 @@ def main():
     parser.add_argument(
         "--datasets", nargs="+", choices=["train", "test"], default=["train", "test"]
     )
-    parser.add_argument("--limit", type=int, default=None, help="Optional line limit to keep")
+    parser.add_argument(
+        "--limit", type=int, default=None, help="Optional line limit to keep"
+    )
     parser.add_argument("--force", action="store_true")
     parser.add_argument(
         "--base-url",
@@ -58,7 +60,10 @@ def main():
         # Optionally trim to first N lines
         if args.limit is not None:
             tmp = dest.with_suffix(dest.suffix + ".tmp")
-            with open(dest, encoding="utf-8") as fin, open(tmp, "w", encoding="utf-8") as fout:
+            with (
+                open(dest, encoding="utf-8") as fin,
+                open(tmp, "w", encoding="utf-8") as fout,
+            ):
                 for i, line in enumerate(fin):
                     if i >= args.limit:
                         break

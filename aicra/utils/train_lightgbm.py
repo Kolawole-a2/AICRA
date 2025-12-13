@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import logging
 from pathlib import Path
-from typing import Optional
 
 import joblib
 import numpy as np
@@ -17,7 +16,7 @@ logger = logging.getLogger(__name__)
 def is_trusted_path(path: Path) -> bool:
     """
     Check if file path is within trusted directories.
-    
+
     Security: Prevents loading arbitrary files from untrusted locations
     that could contain malicious pickle data.
     """
@@ -31,17 +30,17 @@ def is_trusted_path(path: Path) -> bool:
     return any(abs_path.is_relative_to(trusted.resolve()) for trusted in trusted_dirs)
 
 
-def safe_load_npz(path: Path, required_keys: Optional[list[str]] = None) -> dict:
+def safe_load_npz(path: Path, required_keys: list[str] | None = None) -> dict:
     """
     Safely load .npz file without allow_pickle.
-    
+
     Args:
         path: Path to .npz file
         required_keys: List of required keys in .npz file
-    
+
     Returns:
         Dictionary with loaded arrays
-    
+
     Raises:
         ValueError: If path is not trusted or file structure is invalid
     """
@@ -50,27 +49,29 @@ def safe_load_npz(path: Path, required_keys: Optional[list[str]] = None) -> dict
             f"File path must be within trusted directories: "
             f"{[str(Path.cwd() / d) for d in ['data', 'artifacts', 'results', 'models']]}"
         )
-    
+
     try:
         data = np.load(path, allow_pickle=False)
         if isinstance(data, np.ndarray):
             raise ValueError(f"Expected .npz file with keys, got .npy array: {path}")
-        
+
         result = {}
         for key in data.keys():
             result[key] = data[key]
-        
+
         if required_keys:
             missing = set(required_keys) - set(result.keys())
             if missing:
                 raise ValueError(f"Missing required keys in {path}: {missing}")
-        
+
         return result
     except (KeyError, TypeError, OSError) as e:
         raise ValueError(f"Invalid .npz file structure in {path}: {e}")
 
 
-def focal_loss_sample_weight(y: np.ndarray, gamma: float = 2.0, alpha: float = 0.75) -> np.ndarray:
+def focal_loss_sample_weight(
+    y: np.ndarray, gamma: float = 2.0, alpha: float = 0.75
+) -> np.ndarray:
     p = np.clip(y.mean(), 1e-6, 1 - 1e-6)
     w_pos = alpha * (1 - p) ** gamma
     w_neg = (1 - alpha) * p**gamma
@@ -84,8 +85,12 @@ def main():
     parser.add_argument("--mapping", required=False)
     parser.add_argument("--outdir", required=True)
     parser.add_argument("--bag-seeds", nargs="+", type=int, default=[42, 43, 44])
-    parser.add_argument("--calibration", choices=["platt", "isotonic"], default="isotonic")
-    parser.add_argument("--robust-loss", choices=["balanced", "focal"], default="balanced")
+    parser.add_argument(
+        "--calibration", choices=["platt", "isotonic"], default="isotonic"
+    )
+    parser.add_argument(
+        "--robust-loss", choices=["balanced", "focal"], default="balanced"
+    )
     args = parser.parse_args()
 
     outdir = Path(args.outdir)
@@ -136,7 +141,11 @@ def main():
     joblib.dump(models, outdir / "lgbm_bag.joblib")
     joblib.dump(cal, outdir / "calibrator.joblib")
     np.savez(
-        outdir / "predictions.npz", val_probs=probs_cal, val_labels=y, families=fam, timestamps=tss
+        outdir / "predictions.npz",
+        val_probs=probs_cal,
+        val_labels=y,
+        families=fam,
+        timestamps=tss,
     )
 
     print("Saved bagged LightGBM, calibrator, and predictions.npz")

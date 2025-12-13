@@ -3,7 +3,6 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-
 DEFAULT_EMBER2024_DIR = Path("data") / "ember2024_real"
 ENV_EMBER2024_DIR = "AICRA_EMBER2024_DIR"
 

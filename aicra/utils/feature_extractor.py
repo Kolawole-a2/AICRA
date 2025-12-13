@@ -39,7 +39,9 @@ def main():
     X = df[feature_cols].astype(np.float32).values
     families = df.get("family", pd.Series(["unknown"] * len(df))).astype(str).values
     timestamps = (
-        pd.to_datetime(df.get("timestamp", pd.Timestamp("2024-01-01")).astype(str), errors="coerce")
+        pd.to_datetime(
+            df.get("timestamp", pd.Timestamp("2024-01-01")).astype(str), errors="coerce"
+        )
         .fillna(pd.Timestamp("2024-01-01"))
         .astype(np.int64)
         .values

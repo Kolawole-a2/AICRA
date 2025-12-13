@@ -19,15 +19,35 @@ class Settings(BaseSettings):
 
     # Paths
     repo_root: Path = Field(default_factory=lambda: Path(__file__).resolve().parents[1])
-    data_dir: Path = Field(default_factory=lambda: Path(__file__).resolve().parents[1] / "data")
-    ember_dir: Path = Field(default_factory=lambda: Path(__file__).resolve().parents[1] / "data" / "ember2024")
-    artifacts_dir: Path = Field(default_factory=lambda: Path(__file__).resolve().parents[1] / "artifacts")
-    models_dir: Path = Field(default_factory=lambda: Path(__file__).resolve().parents[1] / "models")
-    metrics_dir: Path = Field(default_factory=lambda: Path(__file__).resolve().parents[1] / "metrics")
-    register_dir: Path = Field(default_factory=lambda: Path(__file__).resolve().parents[1] / "register")
-    policies_dir: Path = Field(default_factory=lambda: Path(__file__).resolve().parents[1] / "policies")
-    reports_dir: Path = Field(default_factory=lambda: Path(__file__).resolve().parents[1] / "reports")
-    mappings_dir: Path = Field(default_factory=lambda: Path(__file__).resolve().parents[1] / "mappings")
+    data_dir: Path = Field(
+        default_factory=lambda: Path(__file__).resolve().parents[1] / "data"
+    )
+    ember_dir: Path = Field(
+        default_factory=lambda: Path(__file__).resolve().parents[1]
+        / "data"
+        / "ember2024"
+    )
+    artifacts_dir: Path = Field(
+        default_factory=lambda: Path(__file__).resolve().parents[1] / "artifacts"
+    )
+    models_dir: Path = Field(
+        default_factory=lambda: Path(__file__).resolve().parents[1] / "models"
+    )
+    metrics_dir: Path = Field(
+        default_factory=lambda: Path(__file__).resolve().parents[1] / "metrics"
+    )
+    register_dir: Path = Field(
+        default_factory=lambda: Path(__file__).resolve().parents[1] / "register"
+    )
+    policies_dir: Path = Field(
+        default_factory=lambda: Path(__file__).resolve().parents[1] / "policies"
+    )
+    reports_dir: Path = Field(
+        default_factory=lambda: Path(__file__).resolve().parents[1] / "reports"
+    )
+    mappings_dir: Path = Field(
+        default_factory=lambda: Path(__file__).resolve().parents[1] / "mappings"
+    )
 
     # Training configuration
     random_seeds: tuple[int, int, int] = (17, 42, 73)
@@ -58,21 +78,23 @@ class Settings(BaseSettings):
 
     # Coverage threshold
     coverage_fail_under: float = 40.0
-    
+
     # Mapping configuration
     max_unmapped_rate: float = 0.05  # Maximum allowed unmapped rate (5%)
     mapping_cache_size: int = 1000  # LRU cache size for mapping operations
     mapping_timeout_seconds: int = 30  # Timeout for mapping operations
-    
+
     # Dataset type and mapping requirements
     dataset_type: str = "ember"  # Dataset type: "ember", "bank_logs", etc.
-    require_family_mapping: bool = False  # Whether to require family mapping (False for EMBER)
+    require_family_mapping: bool = (
+        False  # Whether to require family mapping (False for EMBER)
+    )
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         # Ensure directories exist
         for attr_name in dir(self):
-            if attr_name.endswith('_dir'):
+            if attr_name.endswith("_dir"):
                 dir_path = getattr(self, attr_name)
                 if isinstance(dir_path, Path):
                     dir_path.mkdir(parents=True, exist_ok=True)

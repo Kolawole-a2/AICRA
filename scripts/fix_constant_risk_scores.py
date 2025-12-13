@@ -6,13 +6,13 @@ This script regenerates risk_scores.csv files using the working small_ember mode
 to ensure proper variance in predictions.
 """
 
-import pandas as pd
-import numpy as np
-import joblib
-from pathlib import Path
-import sys
-import json
 import ast
+import sys
+from pathlib import Path
+
+import joblib
+import numpy as np
+import pandas as pd
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -23,15 +23,17 @@ print("=" * 80)
 print("FIX CONSTANT RISK SCORES")
 print("=" * 80)
 
+
 def extract_technique_id(x):
     """Extract first technique from attack_techniques."""
-    if pd.isna(x) or x == '' or x == '[]':
-        return 'T1486'
+    if pd.isna(x) or x == "" or x == "[]":
+        return "T1486"
     try:
         techs = ast.literal_eval(x) if isinstance(x, str) else x
-        return str(techs[0]) if isinstance(techs, list) and len(techs) > 0 else 'T1486'
+        return str(techs[0]) if isinstance(techs, list) and len(techs) > 0 else "T1486"
     except:
-        return 'T1486'
+        return "T1486"
+
 
 # Step 1: Find working model
 print("\n[1] Finding working model...")
@@ -98,32 +100,44 @@ full_register = Path("register/risk_register_full.csv")
 if use_register_method and (main_register.exists() or full_register.exists()):
     # Method 1: Use register files but fix constant probabilities
     print("  Method: Fix register files then regenerate risk_scores.csv")
-    
+
     # Check main register
     if main_register.exists():
         df_main_reg = pd.read_csv(main_register)
         if "probability" in df_main_reg.columns:
             main_prob_std = df_main_reg["probability"].std()
             main_prob_unique = df_main_reg["probability"].nunique()
-            
+
             if main_prob_unique == 1:
-                print(f"  ⚠️  main register has constant probabilities (all={df_main_reg['probability'].iloc[0]:.6f})")
-                print(f"  Strategy: Use small_ember distribution scaled to main size")
-                
+                print(
+                    f"  ⚠️  main register has constant probabilities (all={df_main_reg['probability'].iloc[0]:.6f})"
+                )
+                print("  Strategy: Use small_ember distribution scaled to main size")
+
                 # Sample from small_ember distribution to fix main
                 n_main = len(df_main_reg)
                 if len(df_small_ref) >= n_main:
                     # Sample probabilities from small_ember
-                    sampled_probs = df_small_ref["probability"].sample(n=n_main, replace=False, random_state=42).values
+                    sampled_probs = (
+                        df_small_ref["probability"]
+                        .sample(n=n_main, replace=False, random_state=42)
+                        .values
+                    )
                 else:
                     # Sample with replacement
-                    sampled_probs = df_small_ref["probability"].sample(n=n_main, replace=True, random_state=42).values
-                
+                    sampled_probs = (
+                        df_small_ref["probability"]
+                        .sample(n=n_main, replace=True, random_state=42)
+                        .values
+                    )
+
                 # Update register
                 df_main_reg["probability"] = sampled_probs
                 df_main_reg.to_csv(main_register, index=False)
-                print(f"  ✓ Fixed main register: new std={sampled_probs.std():.6f}, unique={np.unique(sampled_probs).size}")
-    
+                print(
+                    f"  ✓ Fixed main register: new std={sampled_probs.std():.6f}, unique={np.unique(sampled_probs).size}"
+                )
+
     # Regenerate main risk_scores.csv from fixed register
     if main_register.exists():
         df_main = pd.read_csv(main_register)
@@ -131,65 +145,104 @@ if use_register_method and (main_register.exists() or full_register.exists()):
         df_main["risk_score"] = df_main["probability"].clip(0.0, 1.0)
         df_main["predicted_label"] = (df_main["risk_score"] >= 0.5).astype(int)
         df_main["true_label"] = df_main["label"].astype(int)
-        df_main["technique_id"] = df_main["attack_techniques"].apply(extract_technique_id) if "attack_techniques" in df_main.columns else "T1486"
-        df_main["technique_id"] = df_main["technique_id"].fillna('T1486').replace('', 'T1486').astype(str)
-        
-        h3_main = df_main[["asset_id", "risk_score", "predicted_label", "true_label", "technique_id"]]
-        h3_main.loc[h3_main['technique_id'] == '', 'technique_id'] = 'T1486'
-        
+        df_main["technique_id"] = (
+            df_main["attack_techniques"].apply(extract_technique_id)
+            if "attack_techniques" in df_main.columns
+            else "T1486"
+        )
+        df_main["technique_id"] = (
+            df_main["technique_id"].fillna("T1486").replace("", "T1486").astype(str)
+        )
+
+        h3_main = df_main[
+            ["asset_id", "risk_score", "predicted_label", "true_label", "technique_id"]
+        ]
+        h3_main.loc[h3_main["technique_id"] == "", "technique_id"] = "T1486"
+
         output_path = Path("results/main/risk_scores.csv")
         output_path.parent.mkdir(parents=True, exist_ok=True)
         h3_main.to_csv(output_path, index=False)
-        
+
         # Validate
         try:
             assert_non_constant_scores(h3_main["risk_score"], "main")
             print(f"  ✓ Created: {output_path}")
-            print(f"    Rows: {len(h3_main)}, Std: {h3_main['risk_score'].std():.6f}, Unique: {h3_main['risk_score'].nunique()}")
+            print(
+                f"    Rows: {len(h3_main)}, Std: {h3_main['risk_score'].std():.6f}, Unique: {h3_main['risk_score'].nunique()}"
+            )
         except RuntimeError as e:
             print(f"  ❌ Validation failed: {e}")
-    
+
     # Fix full_ember similarly
     if full_register.exists():
         df_full_reg = pd.read_csv(full_register)
         if "probability" in df_full_reg.columns:
             full_prob_std = df_full_reg["probability"].std()
             full_prob_unique = df_full_reg["probability"].nunique()
-            
+
             if full_prob_unique == 1:
-                print(f"\n[5] Fixing full_ember split...")
-                print(f"  ⚠️  full_ember register has constant probabilities (all={df_full_reg['probability'].iloc[0]:.6f})")
-                print(f"  Strategy: Use small_ember distribution scaled to full_ember size")
-                
+                print("\n[5] Fixing full_ember split...")
+                print(
+                    f"  ⚠️  full_ember register has constant probabilities (all={df_full_reg['probability'].iloc[0]:.6f})"
+                )
+                print(
+                    "  Strategy: Use small_ember distribution scaled to full_ember size"
+                )
+
                 n_full = len(df_full_reg)
                 # Sample with replacement for large datasets
-                sampled_probs = df_small_ref["probability"].sample(n=n_full, replace=True, random_state=42).values
-                
+                sampled_probs = (
+                    df_small_ref["probability"]
+                    .sample(n=n_full, replace=True, random_state=42)
+                    .values
+                )
+
                 df_full_reg["probability"] = sampled_probs
                 df_full_reg.to_csv(full_register, index=False)
-                print(f"  ✓ Fixed full_ember register: new std={sampled_probs.std():.6f}, unique={np.unique(sampled_probs).size}")
-                
+                print(
+                    f"  ✓ Fixed full_ember register: new std={sampled_probs.std():.6f}, unique={np.unique(sampled_probs).size}"
+                )
+
                 # Regenerate risk_scores.csv
                 df_full = df_full_reg.copy()
                 df_full["asset_id"] = df_full.index.map(lambda i: f"asset_{i:04d}")
                 df_full["risk_score"] = df_full["probability"].clip(0.0, 1.0)
                 df_full["predicted_label"] = (df_full["risk_score"] >= 0.5).astype(int)
                 df_full["true_label"] = df_full["label"].astype(int)
-                df_full["technique_id"] = df_full["attack_techniques"].apply(extract_technique_id) if "attack_techniques" in df_full.columns else "T1486"
-                df_full["technique_id"] = df_full["technique_id"].fillna('T1486').replace('', 'T1486').astype(str)
-                
-                h3_full = df_full[["asset_id", "risk_score", "predicted_label", "true_label", "technique_id"]]
-                h3_full.loc[h3_full['technique_id'] == '', 'technique_id'] = 'T1486'
-                
+                df_full["technique_id"] = (
+                    df_full["attack_techniques"].apply(extract_technique_id)
+                    if "attack_techniques" in df_full.columns
+                    else "T1486"
+                )
+                df_full["technique_id"] = (
+                    df_full["technique_id"]
+                    .fillna("T1486")
+                    .replace("", "T1486")
+                    .astype(str)
+                )
+
+                h3_full = df_full[
+                    [
+                        "asset_id",
+                        "risk_score",
+                        "predicted_label",
+                        "true_label",
+                        "technique_id",
+                    ]
+                ]
+                h3_full.loc[h3_full["technique_id"] == "", "technique_id"] = "T1486"
+
                 output_path = Path("results/full_ember/risk_scores.csv")
                 output_path.parent.mkdir(parents=True, exist_ok=True)
                 h3_full.to_csv(output_path, index=False)
-                
+
                 # Validate
                 try:
                     assert_non_constant_scores(h3_full["risk_score"], "full_ember")
                     print(f"  ✓ Created: {output_path}")
-                    print(f"    Rows: {len(h3_full)}, Std: {h3_full['risk_score'].std():.6f}, Unique: {h3_full['risk_score'].nunique()}")
+                    print(
+                        f"    Rows: {len(h3_full)}, Std: {h3_full['risk_score'].std():.6f}, Unique: {h3_full['risk_score'].nunique()}"
+                    )
                 except RuntimeError as e:
                     print(f"  ❌ Validation failed: {e}")
 
@@ -205,7 +258,3 @@ print("\nNext steps:")
 print("  1. Verify risk_scores.csv files have proper variance")
 print("  2. Re-run H3 evaluation: python -m aicra.experiments.h3_evaluation")
 print("=" * 80)
-
-
-
-

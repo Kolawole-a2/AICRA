@@ -16,7 +16,7 @@ output_path = repo_root / "results" / "H3_full_evaluation" / "H3_full_summary.md
 
 # Load JSON
 print(f"Loading JSON from: {json_path}")
-with open(json_path, "r", encoding="utf-8") as f:
+with open(json_path, encoding="utf-8") as f:
     output = json.load(f)
 
 # Extract components
@@ -40,8 +40,3 @@ generate_markdown_report(
 )
 
 print("✓ Markdown summary regenerated successfully!")
-
-
-
-
-

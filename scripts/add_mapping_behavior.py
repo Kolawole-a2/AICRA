@@ -2,14 +2,15 @@
 """Add mapping_behavior field to H3 results JSON if missing."""
 
 import json
-import pandas as pd
 from pathlib import Path
+
+import pandas as pd
 
 repo_root = Path(__file__).parent.parent
 json_path = repo_root / "results" / "H3_full_evaluation" / "H3_full_results.json"
 
 # Load JSON
-with open(json_path, "r", encoding="utf-8") as f:
+with open(json_path, encoding="utf-8") as f:
     data = json.load(f)
 
 # Check if mapping_behavior already exists
@@ -32,8 +33,16 @@ det_col = "attack_id" if "attack_id" in det.columns else "technique_id"
 det_ctrl_col = "defense_id" if "defense_id" in det.columns else "control_id"
 
 # Create pairs
-det_pairs = set(zip(det[det_col].astype(str), det[det_ctrl_col].astype(str)))
-learned_pairs = set(zip(learned["technique_id"].astype(str), learned["control_id"].astype(str)))
+det_pairs = set(
+    zip(det[det_col].astype(str), det[det_ctrl_col].astype(str), strict=False)
+)
+learned_pairs = set(
+    zip(
+        learned["technique_id"].astype(str),
+        learned["control_id"].astype(str),
+        strict=False,
+    )
+)
 
 # Group by technique
 det_by_tech = {}
@@ -57,12 +66,12 @@ techniques_with_only_ransomware_controls = []
 for tech in learned_by_tech:
     learned_ctrls = learned_by_tech[tech]
     det_ctrls = det_by_tech.get(tech, set())
-    
+
     # Check if learned has controls NOT in deterministic
     learned_only_ctrls = learned_ctrls - det_ctrls
     if len(learned_only_ctrls) > 0:
         techniques_with_extra_learned_controls.append(tech)
-    
+
     # Check if learned controls are a subset of deterministic
     if det_ctrls and learned_ctrls.issubset(det_ctrls) and len(learned_ctrls) > 0:
         techniques_with_only_ransomware_controls.append(tech)
@@ -71,12 +80,17 @@ learned_only_pairs = learned_pairs - det_pairs
 
 # Create mapping_behavior
 mapping_behavior = {
-    "learned_is_broader": len(learned_pairs) > len(det_pairs) and len(learned_only_pairs) > 0,
+    "learned_is_broader": len(learned_pairs) > len(det_pairs)
+    and len(learned_only_pairs) > 0,
     "learned_pairs_count": len(learned_pairs),
     "deterministic_pairs_count": len(det_pairs),
     "learned_only_pairs_count": len(learned_only_pairs),
-    "techniques_with_extra_learned_controls": len(techniques_with_extra_learned_controls),
-    "techniques_with_only_ransomware_controls": len(techniques_with_only_ransomware_controls),
+    "techniques_with_extra_learned_controls": len(
+        techniques_with_extra_learned_controls
+    ),
+    "techniques_with_only_ransomware_controls": len(
+        techniques_with_only_ransomware_controls
+    ),
     "total_techniques_in_learned": len(learned_by_tech),
     "total_techniques_in_deterministic": len(det_by_tech),
 }

@@ -9,13 +9,11 @@ This script:
 4. Adds validation to prevent future issues
 """
 
-import pandas as pd
-import numpy as np
-from pathlib import Path
 import sys
-import json
+from pathlib import Path
+
 import joblib
-from typing import Dict, Tuple, Optional
+import pandas as pd
 
 print("=" * 80)
 print("DIAGNOSE AND FIX CONSTANT RISK SCORES")
@@ -45,7 +43,9 @@ for name, path in register_files.items():
                 "prob_mean": prob_mean,
                 "is_constant": prob_unique == 1,
             }
-            print(f"  {name}: {len(df)} rows, std={prob_std:.10f}, unique={prob_unique}, constant={prob_unique == 1}")
+            print(
+                f"  {name}: {len(df)} rows, std={prob_std:.10f}, unique={prob_unique}, constant={prob_unique == 1}"
+            )
         else:
             register_stats[name] = {"exists": True, "has_probability": False}
             print(f"  {name}: No 'probability' column!")
@@ -77,7 +77,9 @@ for name, path in risk_score_files.items():
                 "score_mean": score_mean,
                 "is_constant": score_unique == 1,
             }
-            print(f"  {name}: {len(df)} rows, std={score_std:.10f}, unique={score_unique}, constant={score_unique == 1}")
+            print(
+                f"  {name}: {len(df)} rows, std={score_std:.10f}, unique={score_unique}, constant={score_unique == 1}"
+            )
         else:
             risk_score_stats[name] = {"exists": True, "has_risk_score": False}
             print(f"  {name}: No 'risk_score' column!")
@@ -128,21 +130,23 @@ print(f"  Using model: {model_name} from {model_path}")
 
 # Step 5: Check if we can regenerate from register files
 print("\n[5] Attempting to regenerate risk scores...")
-print("  Strategy: Use small_ember model to regenerate predictions if register files have proper data")
+print(
+    "  Strategy: Use small_ember model to regenerate predictions if register files have proper data"
+)
 
 # For now, we'll create a validation utility and document the fix
 print("\n" + "=" * 80)
 print("DIAGNOSIS COMPLETE")
 print("=" * 80)
 print("\nRoot Cause:")
-print("  The register files for main and full_ember likely have constant probabilities,")
-print("  which means the model predictions were constant when registers were generated.")
+print(
+    "  The register files for main and full_ember likely have constant probabilities,"
+)
+print(
+    "  which means the model predictions were constant when registers were generated."
+)
 print("\nRecommended Fix:")
 print("  1. Regenerate register files using the working small_ember model")
 print("  2. Or regenerate risk_scores.csv directly from EMBER data using the model")
 print("  3. Add validation to prevent constant scores in future")
 print("=" * 80)
-
-
-
-

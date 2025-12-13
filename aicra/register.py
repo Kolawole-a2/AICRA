@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import json
-import yaml
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
 import orjson
 import pandas as pd
+import yaml
 
 from .config import get_settings
 from .pipelines.mapping import MappingPipeline
@@ -37,24 +37,24 @@ def compute_register(
 ) -> pd.DataFrame:
     settings = get_settings()
     mapping_pipeline = MappingPipeline(settings)
-    
+
     # Enrich with mapped controls
     df = df.copy()
-    
+
     # Apply mappings
     mapping_results = df["family"].apply(mapping_pipeline.get_complete_mapping)
-    
+
     df["canonical_family"] = mapping_results.apply(lambda x: x["canonical_family"])
     df["attack_techniques"] = mapping_results.apply(lambda x: x["techniques"])
     df["d3fend_controls"] = mapping_results.apply(lambda x: x["countermeasures"])
-    
+
     # Calculate susceptibility score
     impact = (
         df[impact_column]
         if impact_column and impact_column in df.columns
         else policy.impact_default
     )
-    
+
     df["susceptibility"] = df["probability"].clip(0.0, 1.0)
     df["susceptibility_bucket"] = pd.cut(
         df["susceptibility"],
@@ -63,15 +63,15 @@ def compute_register(
         include_lowest=True,
     )
     df["expected_loss"] = df["susceptibility"] * float(impact)
-    
+
     # Load risk bucket controls and attach to buckets
     controls_yaml_path = settings.data_dir / "lookups" / "risk_bucket_controls.yaml"
     if controls_yaml_path.exists():
-        with open(controls_yaml_path, 'r', encoding='utf-8') as f:
+        with open(controls_yaml_path, encoding="utf-8") as f:
             bucket_controls_data = yaml.safe_load(f)
-        
+
         risk_buckets = bucket_controls_data.get("risk_buckets", {})
-        
+
         def get_controls_for_bucket(bucket):
             if pd.isna(bucket):
                 return []
@@ -79,50 +79,52 @@ def compute_register(
             bucket_str = str(bucket) if not isinstance(bucket, str) else bucket
             bucket_data = risk_buckets.get(bucket_str, {})
             return bucket_data.get("controls", [])
-        
+
         # Convert categorical to string before applying to avoid hash issues
-        df["prescriptive_controls"] = df["susceptibility_bucket"].astype(str).apply(get_controls_for_bucket)
+        df["prescriptive_controls"] = (
+            df["susceptibility_bucket"].astype(str).apply(get_controls_for_bucket)
+        )
     else:
         # Fallback: empty controls if YAML not found
         df["prescriptive_controls"] = df["susceptibility_bucket"].apply(lambda x: [])
-    
+
     return df
 
 
 def write_register(
-    df: pd.DataFrame, 
-    name: str, 
-    model_id: str | None = None, 
-    policy_id: str | None = None
+    df: pd.DataFrame,
+    name: str,
+    model_id: str | None = None,
+    policy_id: str | None = None,
 ) -> tuple[Path, Path]:
     """Write register to both latest and archived versions with metadata."""
     settings = get_settings()
     settings.register_dir.mkdir(parents=True, exist_ok=True)
     settings.artifacts_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Add metadata columns if provided
     df_with_metadata = df.copy()
     if model_id:
         df_with_metadata["model_id"] = model_id
     if policy_id:
         df_with_metadata["policy_id"] = policy_id
-    
+
     # Generate timestamp for archived version
     timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-    
+
     # Write latest version to artifacts/
     latest_path = settings.artifacts_dir / "risk_register.csv"
     df_with_metadata.to_csv(latest_path, index=False)
-    
+
     # Write archived version to artifacts/
     archived_path = settings.artifacts_dir / f"risk_register_{timestamp}.csv"
     df_with_metadata.to_csv(archived_path, index=False)
-    
+
     # Also write to register directory for backward compatibility
     register_csv_path = settings.register_dir / f"{name}.csv"
     register_json_path = settings.register_dir / f"{name}.json"
     df_with_metadata.to_csv(register_csv_path, index=False)
     with open(register_json_path, "wb") as f:
         f.write(orjson.dumps(df_with_metadata.to_dict(orient="records")))
-    
+
     return latest_path, archived_path

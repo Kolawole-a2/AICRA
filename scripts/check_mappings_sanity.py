@@ -2,6 +2,7 @@
 
 import hashlib
 from pathlib import Path
+
 import pandas as pd
 
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -39,7 +40,9 @@ def main():
     print(f"Learned      SHA256: {lrn_hash}")
 
     if det_hash == lrn_hash:
-        print("[WARN] Files are byte-identical. This suggests learned mapping overwrote deterministic.")
+        print(
+            "[WARN] Files are byte-identical. This suggests learned mapping overwrote deterministic."
+        )
     else:
         print("[OK] Files are different on disk.")
 
@@ -60,11 +63,10 @@ def main():
         )
     if not (lrn_has_tech and lrn_has_ctrl):
         raise ValueError(
-            f"Learned mapping missing required columns. "
-            f"Found: {list(lrn_df.columns)}"
+            f"Learned mapping missing required columns. Found: {list(lrn_df.columns)}"
         )
 
-    print(f"\n[OK] Both mappings contain required columns")
+    print("\n[OK] Both mappings contain required columns")
 
     # Normalize for comparison
     if "attack_id" in det_df.columns:
@@ -80,4 +82,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

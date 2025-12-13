@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 from sklearn.metrics import (
@@ -38,7 +37,7 @@ def lift_at_k(y_true: np.ndarray, y_prob: np.ndarray, k: float = 0.1) -> float:
 def is_trusted_path(path: Path) -> bool:
     """
     Check if file path is within trusted directories.
-    
+
     Security: Prevents loading arbitrary files from untrusted locations
     that could contain malicious pickle data.
     """
@@ -52,17 +51,17 @@ def is_trusted_path(path: Path) -> bool:
     return any(abs_path.is_relative_to(trusted.resolve()) for trusted in trusted_dirs)
 
 
-def safe_load_npz(path: Path, required_keys: Optional[list[str]] = None) -> dict:
+def safe_load_npz(path: Path, required_keys: list[str] | None = None) -> dict:
     """
     Safely load .npz file without allow_pickle.
-    
+
     Args:
         path: Path to .npz file
         required_keys: List of required keys in .npz file
-    
+
     Returns:
         Dictionary with loaded arrays
-    
+
     Raises:
         ValueError: If path is not trusted or file structure is invalid
     """
@@ -71,21 +70,21 @@ def safe_load_npz(path: Path, required_keys: Optional[list[str]] = None) -> dict
             f"File path must be within trusted directories: "
             f"{[str(Path.cwd() / d) for d in ['data', 'artifacts', 'results', 'models']]}"
         )
-    
+
     try:
         data = np.load(path, allow_pickle=False)
         if isinstance(data, np.ndarray):
             raise ValueError(f"Expected .npz file with keys, got .npy array: {path}")
-        
+
         result = {}
         for key in data.keys():
             result[key] = data[key]
-        
+
         if required_keys:
             missing = set(required_keys) - set(result.keys())
             if missing:
                 raise ValueError(f"Missing required keys in {path}: {missing}")
-        
+
         return result
     except (KeyError, TypeError, OSError) as e:
         raise ValueError(f"Invalid .npz file structure in {path}: {e}")
@@ -98,7 +97,9 @@ def main():
     parser.add_argument("--out", required=True)
     parser.add_argument("--time-ordered-split", action="store_true")
     parser.add_argument(
-        "--metrics", nargs="+", default=["auroc", "pr_auc", "brier", "ece", "lift", "confusion"]
+        "--metrics",
+        nargs="+",
+        default=["auroc", "pr_auc", "brier", "ece", "lift", "confusion"],
     )
     parser.add_argument("--fn_pref_weight", type=float, default=10.0)
     args = parser.parse_args()
@@ -130,7 +131,12 @@ def main():
     if "lift" in args.metrics:
         metrics["lift_at_10pct"] = lift_at_k(y, p, 0.1)
     if "confusion" in args.metrics:
-        metrics["confusion"] = {"tn": int(tn), "fp": int(fp), "fn": int(fn), "tp": int(tp)}
+        metrics["confusion"] = {
+            "tn": int(tn),
+            "fp": int(fp),
+            "fn": int(fn),
+            "tp": int(tp),
+        }
 
     # Out-of-family split if families available
     if fam is not None:

@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Verify and fix constant risk scores."""
 
-import pandas as pd
-import numpy as np
-from pathlib import Path
 import sys
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
 
 print("=" * 80)
 print("VERIFY AND FIX CONSTANT RISK SCORES")
@@ -12,14 +13,18 @@ print("=" * 80)
 
 # Check current state
 print("\n[1] Current state:")
-for name, path in [("main", "results/main/risk_scores.csv"), 
-                   ("small_ember", "results/small_ember/risk_scores.csv"),
-                   ("full_ember", "results/full_ember/risk_scores.csv")]:
+for name, path in [
+    ("main", "results/main/risk_scores.csv"),
+    ("small_ember", "results/small_ember/risk_scores.csv"),
+    ("full_ember", "results/full_ember/risk_scores.csv"),
+]:
     p = Path(path)
     if p.exists():
         df = pd.read_csv(p)
         rs = df["risk_score"]
-        print(f"  {name}: std={rs.std():.10f}, unique={rs.nunique()}, mean={rs.mean():.6f}")
+        print(
+            f"  {name}: std={rs.std():.10f}, unique={rs.nunique()}, mean={rs.mean():.6f}"
+        )
         if rs.nunique() == 1:
             print(f"    ⚠️  CONSTANT! Value={rs.iloc[0]:.6f}")
     else:
@@ -52,9 +57,11 @@ if main_path.exists():
         df_main["risk_score"] = new_scores.clip(0.0, 1.0)
         df_main["predicted_label"] = (df_main["risk_score"] >= 0.5).astype(int)
         df_main.to_csv(main_path, index=False)
-        print(f"  ✓ Fixed: new std={df_main['risk_score'].std():.6f}, unique={df_main['risk_score'].nunique()}")
+        print(
+            f"  ✓ Fixed: new std={df_main['risk_score'].std():.6f}, unique={df_main['risk_score'].nunique()}"
+        )
     else:
-        print(f"  ✓ Already has variance")
+        print("  ✓ Already has variance")
 
 # Fix full_ember
 print("\n[4] Fixing full_ember...")
@@ -68,14 +75,12 @@ if full_path.exists():
         df_full["risk_score"] = new_scores.clip(0.0, 1.0)
         df_full["predicted_label"] = (df_full["risk_score"] >= 0.5).astype(int)
         df_full.to_csv(full_path, index=False)
-        print(f"  ✓ Fixed: new std={df_full['risk_score'].std():.6f}, unique={df_full['risk_score'].nunique()}")
+        print(
+            f"  ✓ Fixed: new std={df_full['risk_score'].std():.6f}, unique={df_full['risk_score'].nunique()}"
+        )
     else:
-        print(f"  ✓ Already has variance")
+        print("  ✓ Already has variance")
 
 print("\n" + "=" * 80)
 print("✓ COMPLETE")
 print("=" * 80)
-
-
-
-

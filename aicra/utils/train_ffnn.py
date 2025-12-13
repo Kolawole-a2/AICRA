@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import logging
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 import torch
@@ -16,7 +15,7 @@ logger = logging.getLogger(__name__)
 def is_trusted_path(path: Path) -> bool:
     """
     Check if file path is within trusted directories.
-    
+
     Security: Prevents loading arbitrary files from untrusted locations
     that could contain malicious pickle data.
     """
@@ -30,17 +29,17 @@ def is_trusted_path(path: Path) -> bool:
     return any(abs_path.is_relative_to(trusted.resolve()) for trusted in trusted_dirs)
 
 
-def safe_load_npz(path: Path, required_keys: Optional[list[str]] = None) -> dict:
+def safe_load_npz(path: Path, required_keys: list[str] | None = None) -> dict:
     """
     Safely load .npz file without allow_pickle.
-    
+
     Args:
         path: Path to .npz file
         required_keys: List of required keys in .npz file
-    
+
     Returns:
         Dictionary with loaded arrays
-    
+
     Raises:
         ValueError: If path is not trusted or file structure is invalid
     """
@@ -49,21 +48,21 @@ def safe_load_npz(path: Path, required_keys: Optional[list[str]] = None) -> dict
             f"File path must be within trusted directories: "
             f"{[str(Path.cwd() / d) for d in ['data', 'artifacts', 'results', 'models']]}"
         )
-    
+
     try:
         data = np.load(path, allow_pickle=False)
         if isinstance(data, np.ndarray):
             raise ValueError(f"Expected .npz file with keys, got .npy array: {path}")
-        
+
         result = {}
         for key in data.keys():
             result[key] = data[key]
-        
+
         if required_keys:
             missing = set(required_keys) - set(result.keys())
             if missing:
                 raise ValueError(f"Missing required keys in {path}: {missing}")
-        
+
         return result
     except (KeyError, TypeError, OSError) as e:
         raise ValueError(f"Invalid .npz file structure in {path}: {e}")
@@ -99,7 +98,7 @@ def main():
     feat_path = Path(args.features)
     f = safe_load_npz(feat_path, required_keys=["X"])
     X = f["X"].astype(np.float32)
-    
+
     # Safely load labels
     label_path = Path(args.labels)
     label_data = safe_load_npz(label_path, required_keys=["y"])

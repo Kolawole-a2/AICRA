@@ -2,6 +2,7 @@
 
 import hashlib
 from pathlib import Path
+
 import pandas as pd
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -39,7 +40,9 @@ def main():
     print(f"Learned      SHA256: {lrn_hash}")
 
     if det_hash == lrn_hash:
-        print("[WARN] Files are byte-identical. This suggests learned mapping overwrote deterministic.")
+        print(
+            "[WARN] Files are byte-identical. This suggests learned mapping overwrote deterministic."
+        )
     else:
         print("[OK] Files are different on disk.")
 
@@ -66,7 +69,9 @@ def main():
     print(f"[OK] Learned contains {lrn_required}")
 
     # Normalize column names for comparison
-    det_normalized = det_df.rename(columns={"attack_id": "technique_id", "defense_id": "control_id"})
+    det_normalized = det_df.rename(
+        columns={"attack_id": "technique_id", "defense_id": "control_id"}
+    )
     lrn_normalized = lrn_df.copy()
 
     print(f"\nDeterministic pairs: {len(det_normalized)}")
@@ -78,23 +83,35 @@ def main():
 
     print(f"\nDeterministic techniques: {len(det_techs)}")
     print(f"Learned      techniques: {len(lrn_techs)}")
-    print(f"Overlap: {len(det_techs & lrn_techs)} ({len(det_techs & lrn_techs)/len(det_techs)*100:.1f}%)")
+    print(
+        f"Overlap: {len(det_techs & lrn_techs)} ({len(det_techs & lrn_techs) / len(det_techs) * 100:.1f}%)"
+    )
 
     # Check if mappings are different
-    det_pairs = set(zip(det_normalized["technique_id"], det_normalized["control_id"]))
-    lrn_pairs = set(zip(lrn_normalized["technique_id"], lrn_normalized["control_id"]))
+    det_pairs = set(
+        zip(det_normalized["technique_id"], det_normalized["control_id"], strict=False)
+    )
+    lrn_pairs = set(
+        zip(lrn_normalized["technique_id"], lrn_normalized["control_id"], strict=False)
+    )
     overlap_pairs = det_pairs & lrn_pairs
 
     print(f"\nDeterministic unique pairs: {len(det_pairs)}")
     print(f"Learned      unique pairs: {len(lrn_pairs)}")
-    print(f"Overlapping pairs: {len(overlap_pairs)} ({len(overlap_pairs)/len(det_pairs)*100:.1f}% of deterministic)")
+    print(
+        f"Overlapping pairs: {len(overlap_pairs)} ({len(overlap_pairs) / len(det_pairs) * 100:.1f}% of deterministic)"
+    )
 
     if len(overlap_pairs) == 0:
         print("[OK] Mappings are completely different (0% overlap)")
     elif len(overlap_pairs) < len(det_pairs) * 0.1:
-        print(f"[OK] Mappings are sufficiently different ({len(overlap_pairs)/len(det_pairs)*100:.1f}% overlap)")
+        print(
+            f"[OK] Mappings are sufficiently different ({len(overlap_pairs) / len(det_pairs) * 100:.1f}% overlap)"
+        )
     else:
-        print(f"[WARN] Mappings have significant overlap ({len(overlap_pairs)/len(det_pairs)*100:.1f}%)")
+        print(
+            f"[WARN] Mappings have significant overlap ({len(overlap_pairs) / len(det_pairs) * 100:.1f}%)"
+        )
 
     print("\n" + "=" * 60)
     print("Sanity check completed successfully.")
@@ -103,4 +120,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

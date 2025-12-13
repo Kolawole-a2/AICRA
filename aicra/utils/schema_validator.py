@@ -15,7 +15,7 @@ def validate_input_schema(data: dict[str, Any]) -> None:
     if not schema_path.exists():
         raise FileNotFoundError(f"Schema file not found: {schema_path}")
 
-    with open(schema_path, encoding='utf-8') as f:
+    with open(schema_path, encoding="utf-8") as f:
         schema = json.load(f)
 
     try:
@@ -26,7 +26,7 @@ def validate_input_schema(data: dict[str, Any]) -> None:
 
 def validate_json_file(file_path: Path) -> None:
     """Validate JSON file against AICRA schema."""
-    with open(file_path, encoding='utf-8') as f:
+    with open(file_path, encoding="utf-8") as f:
         data = json.load(f)
 
     validate_input_schema(data)

@@ -36,7 +36,9 @@ def families_to_attack(family: str, attack_map: dict[str, Any]) -> list[str]:
     return attack_map.get(family.lower(), [])
 
 
-def attack_to_d3fend(techniques: list[str], d3f: dict[str, Any]) -> list[dict[str, Any]]:
+def attack_to_d3fend(
+    techniques: list[str], d3f: dict[str, Any]
+) -> list[dict[str, Any]]:
     controls: list[dict[str, Any]] = []
     for t in techniques:
         controls.extend(d3f.get(t, []))

@@ -2,11 +2,14 @@
 """Regenerate all H3 plots from JSON - completely fresh, no caching."""
 
 import json
-import numpy as np
+
 import matplotlib
-matplotlib.use('Agg')  # Non-interactive backend
-import matplotlib.pyplot as plt
+import numpy as np
+
+matplotlib.use("Agg")  # Non-interactive backend
 from pathlib import Path
+
+import matplotlib.pyplot as plt
 
 # Paths
 json_path = Path("results/H3_full_evaluation/H3_full_results.json")
@@ -19,7 +22,7 @@ print("=" * 80)
 
 # Load JSON
 print("\n[1] Loading JSON...")
-with open(json_path, "r", encoding="utf-8") as f:
+with open(json_path, encoding="utf-8") as f:
     data = json.load(f)
 print(f"✓ Loaded: {json_path}")
 
@@ -31,10 +34,19 @@ aggregated = data["aggregated_metrics"]
 splits = [r["split"] for r in all_results]
 det_dac = [r["deterministic"]["mapping_metrics"]["dac_%"] for r in all_results]
 learned_dac = [r["learned"]["mapping_metrics"]["dac_%"] for r in all_results]
-det_precision = [r["deterministic"]["actionable_metrics"]["actionable_precision"] for r in all_results]
-learned_precision = [r["learned"]["actionable_metrics"]["actionable_precision"] for r in all_results]
-det_var_red = [r["deterministic"]["consistency_metrics"]["variance_reduction"] for r in all_results]
-learned_var_red = [r["learned"]["consistency_metrics"]["variance_reduction"] for r in all_results]
+det_precision = [
+    r["deterministic"]["actionable_metrics"]["actionable_precision"]
+    for r in all_results
+]
+learned_precision = [
+    r["learned"]["actionable_metrics"]["actionable_precision"] for r in all_results
+]
+det_var_red = [
+    r["deterministic"]["consistency_metrics"]["variance_reduction"] for r in all_results
+]
+learned_var_red = [
+    r["learned"]["consistency_metrics"]["variance_reduction"] for r in all_results
+]
 
 print("\n[2] Extracted values:")
 print(f"  Splits: {splits}")
@@ -77,88 +89,194 @@ x = np.arange(len(splits))
 width = 0.35
 fig, ax = plt.subplots(figsize=(12, 6))
 # Plot deterministic FIRST (green bars on left)
-bars1 = ax.bar(x - width/2, det_dac, width, label="Deterministic", color="#2e7d32", alpha=0.8, edgecolor='black', linewidth=1)
+bars1 = ax.bar(
+    x - width / 2,
+    det_dac,
+    width,
+    label="Deterministic",
+    color="#2e7d32",
+    alpha=0.8,
+    edgecolor="black",
+    linewidth=1,
+)
 # Plot learned SECOND (blue bars on right)
-bars2 = ax.bar(x + width/2, learned_dac, width, label="Learned", color="#1976d2", alpha=0.8, edgecolor='black', linewidth=1)
+bars2 = ax.bar(
+    x + width / 2,
+    learned_dac,
+    width,
+    label="Learned",
+    color="#1976d2",
+    alpha=0.8,
+    edgecolor="black",
+    linewidth=1,
+)
 # Value labels - deterministic (green)
 for i, bar in enumerate(bars1):
     height = bar.get_height()
-    ax.text(bar.get_x() + bar.get_width()/2., height,
-            f'{height:.1f}%', ha='center', va='bottom', fontsize=10, fontweight='bold', color='darkgreen')
+    ax.text(
+        bar.get_x() + bar.get_width() / 2.0,
+        height,
+        f"{height:.1f}%",
+        ha="center",
+        va="bottom",
+        fontsize=10,
+        fontweight="bold",
+        color="darkgreen",
+    )
 # Value labels - learned (blue)
 for i, bar in enumerate(bars2):
     height = bar.get_height()
-    ax.text(bar.get_x() + bar.get_width()/2., height,
-            f'{height:.1f}%', ha='center', va='bottom', fontsize=10, fontweight='bold', color='darkblue')
+    ax.text(
+        bar.get_x() + bar.get_width() / 2.0,
+        height,
+        f"{height:.1f}%",
+        ha="center",
+        va="bottom",
+        fontsize=10,
+        fontweight="bold",
+        color="darkblue",
+    )
 ax.set_xlabel("Split", fontsize=12)
 ax.set_ylabel("DAC (%)", fontsize=12)
-ax.set_title("Defense-Attack Consistency (DAC) per Split\n(H3: Agreement with Deterministic Mapping)", fontsize=14, fontweight='bold')
+ax.set_title(
+    "Defense-Attack Consistency (DAC) per Split\n(H3: Agreement with Deterministic Mapping)",
+    fontsize=14,
+    fontweight="bold",
+)
 ax.set_xticks(x)
-ax.set_xticklabels(splits, rotation=45, ha='right')
+ax.set_xticklabels(splits, rotation=45, ha="right")
 ax.legend(fontsize=11)
-ax.grid(alpha=0.3, axis='y')
+ax.grid(alpha=0.3, axis="y")
 plt.tight_layout()
-plt.savefig(plots_dir / "dac_per_split.png", dpi=150, bbox_inches='tight')
+plt.savefig(plots_dir / "dac_per_split.png", dpi=150, bbox_inches="tight")
 plt.close()
-print(f"  ✓ Saved: dac_per_split.png")
+print("  ✓ Saved: dac_per_split.png")
 
 # Plot 2: Precision per split
 print("\n[6] Creating precision per split plot...")
 print(f"  DEBUG: det_precision = {det_precision}")
 print(f"  DEBUG: learned_precision = {learned_precision}")
 fig, ax = plt.subplots(figsize=(12, 6))
-bars1 = ax.bar(x - width/2, det_precision, width, label="Deterministic", color="#2e7d32", alpha=0.8, edgecolor='black', linewidth=1)
-bars2 = ax.bar(x + width/2, learned_precision, width, label="Learned", color="#1976d2", alpha=0.8, edgecolor='black', linewidth=1)
+bars1 = ax.bar(
+    x - width / 2,
+    det_precision,
+    width,
+    label="Deterministic",
+    color="#2e7d32",
+    alpha=0.8,
+    edgecolor="black",
+    linewidth=1,
+)
+bars2 = ax.bar(
+    x + width / 2,
+    learned_precision,
+    width,
+    label="Learned",
+    color="#1976d2",
+    alpha=0.8,
+    edgecolor="black",
+    linewidth=1,
+)
 # Value labels - deterministic
 for bar in bars1:
     height = bar.get_height()
-    ax.text(bar.get_x() + bar.get_width()/2., height,
-            f'{height:.3f}', ha='center', va='bottom', fontsize=10, fontweight='bold', color='darkgreen')
+    ax.text(
+        bar.get_x() + bar.get_width() / 2.0,
+        height,
+        f"{height:.3f}",
+        ha="center",
+        va="bottom",
+        fontsize=10,
+        fontweight="bold",
+        color="darkgreen",
+    )
 # Value labels - learned
 for bar in bars2:
     height = bar.get_height()
-    ax.text(bar.get_x() + bar.get_width()/2., height,
-            f'{height:.3f}', ha='center', va='bottom', fontsize=10, fontweight='bold', color='darkblue')
+    ax.text(
+        bar.get_x() + bar.get_width() / 2.0,
+        height,
+        f"{height:.3f}",
+        ha="center",
+        va="bottom",
+        fontsize=10,
+        fontweight="bold",
+        color="darkblue",
+    )
 ax.set_xlabel("Split", fontsize=12)
 ax.set_ylabel("Actionable Precision", fontsize=12)
-ax.set_title("Actionable Precision per Split", fontsize=14, fontweight='bold')
+ax.set_title("Actionable Precision per Split", fontsize=14, fontweight="bold")
 ax.set_xticks(x)
-ax.set_xticklabels(splits, rotation=45, ha='right')
+ax.set_xticklabels(splits, rotation=45, ha="right")
 ax.legend(fontsize=11)
-ax.grid(alpha=0.3, axis='y')
+ax.grid(alpha=0.3, axis="y")
 plt.tight_layout()
-plt.savefig(plots_dir / "precision_per_split.png", dpi=150, bbox_inches='tight')
+plt.savefig(plots_dir / "precision_per_split.png", dpi=150, bbox_inches="tight")
 plt.close()
-print(f"  ✓ Saved: precision_per_split.png")
+print("  ✓ Saved: precision_per_split.png")
 
 # Plot 3: Variance reduction per split
 print("\n[7] Creating variance reduction per split plot...")
 print(f"  DEBUG: det_var_red = {det_var_red}")
 print(f"  DEBUG: learned_var_red = {learned_var_red}")
 fig, ax = plt.subplots(figsize=(12, 6))
-bars1 = ax.bar(x - width/2, det_var_red, width, label="Deterministic", color="#2e7d32", alpha=0.8, edgecolor='black', linewidth=1)
-bars2 = ax.bar(x + width/2, learned_var_red, width, label="Learned", color="#1976d2", alpha=0.8, edgecolor='black', linewidth=1)
+bars1 = ax.bar(
+    x - width / 2,
+    det_var_red,
+    width,
+    label="Deterministic",
+    color="#2e7d32",
+    alpha=0.8,
+    edgecolor="black",
+    linewidth=1,
+)
+bars2 = ax.bar(
+    x + width / 2,
+    learned_var_red,
+    width,
+    label="Learned",
+    color="#1976d2",
+    alpha=0.8,
+    edgecolor="black",
+    linewidth=1,
+)
 # Value labels - deterministic
 for bar in bars1:
     height = bar.get_height()
-    ax.text(bar.get_x() + bar.get_width()/2., height,
-            f'{height:.6f}', ha='center', va='bottom', fontsize=9, color='darkgreen')
+    ax.text(
+        bar.get_x() + bar.get_width() / 2.0,
+        height,
+        f"{height:.6f}",
+        ha="center",
+        va="bottom",
+        fontsize=9,
+        color="darkgreen",
+    )
 # Value labels - learned
 for bar in bars2:
     height = bar.get_height()
-    ax.text(bar.get_x() + bar.get_width()/2., height,
-            f'{height:.6f}', ha='center', va='bottom', fontsize=9, color='darkblue')
+    ax.text(
+        bar.get_x() + bar.get_width() / 2.0,
+        height,
+        f"{height:.6f}",
+        ha="center",
+        va="bottom",
+        fontsize=9,
+        color="darkblue",
+    )
 ax.set_xlabel("Split", fontsize=12)
 ax.set_ylabel("Variance Reduction", fontsize=12)
-ax.set_title("Variance Reduction per Split", fontsize=14, fontweight='bold')
+ax.set_title("Variance Reduction per Split", fontsize=14, fontweight="bold")
 ax.set_xticks(x)
-ax.set_xticklabels(splits, rotation=45, ha='right')
+ax.set_xticklabels(splits, rotation=45, ha="right")
 ax.legend(fontsize=11)
-ax.grid(alpha=0.3, axis='y')
+ax.grid(alpha=0.3, axis="y")
 plt.tight_layout()
-plt.savefig(plots_dir / "variance_reduction_per_split.png", dpi=150, bbox_inches='tight')
+plt.savefig(
+    plots_dir / "variance_reduction_per_split.png", dpi=150, bbox_inches="tight"
+)
 plt.close()
-print(f"  ✓ Saved: variance_reduction_per_split.png")
+print("  ✓ Saved: variance_reduction_per_split.png")
 
 # Plot 4: Summary metrics
 print("\n[8] Creating summary metrics plot...")
@@ -170,49 +288,109 @@ learned_means = [learned_dac_mean, learned_prec_mean, learned_var_mean]
 learned_stds = [learned_dac_std, learned_prec_std, learned_var_std]
 
 for ax, metric, det_mean, det_std, learned_mean, learned_std in zip(
-    axes, metrics, det_means, det_stds, learned_means, learned_stds
+    axes, metrics, det_means, det_stds, learned_means, learned_stds, strict=False
 ):
     print(f"  DEBUG {metric}: det={det_mean:.4f}, learned={learned_mean:.4f}")
-    bars1 = ax.bar(0 - width/2, det_mean, width, yerr=det_std, label="Deterministic", 
-           color="#2e7d32", alpha=0.8, capsize=5, edgecolor='black', linewidth=1)
-    bars2 = ax.bar(0 + width/2, learned_mean, width, yerr=learned_std, label="Learned", 
-           color="#1976d2", alpha=0.8, capsize=5, edgecolor='black', linewidth=1)
+    bars1 = ax.bar(
+        0 - width / 2,
+        det_mean,
+        width,
+        yerr=det_std,
+        label="Deterministic",
+        color="#2e7d32",
+        alpha=0.8,
+        capsize=5,
+        edgecolor="black",
+        linewidth=1,
+    )
+    bars2 = ax.bar(
+        0 + width / 2,
+        learned_mean,
+        width,
+        yerr=learned_std,
+        label="Learned",
+        color="#1976d2",
+        alpha=0.8,
+        capsize=5,
+        edgecolor="black",
+        linewidth=1,
+    )
     # Value labels
     for bar in bars1:
         height = bar.get_height()
         label_y = height + det_std + (0.05 * height if height > 0 else 0.05)
         if metric == "DAC (%)":
-            ax.text(bar.get_x() + bar.get_width()/2., label_y,
-                    f'{height:.1f}%', ha='center', va='bottom', fontsize=10, fontweight='bold')
+            ax.text(
+                bar.get_x() + bar.get_width() / 2.0,
+                label_y,
+                f"{height:.1f}%",
+                ha="center",
+                va="bottom",
+                fontsize=10,
+                fontweight="bold",
+            )
         elif metric == "Actionable Precision":
-            ax.text(bar.get_x() + bar.get_width()/2., label_y,
-                    f'{height:.3f}', ha='center', va='bottom', fontsize=10, fontweight='bold')
+            ax.text(
+                bar.get_x() + bar.get_width() / 2.0,
+                label_y,
+                f"{height:.3f}",
+                ha="center",
+                va="bottom",
+                fontsize=10,
+                fontweight="bold",
+            )
         else:
-            ax.text(bar.get_x() + bar.get_width()/2., label_y,
-                    f'{height:.6f}', ha='center', va='bottom', fontsize=9)
+            ax.text(
+                bar.get_x() + bar.get_width() / 2.0,
+                label_y,
+                f"{height:.6f}",
+                ha="center",
+                va="bottom",
+                fontsize=9,
+            )
     for bar in bars2:
         height = bar.get_height()
         label_y = height + learned_std + (0.05 * height if height > 0 else 0.05)
         if metric == "DAC (%)":
-            ax.text(bar.get_x() + bar.get_width()/2., label_y,
-                    f'{height:.1f}%', ha='center', va='bottom', fontsize=10, fontweight='bold')
+            ax.text(
+                bar.get_x() + bar.get_width() / 2.0,
+                label_y,
+                f"{height:.1f}%",
+                ha="center",
+                va="bottom",
+                fontsize=10,
+                fontweight="bold",
+            )
         elif metric == "Actionable Precision":
-            ax.text(bar.get_x() + bar.get_width()/2., label_y,
-                    f'{height:.3f}', ha='center', va='bottom', fontsize=10, fontweight='bold')
+            ax.text(
+                bar.get_x() + bar.get_width() / 2.0,
+                label_y,
+                f"{height:.3f}",
+                ha="center",
+                va="bottom",
+                fontsize=10,
+                fontweight="bold",
+            )
         else:
-            ax.text(bar.get_x() + bar.get_width()/2., label_y,
-                    f'{height:.6f}', ha='center', va='bottom', fontsize=9)
+            ax.text(
+                bar.get_x() + bar.get_width() / 2.0,
+                label_y,
+                f"{height:.6f}",
+                ha="center",
+                va="bottom",
+                fontsize=9,
+            )
     ax.set_ylabel(metric, fontsize=11)
-    ax.set_title(metric, fontsize=12, fontweight='bold')
+    ax.set_title(metric, fontsize=12, fontweight="bold")
     ax.set_xticks([0])
     ax.set_xticklabels([""])
     ax.legend(fontsize=10)
-    ax.grid(alpha=0.3, axis='y')
+    ax.grid(alpha=0.3, axis="y")
 
 plt.tight_layout()
-plt.savefig(plots_dir / "summary_metrics.png", dpi=150, bbox_inches='tight')
+plt.savefig(plots_dir / "summary_metrics.png", dpi=150, bbox_inches="tight")
 plt.close()
-print(f"  ✓ Saved: summary_metrics.png")
+print("  ✓ Saved: summary_metrics.png")
 
 print("\n" + "=" * 80)
 print("✓ ALL PLOTS REGENERATED SUCCESSFULLY")
@@ -224,8 +402,3 @@ for f in sorted(plots_dir.glob("*.png")):
     print(f"  - {f.name} ({size:,} bytes)")
 print("\nAll plots have VALUE LABELS showing the exact values from JSON.")
 print("=" * 80)
-
-
-
-
-

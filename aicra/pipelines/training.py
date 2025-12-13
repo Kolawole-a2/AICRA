@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
 import mlflow
 import mlflow.sklearn
 import numpy as np
-from typing import Literal
 
 from ..config import Settings
 from ..core.data import Dataset
-from ..models.lightgbm import train_bagged_lightgbm
 from .features_pe import build_pe_features
 
 
@@ -29,7 +29,7 @@ class TrainingPipeline:
         is_smoke_test: bool = False,
     ) -> str:
         """Train model and log to MLflow."""
-        
+
         # Set up MLflow
         if experiment_name:
             mlflow.set_experiment(experiment_name)
@@ -40,20 +40,26 @@ class TrainingPipeline:
             mlflow.log_param("model_type", model_type)
             mlflow.log_param("model_name", model_name)
             mlflow.log_param("seeds", seeds)
-            
+
             # Log training parameters
-            mlflow.log_params({
-                "learning_rate": self.settings.learning_rate,
-                "num_leaves": self.settings.num_leaves,
-                "n_estimators": self.settings.n_estimators,
-                "subsample": self.settings.subsample,
-                "colsample_bytree": self.settings.colsample_bytree,
-                "goss": self.settings.goss,
-                "class_weight": self.settings.class_weight,
-            })
+            mlflow.log_params(
+                {
+                    "learning_rate": self.settings.learning_rate,
+                    "num_leaves": self.settings.num_leaves,
+                    "n_estimators": self.settings.n_estimators,
+                    "subsample": self.settings.subsample,
+                    "colsample_bytree": self.settings.colsample_bytree,
+                    "goss": self.settings.goss,
+                    "class_weight": self.settings.class_weight,
+                }
+            )
 
             # Extract PE features for non-smoke tests
-            if not is_smoke_test and hasattr(train_data, 'file_paths') and train_data.file_paths is not None:
+            if (
+                not is_smoke_test
+                and hasattr(train_data, "file_paths")
+                and train_data.file_paths is not None
+            ):
                 mlflow.log_param("feature_type", "ember_plus_pe_static")
                 pe_features = build_pe_features(train_data.file_paths)
                 # Combine with existing features
@@ -81,19 +87,19 @@ class TrainingPipeline:
             mlflow.log_artifact(str(model_path))
 
             return str(model_path)
-    
+
     def _train_lightgbm(self, X: np.ndarray, y: np.ndarray, seeds: int) -> Any:
         """Train LightGBM model with histogram-based tree learner and robust losses."""
         import pandas as pd
         from lightgbm import LGBMClassifier
-        
+
         # Convert to DataFrame for LightGBM
         X_df = pd.DataFrame(X)
-        
+
         # Generate seeds
         np.random.seed(self.settings.random_seed)
         model_seeds = np.random.randint(0, 2**31, seeds).tolist()
-        
+
         models = []
         for seed in model_seeds:
             model = LGBMClassifier(
@@ -113,11 +119,12 @@ class TrainingPipeline:
             )
             model.fit(X_df, y)
             models.append(model)
-        
+
         # Return bagged model
         from ..models.lightgbm import BaggedLightGBM
+
         return BaggedLightGBM(models=models)
-    
+
     def _compute_scale_pos_weight(self, y: np.ndarray) -> float:
         """Compute scale_pos_weight for class imbalance."""
         if self.settings.class_weight == "balanced":
@@ -127,7 +134,7 @@ class TrainingPipeline:
             if n_pos > 0 and n_neg > 0:
                 return n_neg / n_pos
         return 1.0
-    
+
     def _train_ffnn(self, X: np.ndarray, y: np.ndarray, seeds: int) -> Any:
         """Train small FFNN with focal loss."""
         try:
@@ -136,31 +143,33 @@ class TrainingPipeline:
             import torch.optim as optim
             from torch.utils.data import DataLoader, TensorDataset
         except ImportError:
-            raise ImportError("PyTorch is required for FFNN training. Install with: pip install torch")
-        
+            raise ImportError(
+                "PyTorch is required for FFNN training. Install with: pip install torch"
+            )
+
         # Generate seeds
         np.random.seed(self.settings.random_seed)
         model_seeds = np.random.randint(0, 2**31, seeds).tolist()
-        
+
         models = []
         for seed in model_seeds:
             torch.manual_seed(seed)
             np.random.seed(seed)
-            
+
             # Small FFNN architecture
             model = SmallFFNN(input_dim=X.shape[1])
-            
+
             # Focal loss with α=0.75, γ=2.0
             criterion = FocalLoss(alpha=0.75, gamma=2.0)
             optimizer = optim.Adam(model.parameters(), lr=0.001)
-            
+
             # Convert to tensors
             X_tensor = torch.FloatTensor(X)
             y_tensor = torch.LongTensor(y)
-            
+
             dataset = TensorDataset(X_tensor, y_tensor)
             dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
-            
+
             # Training loop
             model.train()
             for epoch in range(50):  # Small number of epochs
@@ -170,21 +179,23 @@ class TrainingPipeline:
                     loss = criterion(outputs, batch_y)
                     loss.backward()
                     optimizer.step()
-            
+
             models.append(model)
-        
+
         return BaggedFFNN(models=models)
 
 
 class SmallFFNN:
     """Small feedforward neural network for ransomware detection."""
-    
+
     def __init__(self, input_dim: int, hidden_dim: int = 128):
         try:
             import torch.nn as nn
         except ImportError:
-            raise ImportError("PyTorch is required for FFNN. Install with: pip install torch")
-        
+            raise ImportError(
+                "PyTorch is required for FFNN. Install with: pip install torch"
+            )
+
         self.network = nn.Sequential(
             nn.Linear(input_dim, hidden_dim),
             nn.ReLU(),
@@ -194,26 +205,29 @@ class SmallFFNN:
             nn.Dropout(0.2),
             nn.Linear(hidden_dim // 2, 2),  # Binary classification
         )
-    
+
     def forward(self, x):
         return self.network(x)
 
 
 class FocalLoss:
     """Focal loss implementation for class imbalance."""
-    
+
     def __init__(self, alpha: float = 0.75, gamma: float = 2.0):
         try:
             import torch.nn as nn
         except ImportError:
-            raise ImportError("PyTorch is required for FocalLoss. Install with: pip install torch")
-        
+            raise ImportError(
+                "PyTorch is required for FocalLoss. Install with: pip install torch"
+            )
+
         self.alpha = alpha
         self.gamma = gamma
-        self.ce_loss = nn.CrossEntropyLoss(reduction='none')
-    
+        self.ce_loss = nn.CrossEntropyLoss(reduction="none")
+
     def forward(self, inputs, targets):
         import torch
+
         ce_loss = self.ce_loss(inputs, targets)
         pt = torch.exp(-ce_loss)
         focal_loss = self.alpha * (1 - pt) ** self.gamma * ce_loss
@@ -222,14 +236,14 @@ class FocalLoss:
 
 class BaggedFFNN:
     """Bagged ensemble of FFNN models."""
-    
+
     def __init__(self, models: list):
         self.models = models
-    
+
     def predict_proba(self, X: np.ndarray) -> np.ndarray:
         """Predict probabilities by averaging ensemble predictions."""
         import torch
-        
+
         all_probs = []
         for model in self.models:
             model.eval()
@@ -238,10 +252,11 @@ class BaggedFFNN:
                 outputs = model(X_tensor)
                 probs = torch.softmax(outputs, dim=1)[:, 1].numpy()
                 all_probs.append(probs)
-        
+
         return np.mean(np.vstack(all_probs), axis=0)
-    
+
     def save(self, path):
         """Save the bagged model."""
         import joblib
+
         joblib.dump(self, path)
