@@ -90,10 +90,12 @@ This document provides a clear breakdown of:
 | **Euzenat & Shvaiko (2013)** | Coverage (midpoint) | 67.5% | 100% (deterministic) | +32.5% | **+48.1%** |
 | **Euzenat & Shvaiko (2013)** | Consistency (midpoint) | 62.5% | 100% (deterministic) | +37.5% | **+60.0%** |
 | **Cheatham & Hitzler (2014)** | Consistency (midpoint) | 62.5% | 100% (deterministic) | +37.5% | **+60.0%** |
-| **Combined Baselines** | Risk Score Variance | High (learned mapping) | Low (deterministic) | -47% variance | **47% Variance Reduction** |
+| **Combined Baselines** | Risk Score Variance | High (learned mapping) | Low (deterministic) | -47% variance | **47% Variance Reduction** (theoretical/expected) |
 | **Combined Baselines** | Alert Fatigue | Baseline level | Reduced by 20% | -20% fatigue | **20% Alert Fatigue Reduction** |
 
-**Key Finding:** AICRA improves over learned mapping baselines (Faria et al., Euzenat & Shvaiko, Cheatham & Hitzler) by **+48.1% Coverage**, **+60.0% Consistency**, and **47% Variance Reduction**.
+**Note on Variance Reduction:** The 47% variance reduction value represents a *theoretical expectation* based on design hypotheses that deterministic mappings would produce more consistent risk scores than learned mappings. This expected improvement reflects an *a priori* design hypothesis rather than an empirically measured outcome. **Actual experimental variance reduction results are 0.0%** (see `docs/H3_RECONCILIATION_REPORT.md` for detailed explanation). The experimental result of 0.0% occurs because all ATT&CK techniques in the evaluation splits have mapped D3FEND controls in both deterministic and learned mappings, so no score adjustments occur.
+
+**Key Finding:** AICRA improves over learned mapping baselines (Faria et al., Euzenat & Shvaiko, Cheatham & Hitzler) by **+48.1% Coverage** and **+60.0% Consistency**. The variance reduction metric shows 0.0% in experimental results (see reconciliation report for details).
 
 ---
 
@@ -153,8 +155,10 @@ This document provides a clear breakdown of:
 |-------------------|----------------|-------------|-------------|---------------|
 | **Coverage** | 67.5% (Faria et al., 2013) | 100% | +32.5% | **+48.1%** |
 | **Consistency (DAC)** | 62.5% (Euzenat & Shvaiko, 2013) | 100% | +37.5% | **+60.0%** |
-| **Variance Reduction** | High (learned mapping) | Low (deterministic) | -47% | **47% Variance Reduction** |
+| **Variance Reduction** | High (learned mapping) | Low (deterministic) | -47% | **47% Variance Reduction** (theoretical/expected) |
 | **Alert Fatigue Reduction** | Baseline level | -20% | -20% | **20% Alert Fatigue Reduction** |
+
+**Note:** The variance reduction value of 47% is a *theoretical expectation* based on design hypotheses, not an experimentally computed result. Experimental variance reduction is 0.0% (see `docs/H3_RECONCILIATION_REPORT.md`).
 
 **Primary Sources:** 
 - Faria et al. (2013) - 35% contribution to H3 coverage baseline
@@ -176,8 +180,8 @@ This document provides a clear breakdown of:
 
 ### 3. H3: Deterministic vs Learned Mapping
 - **Primary Baseline Sources:** Faria et al. (2013) and Euzenat & Shvaiko (2013) - Ontology Matching (65% combined contribution)
-- **AICRA Achievement:** +48.1% Coverage improvement, +60.0% Consistency improvement, 47% variance reduction
-- **Research Contribution:** AICRA demonstrates that deterministic expert-curated mappings (MITRE D3FEND) significantly outperform learned/heuristic mappings in both coverage and consistency, reducing risk score variance and alert fatigue
+- **AICRA Achievement:** +48.1% Coverage improvement, +60.0% Consistency improvement. Variance reduction: 0.0% (experimentally measured; see `docs/H3_RECONCILIATION_REPORT.md`). The previously cited 47% variance reduction was a theoretical expectation, not an empirical result.
+- **Research Contribution:** AICRA demonstrates that deterministic expert-curated mappings (MITRE D3FEND) significantly outperform learned/heuristic mappings in both coverage and consistency. Experimental variance reduction results are 0.0% because all techniques have mapped controls, so no score adjustments occur (see reconciliation report for details).
 
 ---
 
