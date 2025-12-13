@@ -14,7 +14,7 @@
 
 ## Research Context & Praxis Overview
 
-This repository implements the **Doctor of Engineering praxis**: *Artificial Intelligence–Powered Cyber Risk Advisor with Analytics for Endpoint Security in U.S. Banking Organizations (AICRA)*.
+This repository implements the **Doctor of Engineering praxis**: *Machine Learning-Based Cyber Risk Advisor with Analytics for Endpoint Security in U.S. Banking Organizations (AICRA)*.
 
 ### Domain & Scope
 
