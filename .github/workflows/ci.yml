@@ -323,17 +323,26 @@ jobs:
             safety-report.json
           if-no-files-found: ignore
 
-  sonar:
-    name: sonar
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.SONAR_TOKEN != '' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+ sonar:
+  name: sonar
+  if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+    - name: Run SonarCloud Scan
+      if: ${{ env.SONAR_TOKEN != '' }}
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    - name: Skip Sonar (token not set)
+      if: ${{ env.SONAR_TOKEN == '' }}
+      run: echo "Skipping Sonar: SONAR_TOKEN not set"
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
