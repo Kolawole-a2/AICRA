@@ -776,6 +776,19 @@ python -m aicra.experiments.h3_evaluation \
 ## Reproducibility
 Experiment outputs (e.g., artifacts/results/models) are intentionally ignored by Git. Re-run experiments to regenerate outputs.
 
+### Risk Register Outputs
+
+**Risk Register Outputs**
+
+This repository includes representative risk register outputs generated from both **small EMBER subsets** and **full EMBER split evaluations**.
+
+- Small EMBER risk registers (e.g., `register/risk_register_small_ember.csv` and `.json`) are included to demonstrate end-to-end correctness, structure, and reproducibility of the AICRA pipeline.
+- Full EMBER evaluations generate **derived artifacts only** (risk scores, diagnostics, and mapping metrics) stored under `results/`, while raw EMBER JSONL files are intentionally excluded due to size and licensing constraints.
+
+This design balances transparency, reproducibility, and repository hygiene while still providing clear evidence of scalability across dataset sizes.
+
+See `docs/DATA.md` for data availability and exclusion rationale.
+
 ### Imbalanced Data Handling
 
 All experiments use robust strategies to handle class imbalance:

@@ -198,6 +198,33 @@ All experiments:
 - Use time-ordered splits to prevent temporal leakage
 - Document imbalanced data handling (class weights, pos_weight)
 
+## Risk Register Artifacts by Dataset Scale
+
+This repository includes risk register outputs at different dataset scales to demonstrate pipeline correctness and scalability:
+
+### Small EMBER Risk Registers
+
+Small EMBER risk registers are stored in the `register/` directory:
+- `register/risk_register_small_ember.csv` and `.json` - Complete risk register for small EMBER subset
+- `register/smoke_test_register.csv` and `.json` - Smoke test risk register
+- These files are included in Git to demonstrate end-to-end correctness, structure, and reproducibility
+
+### Full EMBER Derived Outputs
+
+Full EMBER evaluations generate **derived artifacts only** (not raw data):
+- Risk scores: `results/*/risk_scores.csv` - Calibrated risk scores per split
+- Diagnostics: `results/*/diagnostics/` - Mapping metrics and statistical tests
+- Mapping metrics: Coverage, DAC, variance reduction metrics in `results/H3_full_evaluation/`
+
+**Raw EMBER JSONL files are excluded by design** due to:
+- Size constraints (~30GB dataset)
+- Licensing considerations
+- Repository hygiene best practices
+
+See `docs/DATA.md` for data availability and exclusion rationale.
+
+These artifacts support H1–H3 evaluation without requiring raw data in Git, enabling reviewers to verify pipeline correctness and scalability while maintaining a manageable repository size.
+
 ## Troubleshooting
 
 ### Data Not Found
