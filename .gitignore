@@ -178,3 +178,6 @@ results/*/*.npz
 !results/.gitkeep
 !results/versions_log.csv
 !results/*/
+# Generated ransomware risk register outputs (do not version)
+register/*.json
+register/**/*.json
