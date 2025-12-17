@@ -1,4 +1,4 @@
-# AICRA – Machine Learning-Based Cyber Risk Advisor for Endpoint Security in U.S. Banking Organizations
+# AICRA – Machine Learning-Based Cyber Risk Advisor with Analytics for Endpoint Security in U.S. Banking Organizations
 
 [![CI](https://github.com/Kolawole-a2/AICRA/actions/workflows/ci.yml/badge.svg)](https://github.com/Kolawole-a2/AICRA/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/aicra/aicra/branch/main/graph/badge.svg)](https://codecov.io/gh/aicra/aicra)
