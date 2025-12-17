@@ -1293,7 +1293,7 @@ aicra/
 
 ### Experimental Design & Novelty
 
-- **Novelty and Discovery Statement:**
+**Novelty and Discovery Statement:**
 
 - Introduces the **Defense–Attack Consistency (DAC) metric**, a novel quantitative measure that evaluates how accurately MITRE ATT&CK techniques align with D3FEND countermeasures within a Cyber Risk Advisor framework
 - Transforms static, undocumented mappings into an **empirical signal**—a measurable indicator of mapping fidelity and decision reliability
@@ -1301,7 +1301,7 @@ aicra/
 - Demonstrates that **higher DAC values directly correlate with greater precision and lower variance** in ransomware risk scores, proving that mapping coherence enhances interpretability and trustworthiness of AI-driven cyber-risk analytics
 - Establishes a **reproducible, data-driven framework** for validating ontology quality, representing the first formal integration of ontology consistency measurement into cyber-defense machine learning research
 
-- **Additional Documentation:**
+**Additional Documentation:**
 - **Threshold/Calibration Novelty**: `docs/novelty_threshold_calibration.md` - Explains how AICRA's threshold optimization goes beyond standard cost-optimization
 - **Adversarial Robustness**: `docs/adversarial_limitations.md` - Documents robustness findings and limitations
 
