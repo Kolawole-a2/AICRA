@@ -1,0 +1,82 @@
+{
+  "smoke_test": {
+    "split": "smoke_test",
+    "n_samples": 200,
+    "n_ransomware": 85,
+    "n_benign": 115,
+    "threshold": 0.5,
+    "auroc": 1.0,
+    "pr_auc": 1.0,
+    "brier_score": 0.0003239915560570316,
+    "ece": 0.0013825851585024043,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "confusion_matrix": {
+      "tn": 115,
+      "fp": 0,
+      "fn": 0,
+      "tp": 85
+    }
+  },
+  "small_ember": {
+    "split": "small_ember",
+    "n_samples": 2000,
+    "n_ransomware": 950,
+    "n_benign": 1050,
+    "threshold": 0.5,
+    "auroc": 0.9999659147869674,
+    "pr_auc": 0.9999621075797068,
+    "brier_score": 0.0014618294350931275,
+    "ece": 0.001766656243221566,
+    "precision": 0.9968487394957983,
+    "recall": 0.9989473684210526,
+    "f1": 0.9978969505783385,
+    "confusion_matrix": {
+      "tn": 1047,
+      "fp": 3,
+      "fn": 1,
+      "tp": 949
+    }
+  },
+  "main": {
+    "split": "main",
+    "n_samples": 10000,
+    "n_ransomware": 4458,
+    "n_benign": 5542,
+    "threshold": 0.5,
+    "auroc": 0.9999896787191703,
+    "pr_auc": 0.9999871623967629,
+    "brier_score": 0.000957680654716363,
+    "ece": 0.0007459276248388398,
+    "precision": 0.9986541049798116,
+    "recall": 0.9986541049798116,
+    "f1": 0.9986541049798116,
+    "confusion_matrix": {
+      "tn": 5536,
+      "fp": 6,
+      "fn": 6,
+      "tp": 4452
+    }
+  },
+  "full_ember": {
+    "split": "full_ember",
+    "n_samples": 50006,
+    "n_ransomware": 23958,
+    "n_benign": 26048,
+    "threshold": 0.5,
+    "auroc": 0.997975729768085,
+    "pr_auc": 0.9978567690632638,
+    "brier_score": 0.014183569452064485,
+    "ece": 0.012211269662148224,
+    "precision": 0.9847468990948709,
+    "recall": 0.980883212288171,
+    "f1": 0.9828112584166283,
+    "confusion_matrix": {
+      "tn": 25684,
+      "fp": 364,
+      "fn": 458,
+      "tp": 23500
+    }
+  }
+}

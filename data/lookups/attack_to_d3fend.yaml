@@ -1,4 +1,4 @@
-__version__: "1.0.0-smoke"
+__version__: "1.1.0-smoke"
 mappings:
   T1486: # Data Encrypted for Impact
     - D3-BDR # Backup Data Recovery
@@ -20,3 +20,11 @@ mappings:
     - D3-EDR # Endpoint Detection and Response
     - D3-SIEM # Security Information and Event Management
     - D3-AV # Antivirus
+  T1055: # Process Injection
+    - D3-FA # File Analysis
+    - D3-PM # Platform Monitoring
+    - D3-UBA # User Behavior Analysis
+  T1027: # Obfuscated Files or Information
+    - D3-FA # File Analysis
+    - D3-PM # Platform Monitoring
+    - D3-UBA # User Behavior Analysis
