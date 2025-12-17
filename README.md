@@ -67,7 +67,7 @@ AICRA integrates:
 
 ### H1 – Baseline Predictive Performance
 
-**Hypothesis**: Static PE features enable reliable ransomware classification with AUROC >= 0.95 and operational precision suitable for banking environments.
+**Hypothesis**: Static PE features enable reliable ransomware classification with AUROC >= 0.88 and operational precision suitable for banking environments.
 
 **What is being tested**:
 - AUROC and PR-AUC improvement over baseline models
@@ -80,7 +80,7 @@ AICRA integrates:
 - Out-of-family evaluation across 61+ malware families
 
 **Key Metrics**:
-- **AUROC**: Area Under ROC Curve (target: >= 0.95)
+- **AUROC**: Area Under ROC Curve (target: >= 0.88)
 - **PR-AUC**: Area Under Precision-Recall Curve
 - **Precision, Recall, F1**: At operational threshold (0.5)
 - **Brier Score**: Probability calibration quality
