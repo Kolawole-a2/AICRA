@@ -30,6 +30,17 @@
   - Run: `python scripts/run_all_hypotheses.py`  
   - Then check: `docs/BENCHMARK_NOTES.md` for a consolidated metric snapshot
 
+- **Optional H1/H2 Rebuild + Ransomware Registers (post‑hoc analysis)**  
+  - Run (from repo root, using existing risk scores only):  
+    - `python scripts/h1h2_rebuild/build_split_manifests.py`  
+    - `python scripts/h1h2_rebuild/train_and_score.py`  
+    - `python scripts/h1h2_rebuild/generate_plots_and_metrics.py`  
+    - `python scripts/validate_deterministic_lookup.py`  
+    - `python scripts/generate_ransomware_only_registers_FINAL.py`  
+    - `python scripts/h1h2_rebuild/aggregate_register_controls.py` (optional aggregated view)  
+  - Outputs: `results/h1h2_rebuild/<split>/metrics.json`, `results/h1h2_rebuild/metrics_summary.json`,  
+    and ransomware‑only registers under `register/h1h2_rebuild/<split>/` and `register/<split>/`.
+
 ---
 
 ## Research Context & Praxis Overview
@@ -326,9 +337,6 @@ python run_h1_h2_experiments.py
 **Command**:
 ```bash
 # Standardized entrypoint (recommended)
-python experiments/h3_mapping_compare.py
-
-# Or using module interface
 python -m aicra.experiments.h3_evaluation --config config/h3_splits.yaml
 
 # Or using the entry point script:
@@ -356,6 +364,20 @@ python run_h3_evaluation.py
 - Variance/IQR Reduction
 - Statistical tests (p-values, confidence intervals)
 
+#### Mapping Artifacts and Versioning (H3)
+
+- **Deterministic mapping (H3 evaluation ground truth)**:  
+  - File: `data/mappings/deterministic_attack_defense_lookup.csv`  
+  - Role: Normative ransomware‑focused ATT&CK→D3FEND ontology used for all H3 metrics.  
+  - The H3 DAC and actionable‑precision results in `results/H3_full_evaluation/` were computed with this fixed CSV (**deterministic lookup v1.0**) and are not affected by later prescriptive updates.
+
+- **Prescriptive deterministic lookup (register enrichment)**:  
+  - File: `data/lookups/attack_to_d3fend.yaml` (`__version__` currently `1.1.0-smoke`).  
+  - Role: Used by the ransomware‑only register pipeline (see below) to expand techniques to D3FEND controls.  
+  - **Versioning statement**:  
+    - *H3 results were computed using deterministic lookup v1.0.*  
+    - *Later versions (v1.1+) extend coverage for prescriptive ransomware‑only registers (e.g., adding controls for T1055 and T1027) and do **not** affect H3 DAC or evaluation metrics.*
+
 ---
 
 ### Running All Experiments
@@ -371,6 +393,88 @@ This will:
 2. Run H2 calibration and thresholding experiment (depends on H1)
 3. Run H3 mapping comparison experiment
 4. Print summary of all results
+
+---
+
+## Optional: H1/H2 Rebuild Pipeline & Ransomware-Only Registers
+
+In addition to the canonical H1/H2/H3 experiments above, the repository includes an **optional post‑hoc H1/H2 rebuild pipeline** under `scripts/h1h2_rebuild/`. This pipeline:
+
+- Reuses the EMBER‑2024 data and LightGBM model to generate **per‑sample scores** on multiple splits (`smoke_test`, `small_ember`, `main`, `full_ember`).
+- Produces **plots and metrics** per split under `results/h1h2_rebuild/<split>/`.
+- Generates **ransomware‑only risk registers** (expanded by deterministic ATT&CK→D3FEND mappings) under:
+  - `register/h1h2_rebuild/<split>/ransomware_only_risk_register.csv` (per‑sample, per‑technique, per‑control)
+  - `register/<split>/ransomware_only_risk_register.csv` (canonical copies, managed by `scripts/generate_ransomware_only_registers_FINAL.py`)
+  - `register/h1h2_rebuild/<split>/ransomware_only_risk_register_AGGREGATED.csv` (one row per fingerprint, with semicolon‑joined techniques and controls)
+
+**Important**: This rebuild pipeline is **read‑only** with respect to H1/H2/H3 experiments:
+
+- It does **not** modify or overwrite:
+  - `results/H1_classification/*`
+  - `results/H2_calibration_thresholds/*`
+  - `results/H3_full_evaluation/*`
+  - Any `results/*/risk_scores.csv` files used by H3.
+- It is purely a **post‑hoc, per‑sample scoring and register enrichment pipeline** for analysis and praxis exposition.
+
+### Commands (from repo root)
+
+```bash
+# 1. Build per-split manifests (train+test combined as full_ember)
+python scripts/h1h2_rebuild/build_split_manifests.py
+
+# 2. Train, calibrate, and score all splits (reuses existing EMBER-2024 data)
+python scripts/h1h2_rebuild/train_and_score.py
+
+# 3. Generate ROC/PR/confusion/reliability plots and metrics per split
+python scripts/h1h2_rebuild/generate_plots_and_metrics.py
+
+# 4. Validate deterministic lookup (attack_to_d3fend.yaml)
+python scripts/validate_deterministic_lookup.py
+
+# 5. Generate ransomware-only registers and copy canonical CSVs under register/<split>/
+python scripts/generate_ransomware_only_registers_FINAL.py
+
+# 6. (Optional) Aggregate to one row per fingerprint with semicolon-joined techniques/controls
+python scripts/h1h2_rebuild/aggregate_register_controls.py
+```
+
+### H1/H2 Rebuild Metrics (Per-Split, Verified)
+
+From `results/h1h2_rebuild/metrics_summary.json`:
+
+- **smoke_test** (200 samples; 85 ransomware / 115 benign)  
+  - AUROC = 1.0000, PR-AUC = 1.0000  
+  - Precision = 1.0000, Recall = 1.0000, F1 = 1.0000  
+  - Brier Score ≈ 0.00032, ECE ≈ 0.00138  
+  - Confusion matrix: TN=115, FP=0, FN=0, TP=85
+
+- **small_ember** (2,000 samples; 950 ransomware / 1,050 benign)  
+  - AUROC ≈ 0.99997, PR-AUC ≈ 0.99996  
+  - Precision ≈ 0.99685, Recall ≈ 0.99895, F1 ≈ 0.99790  
+  - Brier Score ≈ 0.00146, ECE ≈ 0.00177  
+  - Confusion matrix: TN=1,047, FP=3, FN=1, TP=949
+
+- **main** (10,000 samples; 4,458 ransomware / 5,542 benign)  
+  - AUROC ≈ 0.99999, PR-AUC ≈ 0.99999  
+  - Precision ≈ 0.99865, Recall ≈ 0.99865, F1 ≈ 0.99865  
+  - Brier Score ≈ 0.00096, ECE ≈ 0.00075  
+  - Confusion matrix: TN=5,536, FP=6, FN=6, TP=4,452
+
+- **full_ember** (50,006 samples; 23,958 ransomware / 26,048 benign)  
+  - AUROC ≈ 0.99798, PR-AUC ≈ 0.99786  
+  - Precision ≈ 0.98475, Recall ≈ 0.98088, F1 ≈ 0.98281  
+  - Brier Score ≈ 0.01418, ECE ≈ 0.01221  
+  - Confusion matrix: TN=25,684, FP=364, FN=458, TP=23,500
+
+In each split, the **confusion matrix plots** in `results/h1h2_rebuild/<split>/plots/confusion.png` visualize these four numbers:
+- **TN (true negatives)**: benign files correctly predicted as benign (bottom‑right cell).
+- **FP (false positives)**: benign files incorrectly predicted as ransomware (bottom‑left cell).
+- **FN (false negatives)**: ransomware files incorrectly predicted as benign (top‑right cell).
+- **TP (true positives)**: ransomware files correctly predicted as ransomware (top‑left cell).
+
+Across all rebuild splits, the matrices are dominated by high TN/TP counts and very low FP/FN counts, which explains the extremely high Precision/Recall/F1 values above.
+
+Across all rebuild splits, **Precision, Recall, and F1 are well above 0.88**, and **Brier Score / ECE are all well below 0.12**, satisfying the praxis thresholds on realistic datasets, while **not altering** the canonical H1/H2/H3 experiment outputs.
 
 ---
 
@@ -632,8 +736,9 @@ These values are computed from the **actual JSON artifacts in this repository** 
 
 **Key Findings (current repo state)**:
 - **H1**: On the full_ember split, AICRA achieves AUROC of 0.9866 with Precision 0.9459, Recall 0.9363, F1 0.9411, Brier 0.0426, and ECE 0.0066 – all satisfying the ≥88% / <0.12 targets.
-- **H2**: Cost-optimal thresholding under a banking-style cost ratio (FN cost >> FP cost) significantly reduces expected loss vs baseline while maintaining Precision/Recall/F1 ≥ 0.88 and Brier/ECE < 0.12.
+- **H2**: Cost-optimal thresholding under a banking-style cost ratio (FN cost >> FP cost) significantly reduces expected loss vs the F1-optimized baseline (from ≈0.3027 to ≈0.2148 for the calibrated model) while maintaining Precision/Recall/F1 ≥ 0.88 and Brier/ECE < 0.12.
 - **H3**: Deterministic mapping achieves perfect DAC_internal (100%) by construction, validating expert-curated ontology superiority.
+- **Optional H1/H2 rebuild**: Across small_ember, main, and full_ember splits, the rebuild pipeline achieves AUROC in the ≈0.998–1.000 range, Precision/Recall/F1 ≥ 0.98, and Brier/ECE well below 0.02, confirming that the per-sample scoring and ransomware‑only registers are consistent with the main H1/H2 model performance.
 
 For complete results and detailed analysis, see:
 - `results/praxis_validation_report.md` - Comprehensive validation report
