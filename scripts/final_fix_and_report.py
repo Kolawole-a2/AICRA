@@ -78,3 +78,4 @@ with open(output_file, "w", encoding="utf-8") as f:
     f.write("=" * 80 + "\n")
 
 print(f"Report written to: {output_file}")
+

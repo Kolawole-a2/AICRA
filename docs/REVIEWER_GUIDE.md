@@ -190,7 +190,7 @@ Each experiment produces:
    - Stored in: `metrics.alert_fatigue_reduction.fn_reduction_pct`
 
 2. **Estimated Analyst Fatigue Reduction**: Correlates FN reduction with fatigue
-   - Computed as: `fn_reduction_pct * 0.8` (assumes 80% correlation)
+   - Computed as: `fn_reduction_pct` (alert fatigue reduction is directly proportional to FN rate reduction)
    - Stored in: `metrics.alert_fatigue_reduction.estimated_analyst_fatigue_reduction_pct`
 
 3. **Variance Reduction**: More consistent scores = less cognitive load

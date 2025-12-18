@@ -110,3 +110,4 @@ print("1. What values are shown in the plot (from the labels on the bars)?")
 print("2. What values do you EXPECT to see?")
 print("3. Which specific plot file is showing wrong values?")
 print("=" * 80)
+

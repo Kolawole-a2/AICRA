@@ -40,3 +40,4 @@ generate_markdown_report(
 )
 
 print("✓ Markdown summary regenerated successfully!")
+

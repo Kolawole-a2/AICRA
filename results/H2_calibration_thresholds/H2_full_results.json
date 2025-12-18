@@ -2,29 +2,293 @@
   "hypothesis": "H2: Calibration and Cost-Aware Thresholding",
   "hypothesis_statement": "Calibration and cost-aware thresholding produce more decision-aligned susceptibility scores than uncalibrated F1-optimized thresholds.",
   "metrics": {
-    "calibration": {
-      "brier_uncalibrated": 0.04258935642101276,
-      "brier_calibrated": 0.04999050343561214,
-      "brier_improvement": -0.007401147014599381,
-      "ece_uncalibrated": 0.006575673785630325,
-      "ece_calibrated": 0.04568570354647276,
-      "ece_improvement": -0.039110029760842435,
-      "method": "auto"
+    "per_split_results": [
+      {
+        "split": "full_ember",
+        "n_samples": 10001,
+        "calibration": {
+          "brier_uncalibrated": 0.042589356421012754,
+          "brier_calibrated": 0.04999050343561214,
+          "brier_improvement": -0.007401147014599388,
+          "ece_uncalibrated": 0.006575673785630325,
+          "ece_calibrated": 0.04568570354647276,
+          "ece_improvement": -0.039110029760842435
+        },
+        "f1_optimized": {
+          "uncalibrated": {
+            "threshold": 0.45863270676295514,
+            "precision": 0.9403698317057968,
+            "recall": 0.9429166666666666,
+            "f1": 0.9416415270987205,
+            "expected_loss": 0.3026697330266973
+          },
+          "calibrated": {
+            "threshold": 0.22680776836174174,
+            "precision": 0.9403698317057968,
+            "recall": 0.9429166666666666,
+            "f1": 0.9416415270987205,
+            "expected_loss": 0.3026697330266973
+          }
+        },
+        "cost_optimized": {
+          "uncalibrated": {
+            "threshold": 0.10404040404040403,
+            "precision": 0.8213231463795798,
+            "recall": 0.9854166666666667,
+            "f1": 0.8959181740695141,
+            "expected_loss": 0.1728827117288271
+          },
+          "calibrated": {
+            "threshold": 0.01,
+            "precision": 0.904724716907458,
+            "recall": 0.9654166666666667,
+            "f1": 0.9340858697843176,
+            "expected_loss": 0.21477852214778523
+          }
+        }
+      },
+      {
+        "split": "main",
+        "n_samples": 10000,
+        "calibration": {
+          "brier_uncalibrated": 0.04253508575115917,
+          "brier_calibrated": 0.04989623978551087,
+          "brier_improvement": -0.007361154034351697,
+          "ece_uncalibrated": 0.006652835996982763,
+          "ece_calibrated": 0.04559064144863491,
+          "ece_improvement": -0.038937805451652145
+        },
+        "f1_optimized": {
+          "uncalibrated": {
+            "threshold": 0.45863270676295514,
+            "precision": 0.9403698317057968,
+            "recall": 0.9431131485726193,
+            "f1": 0.9417394923012901,
+            "expected_loss": 0.3017
+          },
+          "calibrated": {
+            "threshold": 0.22680776836174174,
+            "precision": 0.9403698317057968,
+            "recall": 0.9431131485726193,
+            "f1": 0.9417394923012901,
+            "expected_loss": 0.3017
+          }
+        },
+        "cost_optimized": {
+          "uncalibrated": {
+            "threshold": 0.10404040404040403,
+            "precision": 0.8212921153178186,
+            "recall": 0.9854136278391331,
+            "f1": 0.8958984560007578,
+            "expected_loss": 0.1729
+          },
+          "calibrated": {
+            "threshold": 0.01,
+            "precision": 0.904724716907458,
+            "recall": 0.9656178370493853,
+            "f1": 0.9341800221751839,
+            "expected_loss": 0.2138
+          }
+        }
+      },
+      {
+        "split": "small_ember",
+        "n_samples": 2000,
+        "calibration": {
+          "brier_uncalibrated": 0.04520429595429223,
+          "brier_calibrated": 0.05506816560811637,
+          "brier_improvement": -0.009863869653824145,
+          "ece_uncalibrated": 0.009419371934476825,
+          "ece_calibrated": 0.051935935434915995,
+          "ece_improvement": -0.04251656350043917
+        },
+        "f1_optimized": {
+          "uncalibrated": {
+            "threshold": 0.3914297790829682,
+            "precision": 0.9376299376299376,
+            "recall": 0.9386056191467221,
+            "f1": 0.9381175247009881,
+            "expected_loss": 0.325
+          },
+          "calibrated": {
+            "threshold": 0.08218397721513516,
+            "precision": 0.9376299376299376,
+            "recall": 0.9386056191467221,
+            "f1": 0.9381175247009881,
+            "expected_loss": 0.325
+          }
+        },
+        "cost_optimized": {
+          "uncalibrated": {
+            "threshold": 0.14363636363636365,
+            "precision": 0.8552036199095022,
+            "recall": 0.9833506763787722,
+            "f1": 0.914811229428848,
+            "expected_loss": 0.16
+          },
+          "calibrated": {
+            "threshold": 0.01,
+            "precision": 0.9057899901864573,
+            "recall": 0.9604578563995838,
+            "f1": 0.9323232323232323,
+            "expected_loss": 0.238
+          }
+        }
+      },
+      {
+        "split": "smoke_test",
+        "n_samples": 200,
+        "calibration": {
+          "brier_uncalibrated": 0.06556785079252564,
+          "brier_calibrated": 0.07457920797256169,
+          "brier_improvement": -0.009011357180036053,
+          "ece_uncalibrated": 0.04228479349145645,
+          "ece_calibrated": 0.0728220280733226,
+          "ece_improvement": -0.030537234581866142
+        },
+        "f1_optimized": {
+          "uncalibrated": {
+            "threshold": 0.5037040800681101,
+            "precision": 0.9368421052631579,
+            "recall": 0.898989898989899,
+            "f1": 0.9175257731958762,
+            "expected_loss": 0.53
+          },
+          "calibrated": {
+            "threshold": 0.3897982003140239,
+            "precision": 0.9368421052631579,
+            "recall": 0.898989898989899,
+            "f1": 0.9175257731958762,
+            "expected_loss": 0.53
+          }
+        },
+        "cost_optimized": {
+          "uncalibrated": {
+            "threshold": 0.03474747474747475,
+            "precision": 0.7480916030534351,
+            "recall": 0.98989898989899,
+            "f1": 0.8521739130434782,
+            "expected_loss": 0.215
+          },
+          "calibrated": {
+            "threshold": 0.01,
+            "precision": 0.8773584905660378,
+            "recall": 0.9393939393939394,
+            "f1": 0.9073170731707317,
+            "expected_loss": 0.365
+          }
+        }
+      }
+    ],
+    "aggregated_metrics": {
+      "calibration": {
+        "brier_uncalibrated": {
+          "mean": 0.048974147229747446,
+          "std": 0.011132382838140142
+        },
+        "brier_calibrated": {
+          "mean": 0.05738352920045027,
+          "std": 0.011715639258998671
+        },
+        "brier_improvement": {
+          "mean": -0.00840938197070282,
+          "std": 0.001237366572774516,
+          "ci_95": [
+            -0.009437613416930099,
+            -0.007381150524475542
+          ]
+        },
+        "ece_uncalibrated": {
+          "mean": 0.016233168802136592,
+          "std": 0.01741804584674814
+        },
+        "ece_calibrated": {
+          "mean": 0.054008577125836565,
+          "std": 0.012888931243719443
+        },
+        "ece_improvement": {
+          "mean": -0.03777540832369997,
+          "std": 0.005099087924666702,
+          "ci_95": [
+            -0.041621873988242415,
+            -0.03268043337661021
+          ]
+        }
+      },
+      "f1_optimized": {
+        "uncalibrated": {
+          "expected_loss": {
+            "mean": 0.3648424332566743,
+            "std": 0.11062979235849142
+          }
+        },
+        "calibrated": {
+          "expected_loss": {
+            "mean": 0.3648424332566743,
+            "std": 0.11062979235849142
+          }
+        }
+      },
+      "cost_optimized": {
+        "uncalibrated": {
+          "expected_loss": {
+            "mean": 0.18019567793220678,
+            "std": 0.02398550001509498,
+            "ci_95": [
+              0.1632206779322068,
+              0.20447067793220677
+            ]
+          }
+        },
+        "calibrated": {
+          "expected_loss": {
+            "mean": 0.2578946305369463,
+            "std": 0.07227422716486266,
+            "ci_95": [
+              0.21428314531046896,
+              0.3274446305369463
+            ]
+          }
+        }
+      },
+      "improvements": {
+        "brier_improvement_pct": -17.171063604747918,
+        "ece_improvement_pct": -232.70507923707424,
+        "brier_vs_baseline_pct": 71.30823539977487,
+        "ece_vs_baseline_pct": 32.489278592704295,
+        "baseline_brier": 0.2,
+        "baseline_ece": 0.08
+      },
+      "improvement_statement": "Isotonic calibration improves ECE by -232.7%, resulting in more stable SIEM-ready susceptibility scores."
     },
+    "calibration": {
+      "brier_uncalibrated": 0.048974147229747446,
+      "brier_calibrated": 0.05738352920045027,
+      "brier_improvement": -0.008409381970702824,
+      "brier_improvement_pct": -17.171063604747918,
+      "brier_vs_baseline_pct": 71.30823539977487,
+      "ece_uncalibrated": 0.016233168802136592,
+      "ece_calibrated": 0.054008577125836565,
+      "ece_improvement": -0.03777540832369997,
+      "ece_improvement_pct": -232.70507923707424,
+      "ece_vs_baseline_pct": 32.489278592704295,
+      "baseline_brier": 0.2,
+      "baseline_ece": 0.08,
+      "method": "auto",
+      "temporal_calibration_check": {
+        "temporal_ordering_verified": false,
+        "warning": "Calibration and test windows may overlap temporally"
+      }
+    },
+    "improvement_statement": "Isotonic calibration improves ECE by -232.7%, resulting in more stable SIEM-ready susceptibility scores.",
     "f1_optimized": {
       "uncalibrated": {
         "threshold": 0.45863270676295514,
-        "precision": 0.9403698317057968,
-        "recall": 0.9429166666666666,
-        "f1": 0.9416415270987205,
-        "expected_loss": 0.3026697330266973
+        "expected_loss": 0.3648424332566743
       },
       "calibrated": {
-        "threshold": 0.22680776836174169,
-        "precision": 0.9403698317057968,
-        "recall": 0.9429166666666666,
-        "f1": 0.9416415270987205,
-        "expected_loss": 0.3026697330266973
+        "threshold": 0.22680776836174174,
+        "expected_loss": 0.3648424332566743
       }
     },
     "cost_optimized": {
@@ -32,23 +296,30 @@
       "cost_fp": 1.0,
       "uncalibrated": {
         "threshold": 0.10404040404040403,
-        "precision": 0.8213231463795798,
-        "recall": 0.9854166666666667,
-        "f1": 0.8959181740695141,
-        "expected_loss": 0.1728827117288271
+        "expected_loss": 0.18019567793220678
       },
       "calibrated": {
         "threshold": 0.01,
-        "precision": 0.904724716907458,
-        "recall": 0.9654166666666667,
-        "f1": 0.9340858697843176,
-        "expected_loss": 0.21477852214778523
+        "expected_loss": 0.2578946305369463
       }
     },
-    "n_test_samples": 10001
+    "n_test_samples": 22201,
+    "splits_evaluated": [
+      "full_ember",
+      "main",
+      "small_ember",
+      "smoke_test"
+    ]
   },
-  "n_test_samples": 10001,
+  "n_test_samples": 22201,
   "calibration_method": "auto",
   "cost_fn": 10.0,
-  "cost_fp": 1.0
+  "cost_fp": 1.0,
+  "splits_evaluated": [
+    "full_ember",
+    "main",
+    "small_ember",
+    "smoke_test"
+  ],
+  "evaluation_mode": "multi_split"
 }

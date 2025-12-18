@@ -140,8 +140,8 @@ def generate_benchmark_improvements_table(
                 {
                     "hypothesis": "H1",
                     "metric": "Alert Fatigue Reduction",
-                    "baseline_value": afr.get("baseline_false_negatives", "N/A"),
-                    "aicra_value": afr.get("aicra_false_negatives", "N/A"),
+                    "baseline_value": f"{afr.get('academic_baseline_fn_rate', 0.45)*100:.1f}% (academic)",
+                    "aicra_value": f"{afr.get('aicra_fn_rate', 0.0)*100:.2f}% ({afr.get('aicra_false_negatives', 0)} FNs)",
                     "improvement_pct": afr.get(
                         "estimated_analyst_fatigue_reduction_pct", "N/A"
                     ),

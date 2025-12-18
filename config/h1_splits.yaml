@@ -1,0 +1,28 @@
+# H1 Multi-Split Evaluation Configuration
+# 
+# This configuration defines multiple evaluation splits for H1 classification experiments.
+# Each split is created from the test set to evaluate robustness across different sample sizes.
+#
+# Splits:
+#   - smoke_test: Smallest split (200 samples) for quick validation
+#   - small_ember: Medium split (2,000 samples) for development
+#   - main: Standard split (10,000 samples) for primary evaluation
+#   - full_ember: Full test set for comprehensive evaluation
+
+splits:
+  smoke_test:
+    description: "Smallest split for quick validation (200 samples)"
+    n_samples: 200
+    
+  small_ember:
+    description: "Medium split for development (2,000 samples)"
+    n_samples: 2000
+    
+  main:
+    description: "Standard split for primary evaluation (10,000 samples)"
+    n_samples: 10000
+    
+  full_ember:
+    description: "Full test set for comprehensive evaluation (all available samples)"
+    n_samples: null  # null means use all available test samples
+

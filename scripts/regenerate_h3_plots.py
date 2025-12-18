@@ -35,3 +35,4 @@ print(f"Regenerating plots to: {output_dir / 'plots'}")
 create_plots(all_results, aggregated, output_dir)
 
 print("✓ Plots regenerated successfully!")
+
