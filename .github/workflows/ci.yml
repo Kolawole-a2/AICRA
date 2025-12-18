@@ -13,6 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -345,3 +346,4 @@ jobs:
       - name: Skip Sonar (token not set)
         if: ${{ env.SONAR_TOKEN == '' }}
         run: echo "Skipping Sonar because SONAR_TOKEN is not set."
+ not set."
