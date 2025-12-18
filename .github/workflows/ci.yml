@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 jobs:
   guardrails:
@@ -204,7 +204,7 @@ jobs:
           fi
           pip install mypy
 
-      - name: Run mypy (fail only if you want strict gating)
+      - name: Run mypy (warn-only)
         run: |
           mypy aicra || echo "⚠️ mypy reported issues (warn-only)"
 
@@ -330,16 +330,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Better analysis; avoids shallow clone issues
+          fetch-depth: 0
 
       - name: Run SonarCloud Scan
-        if: ${{ secrets.SONAR_TOKEN != '' }}
+        if: ${{ secrets.SONAR_TOKEN }}
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Skip Sonar (token not set)
-        if: ${{ secrets.SONAR_TOKEN == '' }}
-        run: echo "Skipping Sonar: SONAR_TOKEN not set"
-
+        if: ${{ !secrets.SONAR_TOKEN }}
+        run: |
+          echo "Skipping Sonar because SONAR_TOKEN is not set."
