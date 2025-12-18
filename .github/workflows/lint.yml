@@ -1,36 +1,57 @@
-name: Python Lint
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
   lint:
+    name: Lint (ruff/black/isort/pylint)
     runs-on: ubuntu-latest
+    env:
+      PYTHON_VERSION: "3.11"
+      LINT_PATHS: "aicra experiments scripts tests"
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      - name: Cache dependencies
-        uses: actions/cache@v3
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cache pip
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          key: ${{ runner.os }}-pip-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
           restore-keys: |
-            ${{ runner.os }}-pip-
-      - name: Install dependencies
+            ${{ runner.os }}-pip-${{ env.PYTHON_VERSION }}-
+
+      - name: Install lint tooling
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements-dev.txt || pip install -r requirements.txt
-      - name: Run ruff check
+          if [ -f "requirements-dev.txt" ]; then
+            pip install -r requirements-dev.txt
+          elif [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+          fi
+          pip install ruff black isort pylint
+
+      # If you use ruff formatting, keep this; otherwise remove it and rely on black.
+      - name: Ruff format (check)
         run: |
-          ruff check aicra/ experiments/ scripts/ || (echo "Ruff found issues" && exit 1)
-          echo "Ruff check passed"
-      - name: Run ruff format check
+          echo "==> ruff format (check)"
+          ruff format --check ${{ env.LINT_PATHS }}
+
+      - name: Ruff lint (check)
         run: |
-          ruff format --check aicra/ experiments/ scripts/ || (echo "Ruff format check failed" && exit 1)
-          echo "Ruff format check passed"
+          echo "==> ruff check"
+          ruff check ${{ env.LINT_PATHS }}
+
+      - name: Black (check)
+        run: |
+          echo "==> black --check"
+          black --check ${{ env.LINT_PATHS }}
+
+      - name: Isort (check)
+        run: |
+          echo "==> isort --check-only"
+          isort --check-only ${{ env.LINT_PATHS }}
+
+      - name: Pylint (warn-only)
+        run: |
+          echo "==> pylint (warn-only)"
+          pylint aicra || echo "⚠️ pylint reported issues (warn-only)"
