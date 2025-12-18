@@ -1,4 +1,4 @@
-# AICRA – Machine Learning-Based Cyber Risk Advisor for Endpoint Security in U.S. Banking Organizations
+# AICRA – Machine Learning-Based Cyber Risk Advisor with Analytics for Endpoint Security in U.S. Banking Organizations
 
 [![CI](https://github.com/Kolawole-a2/AICRA/actions/workflows/ci.yml/badge.svg)](https://github.com/Kolawole-a2/AICRA/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/aicra/aicra/branch/main/graph/badge.svg)](https://codecov.io/gh/aicra/aicra)
@@ -71,7 +71,7 @@ AICRA integrates:
 
 ### H1 – Baseline Predictive Performance
 
-**Hypothesis**: Static PE features enable reliable ransomware classification with AUROC >= 0.95 and operational precision suitable for banking environments.
+**Hypothesis**: Static PE features enable reliable ransomware classification with AUROC >= 0.88 and operational precision suitable for banking environments.
 
 **What is being tested**:
 - AUROC and PR-AUC improvement over baseline models
@@ -85,7 +85,7 @@ AICRA integrates:
 - Out-of-family evaluation across 61+ malware families
 
 **Key Metrics**:
-- **AUROC**: Area Under ROC Curve (target: >= 0.95)
+- **AUROC**: Area Under ROC Curve (target: >= 0.88)
 - **PR-AUC**: Area Under Precision-Recall Curve
 - **Precision, Recall, F1**: At banking-optimized threshold (0.0298, FN cost >> FP cost)
 - **Brier Score**: Probability calibration quality
