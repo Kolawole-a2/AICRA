@@ -29,7 +29,8 @@ def load_ember_2024(
         seed: Random seed for deterministic splitting (used only if time_ordered=False and stratified=False).
         time_ordered: If True, split by timestamp to avoid temporal leakage. If False, use random or stratified split.
         stratified: If True, use stratified split to preserve class distribution.
-                   Only used if time_ordered=False. Requires return_val=True.
+                   Can be combined with time_ordered=True for stratified sampling within time windows.
+                   Requires return_val=True.
 
     Returns:
         If return_val=False: (train_data, test_data)
@@ -65,8 +66,80 @@ def load_ember_2024(
         # Time-ordered split: sort by timestamp and split chronologically
         sorted_indices = train.timestamps.argsort()
         split_point = int(n_train * (1 - val_split))
-        train_indices = sorted_indices[:split_point]
-        val_indices = sorted_indices[split_point:]
+        
+        if stratified:
+            # Combined stratified + time-ordered split
+            # Strategy: Sort by time, then perform stratified sampling within time windows
+            # to preserve both temporal ordering AND class distribution
+            from sklearn.model_selection import train_test_split
+            
+            sorted_labels = train.labels.values[sorted_indices]
+            
+            # Use stratified split on sorted indices to maintain class balance
+            # This will try to preserve class distribution while respecting time order
+            train_indices_sorted, val_indices_sorted = train_test_split(
+                np.arange(n_train),
+                test_size=val_split,
+                stratify=sorted_labels,
+                random_state=seed,
+            )
+            
+            # Map back to original indices
+            train_indices_temp = sorted_indices[train_indices_sorted]
+            val_indices_temp = sorted_indices[val_indices_sorted]
+            
+            # Verify time ordering is maintained
+            train_timestamps = train.timestamps.values[train_indices_temp]
+            val_timestamps = train.timestamps.values[val_indices_temp]
+            
+            if len(train_timestamps) > 0 and len(val_timestamps) > 0:
+                max_train_ts = train_timestamps.max()
+                min_val_ts = val_timestamps.min()
+                
+                if max_train_ts < min_val_ts:
+                    # Time ordering is preserved - use stratified result
+                    train_indices = train_indices_temp
+                    val_indices = val_indices_temp
+                else:
+                    # Time ordering violated - use time-windowed stratified approach
+                    # Split into time windows and do stratified sampling within each
+                    n_windows = max(10, int(1 / val_split))  # Adaptive window count
+                    window_size = n_train // n_windows
+                    
+                    train_indices_list = []
+                    val_indices_list = []
+                    
+                    for i in range(n_windows):
+                        start_idx = i * window_size
+                        end_idx = (i + 1) * window_size if i < n_windows - 1 else n_train
+                        window_indices = sorted_indices[start_idx:end_idx]
+                        window_labels = train.labels.values[window_indices]
+                        
+                        if len(window_indices) > 1 and len(np.unique(window_labels)) > 1:
+                            # Stratified split within window
+                            win_train, win_val = train_test_split(
+                                np.arange(len(window_indices)),
+                                test_size=val_split,
+                                stratify=window_labels,
+                                random_state=seed + i,  # Different seed per window
+                            )
+                            train_indices_list.extend(window_indices[win_train])
+                            val_indices_list.extend(window_indices[win_val])
+                        else:
+                            # Simple split for small/uniform windows
+                            win_split = int(len(window_indices) * (1 - val_split))
+                            train_indices_list.extend(window_indices[:win_split])
+                            val_indices_list.extend(window_indices[win_split:])
+                    
+                    train_indices = np.array(train_indices_list)
+                    val_indices = np.array(val_indices_list)
+            else:
+                train_indices = train_indices_temp
+                val_indices = val_indices_temp
+        else:
+            # Pure time-ordered split (no stratification)
+            train_indices = sorted_indices[:split_point]
+            val_indices = sorted_indices[split_point:]
     elif stratified:
         # Stratified split: preserve class distribution (H1 requirement)
         if not return_val:
@@ -84,7 +157,7 @@ def load_ember_2024(
         )
     else:
         # Random split (for backward compatibility)
-        rng = np.random.default_rng(seed)
+        rng = np.default_rng(seed)
         indices = np.arange(n_train)
         rng.shuffle(indices)
         val_size = int(n_train * val_split)

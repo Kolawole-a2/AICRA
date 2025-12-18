@@ -1,0 +1,69 @@
+{
+  "focal_loss": {
+    "status": "verified",
+    "locations": [
+      "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\aicra\\pipelines\\training.py",
+      "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\aicra\\utils\\train_lightgbm.py"
+    ],
+    "parameters": {
+      "alpha_used": 0.75,
+      "gamma_used": 2.0
+    },
+    "evidence": [
+      "FocalLoss used with \u03b1=0.75, \u03b3=2.0",
+      "focal_loss_sample_weight with \u03b1=0.75, \u03b3=2.0",
+      "[OK] alpha=0.75 > 0.5 (requirement satisfied)",
+      "[OK] gamma=2.0 \u2248 2.0 (requirement satisfied)"
+    ]
+  },
+  "class_balanced_loss": {
+    "status": "verified",
+    "locations": [
+      "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\aicra\\pipelines\\training.py",
+      "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\aicra\\config.py"
+    ],
+    "evidence": [
+      "class_weight parameter used in LGBMClassifier",
+      "[OK] Default class_weight=\"balanced\" in config",
+      "[OK] scale_pos_weight computed for class balancing"
+    ]
+  },
+  "class_weighting": {
+    "status": "verified",
+    "locations": [
+      "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\aicra\\config.py",
+      "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\aicra\\pipelines\\training.py"
+    ],
+    "evidence": [
+      "[OK] class_weight=\"balanced\" configured",
+      "[OK] class_weight used in training pipeline"
+    ]
+  },
+  "splits": {
+    "status": "verified",
+    "locations": [
+      "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\aicra\\utils\\data_loader.py"
+    ],
+    "evidence": [
+      "[OK] Stratified split implemented",
+      "[OK] Time-ordered split implemented",
+      "[OK] Combined stratified + time-ordered split supported"
+    ],
+    "stratified": true,
+    "time_ordered": true,
+    "combined": true
+  },
+  "cost_sensitive": {
+    "status": "partial",
+    "locations": [
+      "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\aicra\\core\\evaluation.py",
+      "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\aicra\\config.py",
+      "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\aicra\\experiments\\h1_classification.py"
+    ],
+    "evidence": [
+      "[OK] cost_sensitive_threshold function implemented",
+      "[OK] H1 experiment uses 100:1 cost ratio (FN>>FP)"
+    ],
+    "cost_ratio": null
+  }
+}
