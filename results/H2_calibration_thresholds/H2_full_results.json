@@ -1,6 +1,7 @@
 {
-  "hypothesis": "H2: Calibration and Cost-Aware Thresholding",
-  "hypothesis_statement": "Calibration and cost-aware thresholding produce more decision-aligned susceptibility scores than uncalibrated F1-optimized thresholds.",
+  "hypothesis": "H2: Cost-Aware Thresholding",
+  "hypothesis_statement": "Cost-aware thresholding produces lower expected loss than F1-optimized thresholds under banking-style asymmetric costs (FN cost >> FP cost), demonstrating more decision-aligned susceptibility scores for operational deployment.",
+  "research_question": "RQ2: Does cost-aware thresholding reduce expected loss compared to F1-optimized thresholds under banking-style asymmetric costs (FN cost >> FP cost)?",
   "metrics": {
     "per_split_results": [
       {

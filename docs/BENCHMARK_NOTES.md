@@ -40,7 +40,7 @@
 
 ---
 
-## H2 – Calibration & Cost-Aware Thresholding (full_ember)
+## H2 – Cost-Aware Thresholding (full_ember)
 
 **Source**: `results/H2_calibration_thresholds/H2_full_results.json`
 

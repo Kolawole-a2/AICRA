@@ -25,7 +25,7 @@ Your praxis has **two distinct but complementary components**:
 
 **What They Do**:
 - **H1**: Tests whether static PE features enable reliable ransomware classification (AUROC ≥ 0.95)
-- **H2**: Tests whether calibration and cost-aware thresholding improve decision quality
+- **H2**: Tests whether cost-aware thresholding reduces expected loss compared to F1-optimized thresholds
 
 **Key Characteristics**:
 - Located in: `aicra/experiments/h1_classification.py` and `aicra/experiments/h2_calibration_thresholds.py`

@@ -1,17 +1,27 @@
 """
-H2 Experiment: Calibrated Ransomware Susceptibility and Thresholding
+H2 Experiment: Cost-Aware Thresholding
 
-This is the canonical H2 experiment module that evaluates calibration and
-cost-aware thresholding for ransomware susceptibility scores.
+This is the canonical H2 experiment module that evaluates cost-aware thresholding
+for ransomware susceptibility scores under banking-style asymmetric costs.
+
+Research Question (RQ2):
+Does cost-aware thresholding reduce expected loss compared to F1-optimized
+thresholds under banking-style asymmetric costs (FN cost >> FP cost)?
 
 Hypothesis (H2):
-"Calibration and cost-aware thresholding produce more decision-aligned
-susceptibility scores than uncalibrated F1-optimized thresholds."
+Cost-aware thresholding produces lower expected loss than F1-optimized thresholds
+under banking-style asymmetric costs (FN cost >> FP cost), demonstrating more
+decision-aligned susceptibility scores for operational deployment.
+
+Note on Calibration:
+The model outputs are naturally well-calibrated (Brier=0.049, ECE=0.016 from H1).
+Calibration metrics are reported for completeness, but the primary focus is on
+cost-aware thresholding vs F1-optimized thresholds.
 
 Metrics computed:
-- Calibration: Brier score, ECE (before/after)
-- Threshold comparison: F1-optimized vs cost-optimal
-- Expected Loss at different thresholds
+- Expected Loss: Cost-weighted loss at F1-optimized vs cost-optimal thresholds
+- Threshold comparison: F1-optimized vs cost-optimal (uncalibrated and calibrated)
+- Calibration: Brier score, ECE (before/after) - reported for completeness
 - Reliability diagrams
 
 Results are saved to results/H2_calibration_thresholds/

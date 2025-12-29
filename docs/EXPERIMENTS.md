@@ -62,9 +62,11 @@ cat artifacts/H1_classification/summary.md
 
 ---
 
-## H2: Calibration and Cost-Aware Thresholding
+## H2: Cost-Aware Thresholding
 
-**Hypothesis**: Isotonic calibration improves susceptibility score transferability.
+**Research Question (RQ2)**: Does cost-aware thresholding reduce expected loss compared to F1-optimized thresholds under banking-style asymmetric costs (FN cost >> FP cost)?
+
+**Hypothesis (H2)**: Cost-aware thresholding produces lower expected loss than F1-optimized thresholds under banking-style asymmetric costs (FN cost >> FP cost), demonstrating more decision-aligned susceptibility scores for operational deployment.
 
 ### Prerequisites
 

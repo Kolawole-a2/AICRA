@@ -1,0 +1,163 @@
+{
+  "H1": {
+    "hypothesis": "H1",
+    "tests": {
+      "auroc_vs_088": {
+        "null_hypothesis": "mean(AUROC) <= 0.88",
+        "alternative_hypothesis": "mean(AUROC) > 0.88",
+        "observed_mean": 0.9605117862853629,
+        "observed_std": 0.02935525632297681,
+        "threshold": 0.88,
+        "n_splits": 4,
+        "ttest_pvalue": 0.005958872701996557,
+        "bootstrap_pvalue": 0.0,
+        "bootstrap_ci_95": [
+          0.9331425681685901,
+          0.9795828072736095
+        ],
+        "decision_alpha_005": "reject"
+      },
+      "auroc_vs_095": {
+        "null_hypothesis": "mean(AUROC) <= 0.95",
+        "alternative_hypothesis": "mean(AUROC) > 0.95",
+        "observed_mean": 0.9605117862853629,
+        "threshold": 0.95,
+        "ttest_pvalue": 0.26279843750650644,
+        "bootstrap_pvalue": 0.26392639263926393,
+        "decision_alpha_005": "fail_to_reject"
+      },
+      "f1_vs_088": {
+        "null_hypothesis": "mean(F1) <= 0.88",
+        "alternative_hypothesis": "mean(F1) > 0.88",
+        "observed_mean": 0.7793968809269454,
+        "threshold": 0.88,
+        "ttest_pvalue": 0.9975814467694063,
+        "bootstrap_pvalue": 1.0,
+        "bootstrap_ci_95": [
+          0.7565479822191232,
+          0.7989540220013249
+        ],
+        "decision_alpha_005": "fail_to_reject"
+      },
+      "auroc_vs_random": {
+        "null_hypothesis": "mean(AUROC) <= 0.5",
+        "alternative_hypothesis": "mean(AUROC) > 0.5",
+        "observed_mean": 0.9605117862853629,
+        "ttest_pvalue": 3.557133609295184e-05,
+        "decision_alpha_005": "reject"
+      }
+    },
+    "data_source": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\results\\H1_classification\\H1_full_results.json"
+  },
+  "H2": {
+    "hypothesis": "H2",
+    "tests": {
+      "expected_loss_uncalibrated": {
+        "null_hypothesis": "mean(expected_loss_cost_optimized) >= mean(expected_loss_f1_optimized)",
+        "alternative_hypothesis": "mean(expected_loss_cost_optimized) < mean(expected_loss_f1_optimized)",
+        "observed_mean_f1": 0.3648424332566743,
+        "observed_mean_cost": 0.18019567793220678,
+        "mean_difference": 0.1846467553244676,
+        "n_splits": 4,
+        "paired_ttest_pvalue": 0.012536355919882707,
+        "wilcoxon_pvalue": 0.0625,
+        "decision_alpha_005": "reject",
+        "note": "PRIMARY TEST: Cost-optimized thresholds reduce expected loss (decision-aligned metric)"
+      },
+      "expected_loss_calibrated": {
+        "null_hypothesis": "mean(expected_loss_cost_optimized) >= mean(expected_loss_f1_optimized)",
+        "alternative_hypothesis": "mean(expected_loss_cost_optimized) < mean(expected_loss_f1_optimized)",
+        "observed_mean_f1": 0.3648424332566743,
+        "observed_mean_cost": 0.2578946305369463,
+        "mean_difference": 0.10694780271972804,
+        "n_splits": 4,
+        "paired_ttest_pvalue": 0.005836253138684789,
+        "wilcoxon_pvalue": 0.0625,
+        "decision_alpha_005": "reject",
+        "note": "PRIMARY TEST: Cost-optimized thresholds reduce expected loss (decision-aligned metric)"
+      },
+      "brier_improvement": {
+        "null_hypothesis": "mean(Brier_calibrated) >= mean(Brier_uncalibrated)",
+        "alternative_hypothesis": "mean(Brier_calibrated) < mean(Brier_uncalibrated)",
+        "observed_mean_uncal": 0.048974147229747446,
+        "observed_mean_cal": 0.05738352920045027,
+        "mean_difference": -0.00840938197070282,
+        "n_splits": 4,
+        "paired_ttest_pvalue": 0.9995693193760196,
+        "wilcoxon_pvalue": 1.0,
+        "decision_alpha_005": "fail_to_reject",
+        "note": "SECONDARY TEST: Negative improvement indicates calibration increased Brier score"
+      },
+      "ece_improvement": {
+        "null_hypothesis": "mean(ECE_calibrated) >= mean(ECE_uncalibrated)",
+        "alternative_hypothesis": "mean(ECE_calibrated) < mean(ECE_uncalibrated)",
+        "observed_mean_uncal": 0.016233168802136592,
+        "observed_mean_cal": 0.054008577125836565,
+        "mean_difference": -0.03777540832369997,
+        "n_splits": 4,
+        "paired_ttest_pvalue": 0.9996664780805942,
+        "wilcoxon_pvalue": 1.0,
+        "decision_alpha_005": "fail_to_reject",
+        "note": "SECONDARY TEST: Negative improvement indicates calibration increased ECE"
+      },
+      "calibrated_vs_uncalibrated_cost_optimized": {
+        "null_hypothesis": "mean(cost_optimized_calibrated) >= mean(cost_optimized_uncalibrated)",
+        "alternative_hypothesis": "mean(cost_optimized_calibrated) < mean(cost_optimized_uncalibrated)",
+        "observed_mean_uncal": 0.18019567793220678,
+        "observed_mean_cal": 0.2578946305369463,
+        "mean_difference": 0.07769895260473952,
+        "percent_change": 43.119209903564624,
+        "n_splits": 4,
+        "paired_ttest_pvalue": 0.9719615091003664,
+        "wilcoxon_pvalue": 1.0,
+        "decision_alpha_005": "fail_to_reject",
+        "note": "DIRECT COMPARISON: Tests if calibration improves cost-optimized expected loss. Positive difference means calibration worsened performance."
+      }
+    },
+    "data_source": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\results\\H2_calibration_thresholds\\H2_full_results.json"
+  },
+  "H3": {
+    "hypothesis": "H3",
+    "tests": {
+      "coverage": {
+        "null_hypothesis": "mean(Coverage_deterministic) <= mean(Coverage_learned)",
+        "alternative_hypothesis": "mean(Coverage_deterministic) > mean(Coverage_learned)",
+        "observed_mean_det": 100.0,
+        "observed_mean_learned": 100.0,
+        "mean_difference": 0.0,
+        "n_splits": 4,
+        "paired_ttest_pvalue": 1.0,
+        "wilcoxon_pvalue": 1.0,
+        "decision_alpha_005": "not_applicable",
+        "note": "Both mappings achieve 100% coverage - no difference to test"
+      },
+      "dac": {
+        "null_hypothesis": "mean(DAC_deterministic) <= mean(DAC_learned)",
+        "alternative_hypothesis": "mean(DAC_deterministic) > mean(DAC_learned)",
+        "observed_mean_det": 100.0,
+        "observed_mean_learned": 0.0,
+        "mean_difference": 100.0,
+        "n_splits": 4,
+        "paired_ttest_pvalue": 0.0,
+        "wilcoxon_pvalue": 0.0,
+        "decision_alpha_005": "reject",
+        "note": "Deterministic DAC=100% by definition, Learned DAC=0% - perfect separation"
+      },
+      "precision": {
+        "null_hypothesis": "mean(Precision_deterministic) <= mean(Precision_learned)",
+        "alternative_hypothesis": "mean(Precision_deterministic) > mean(Precision_learned)",
+        "observed_mean_det": 0.75,
+        "observed_mean_learned": 0.0,
+        "mean_difference": 0.75,
+        "n_splits": 4,
+        "n_valid_splits": 3,
+        "paired_ttest_pvalue": 0.0,
+        "wilcoxon_pvalue": 0.125,
+        "decision_alpha_005": "reject",
+        "note": "Deterministic precision > Learned precision in all valid splits"
+      }
+    },
+    "data_source": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\results\\H3_full_evaluation\\H3_full_results.json",
+    "variance_reduction_note": "Variance reduction is 0.0% for both mappings - this is expected as mappings are semantic overlays that do not change underlying risk score distributions. No statistical test is meaningful for this metric."
+  }
+}
