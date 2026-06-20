@@ -10,6 +10,7 @@ env:
   MPLBACKEND: Agg
   AICRA_RUN_REAL_DATA_TESTS: "0"
   AICRA_FORCE_TFIDF_MAPPING: "1"
+  MLFLOW_ALLOW_FILE_STORE: "true"
 
 jobs:
   guardrails:
