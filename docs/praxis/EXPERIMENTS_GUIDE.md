@@ -27,7 +27,7 @@ python -m aicra.experiments.h1_classification \
 
 **Outputs:** `results/H1_classification/H1_full_results.json`, `H1_summary.md`
 
-**Primary metric:** AUROC (multi-split + time-ordered train/test)
+**Primary metric:** AUROC (reliability benchmark **> 0.88**; validated on time-ordered + multi-split + supplementary OOF)
 
 **Supplementary OOF evaluation (does not overwrite canonical H1):**
 
@@ -37,7 +37,7 @@ python scripts/evaluate_h1_oof_robust.py
 
 Outputs: `results/H1_oof_robust_eval/`
 
-## H2 — Calibration & cost-aware thresholding
+## H2 — Post-hoc calibration test (Platt/isotonic) & cost-aware thresholding
 
 Requires H1 probabilities. Run after H1.
 
@@ -51,6 +51,8 @@ python -m aicra.experiments.h2_calibration_thresholds \
 
 **Primary metric:** Expected loss (cost-optimal vs F1-optimal threshold)
 
+**Calibration:** Platt/isotonic applied post hoc **to test whether calibration helps**; reported for Brier/ECE/expected loss. Finding: no expected-loss improvement (model already well-calibrated from H1).
+
 ## H3 — Deterministic vs learned mapping
 
 ```bash
@@ -62,6 +64,8 @@ python run_h3_evaluation.py
 **Outputs:** `results/H3_full_evaluation/H3_full_results.json`, `H3_full_summary.md`
 
 **Primary metric:** DAC_internal (deterministic vs learned)
+
+**Variance:** 0.0 on all splits for both mappings (deterministic always correct, learned always extraneous). H3 validated via perfect separation—not variance-reduction tests.
 
 **Secondary benchmark:** DAC_external vs `d3fend_reference_pairs.csv` (exported from `data/lookups/attack_to_d3fend.yaml`). External reference is a supplementary sanity check, not primary H3 ground truth.
 

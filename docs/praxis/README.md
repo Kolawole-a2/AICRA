@@ -28,7 +28,7 @@ Central index for the Doctor of Engineering praxis (production) by **Kolawole Af
 
 | Document | Purpose |
 |----------|---------|
-| [../HYPOTHESIS_TESTING_PVALUES.md](../HYPOTHESIS_TESTING_PVALUES.md) | P-value methodology |
+| [../HYPOTHESIS_TESTING_PVALUES.md](../HYPOTHESIS_TESTING_PVALUES.md) | P-value methodology (H1 benchmark **> 0.88**; H2 calibration **help test**; H3 perfect separation when variance is zero) |
 | [../h3_dac_statistical_validation.md](../h3_dac_statistical_validation.md) | H3 DAC statistical tests |
 | `results/pvalues_summary.json` | Computed p-values (if present) |
 

@@ -73,15 +73,11 @@ This alignment ensures:
 - **Actionability:** Risk scores map to prescriptive controls
 - **Regulatory compliance:** Decisions align with banking risk frameworks
 
-### 4. Calibration for SIEM Transferability
+### 4. Calibration Help Test (H2)
 
-AICRA uses **Isotonic calibration** to produce **SIEM-ready susceptibility scores**:
+H2 applies **Platt/isotonic regression post hoc to test whether calibration helps** Brier, ECE, and expected loss. H1 already shows strong natural calibration (low Brier/ECE). The help test finding: post-hoc calibration does **not** improve expected loss on this model; primary H2 operational value is **cost-aware thresholding**, not assumed calibration benefit.
 
-- Calibrated scores `S ∈ [0,1]` are **well-calibrated probabilities- Low ECE (Expected Calibration Error) ensures scores are **reliable for operational use- Temporal calibration evaluation detects **drift** over time
-
-This is **novel** in the context of:
-- **Transferability:** Scores work in SIEM pipelines without re-calibration
-- **Temporal robustness:** Calibration stability over time windows
+Temporal calibration evaluation in H2 still detects **drift** over time for monitoring purposes.
 
 ## Formula Summary
 

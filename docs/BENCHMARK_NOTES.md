@@ -17,9 +17,9 @@
 - Test samples: 10,001
 - Model: LightGBM (static PE features)
 
-**Core Metrics**:
-- **AUROC**: 0.9866
-- **PR-AUC**: 0.9869
+**Core Metrics** (full_ember split):
+- **AUROC**: 0.9796
+- **PR-AUC**: 0.9768
 - **Precision**: 0.9459
 - **Recall**: 0.9363
 - **F1**: 0.9411
@@ -34,13 +34,14 @@
 - **ECE < 0.12** → 0.0066 (**PASS**)
 
 **Interpretation**:
-- H1 comfortably exceeds the AUROC ≥ 0.95 target.
-- Precision/Recall/F1 all exceed 0.93 on the full_ember evaluation.
-- Probability calibration is strong (very low Brier and ECE).
+- H1 exceeds the **> 0.88 AUROC reliability benchmark** (not 0.85) and the ≥ 0.95 design target on full_ember.
+- Validated across **time-ordered** train/test, **multi-split** evaluation (mean AUROC 0.9605), and supplementary **out-of-family** test (OOF AUROC 0.9615; `results/H1_oof_robust_eval/`).
+- Empirical logistic baseline AUROC ≈ 0.778 on the same split (+25.9% lift).
+- Probability outputs are naturally well-calibrated (very low Brier and ECE from H1).
 
 ---
 
-## H2 – Cost-Aware Thresholding (full_ember)
+## H2 – Post-Hoc Calibration Test & Cost-Aware Thresholding (full_ember)
 
 **Source**: `results/H2_calibration_thresholds/H2_full_results.json`
 
@@ -48,7 +49,9 @@
 - Test samples: 10,001
 - Cost parameters: FN cost = 10.0, FP cost = 1.0
 
-### Calibration Metrics
+### Calibration Metrics (help test — not assumed benefit)
+
+Platt/isotonic regression applied post hoc **to test whether calibration improves** reported metrics. Finding: model already well-calibrated from H1; calibration does not improve expected loss (primary H2 comparison remains cost-optimal vs F1-optimal thresholds).
 
 - **Brier (uncalibrated)**: 0.0426  
 - **Brier (calibrated)**: 0.0500  
@@ -96,13 +99,15 @@ All Brier/ECE values are **below 0.12**, satisfying the calibration target.
 - Expected Loss: 0.2148  
 
 **Interpretation**:
-- The F1-optimized setting yields Precision/Recall/F1 all above 0.94 with strong calibration.
-- The cost-optimal setting (uncalibrated) minimizes expected loss under FN≫FP, still maintaining F1 ≈ 0.896 and very high recall (~0.99).
-- Calibrated cost-optimal thresholds trade a small loss in expected loss for higher precision/recall and F1 (>0.93).
+- Primary H2 finding: cost-optimal (uncalibrated) minimizes expected loss under FN≫FP while maintaining high recall (~0.99).
+- Post-hoc calibration **help test**: does not improve expected loss on this model (already well-calibrated from H1).
+- Calibrated cost-optimal thresholds trade a small change in expected loss for different precision/recall balance.
 
 ---
 
 ## H3 – Deterministic vs Learned Mapping (DAC)
+
+**Variance note**: Across all splits, deterministic mapping is always correct (100% DAC_internal) and learned is always extraneous (0%). Variance reduction is **0.0 for both**; t-test, Wilcoxon, and Shapiro–Wilk on variance reduction are **not applicable**. H3 validated via perfect separation and deterministic dominance.
 
 **Source**: `results/H3_full_evaluation/H3_full_results.json`
 

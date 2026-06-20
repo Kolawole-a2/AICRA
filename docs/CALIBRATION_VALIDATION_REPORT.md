@@ -1,11 +1,14 @@
 # Calibration Validation Report for H2
 
+> **Scope:** H2 applies Platt/isotonic regression **post hoc to test whether calibration helps** (Brier, ECE, expected loss). Primary H2 hypothesis and praxis conclusion focus on **cost-optimal vs F1-optimal expected loss**. Finding: H1 outputs are already well-calibrated; post-hoc calibration does **not** improve expected loss on this model.
+
 ## Executive Summary
 
-**Calibration Implementation**: ✅ **CORRECT**Calibration Improves Risk Classification**: ✅ **YES** (Precision +8.7%, F1 +3.7%)  
-**Calibration Improves Expected Loss**: ❌ **NO** (Expected Loss +43.1%)
+**Calibration Implementation**: ✅ **CORRECT**  
+**Calibration help test (classification metrics)**: Mixed (precision/F1 may improve at some thresholds)  
+**Calibration Improves Expected Loss**: ❌ **NO** (Expected Loss +43.1% at cost-optimal calibrated threshold)
 
-**Key Finding**: Calibration improves classification metrics (precision, F1) but worsens cost-weighted expected loss due to reduced recall, which is critical for banking where false negatives are extremely costly.
+**Key Finding**: Post-hoc calibration was evaluated to test whether it helps; it does **not** improve cost-weighted expected loss (primary H2 metric) because reduced recall at cost-optimal thresholds is critical for banking where false negatives are extremely costly.
 
 ---
 

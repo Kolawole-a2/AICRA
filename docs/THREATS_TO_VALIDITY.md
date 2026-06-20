@@ -135,7 +135,7 @@ Construct validity concerns whether the experimental measures accurately capture
 **Impact**: Proxy measures may not fully capture the true operational impact of alert fatigue reduction.
 
 **Mitigation in AICRA**:
-- Uses multiple proxy measures (FN reduction, variance reduction, expected loss) to triangulate alert fatigue impact
+- Uses multiple proxy measures (FN reduction, expected loss, and reported variance reduction) to triangulate alert fatigue impact. **Note:** H3 variance reduction is 0.0 on all splits; alert-fatigue claims for H3 rest on DAC/precision perfect separation, not variance tests.
 - Expected loss directly incorporates cost structure (FN cost >> FP cost), reflecting operational priorities
 - Variance reduction measures score consistency, which is operationally relevant because inconsistent scores increase analyst cognitive load
 

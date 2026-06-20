@@ -28,9 +28,11 @@ python -m aicra.experiments.h1_classification \
 
 **Outputs:** `results/H1_classification/H1_full_results.json`, `H1_summary.md`
 
-**Key metrics:** AUROC (primary), PR-AUC, Brier, ECE, banking-optimized precision/recall
+**Key metrics:** AUROC (primary; reliability benchmark **> 0.88**), PR-AUC, Brier, ECE, banking-optimized precision/recall
 
-## H2: Calibration & Cost-Aware Thresholding
+**Validation modes:** Time-ordered train/test, multi-split (`config/h1_splits.yaml`), supplementary OOF (`scripts/evaluate_h1_oof_robust.py` → `results/H1_oof_robust_eval/`)
+
+## H2: Post-Hoc Calibration Test & Cost-Aware Thresholding
 
 Run after H1.
 
@@ -42,7 +44,7 @@ python -m aicra.experiments.h2_calibration_thresholds \
 
 **Outputs:** `results/H2_calibration_thresholds/H2_full_results.json`, `H2_summary.md`
 
-**Key metrics:** Expected loss (cost-optimal vs F1-optimal), Brier, ECE
+**Key metrics:** Expected loss (cost-optimal vs F1-optimal, primary); Platt/isotonic calibration **help test** (Brier, ECE—does not improve expected loss on this model)
 
 ## H3: Deterministic vs Learned Mapping
 
@@ -52,7 +54,7 @@ python -m aicra.experiments.h3_evaluation --config config/h3_splits.yaml
 
 **Outputs:** `results/H3_full_evaluation/H3_full_results.json`, `H3_full_summary.md`
 
-**Key metrics:** DAC_internal, actionable precision, variance reduction
+**Key metrics:** DAC_internal (primary), actionable precision; variance reduction reported but 0.0 on all splits (H3 validated via perfect separation)
 
 ## Run all hypotheses
 

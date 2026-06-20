@@ -187,8 +187,7 @@ Each experiment produces:
    - Computed as: `fn_reduction_pct` (alert fatigue reduction is directly proportional to FN rate reduction)
    - Stored in: `metrics.alert_fatigue_reduction.estimated_analyst_fatigue_reduction_pct`
 
-3. **Variance Reduction**: More consistent scores = less cognitive load
-   - Computed as: `100 * (learned_variance - deterministic_variance) / learned_variance`
+3. **Variance reduction (H3)**: Reported for completeness; **0.0 on all splits** for both deterministic and learned mappings. t-test, Wilcoxon, and Shapiro–Wilk on variance reduction are **not applicable**. H3 is validated via perfect separation (deterministic 100% DAC_internal vs learned 0%) and actionable precision—not variance tests.
    - Stored in: `aggregated_metrics.improvements.variance_reduction_pct`
 
 4. **Expected Loss Reduction**: Fewer unnecessary investigations = less analyst time
@@ -227,7 +226,7 @@ Each experiment produces:
 
 2. **Out-of-Family Evaluation**: Tests generalization to malware families not seen during training, simulating zero-day threats.
 
-3. **Temporal Calibration Check**: Validates that calibration parameters transfer across time periods, ensuring score reliability as threat landscape evolves.
+3. **Temporal calibration check (H2 help test)**: Platt/isotonic applied post hoc to test whether calibration improves metrics; finding: model already well-calibrated from H1, so calibration does not improve expected loss.
 
 4. **Ensemble Methods**: Bagged LightGBM (multiple models with different seeds) provides robustness to feature manipulation and distribution shift.
 

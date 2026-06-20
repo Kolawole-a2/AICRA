@@ -25,7 +25,7 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
 
 ### RQ1: Static PE Classification Reliability
 
-**Research Question**: Do static PE features enable reliable ransomware classification with AUROC ≥ 0.88 and operational precision suitable for banking environments under realistic validation (time-ordered and out-of-family splits)?
+**Research Question**: Do static PE features enable reliable ransomware classification with AUROC > 0.88 and operational precision suitable for banking environments under **time-ordered**, **multi-split**, and **out-of-family** validation?
 
 ### RQ2: Cost-Aware Thresholding
 
@@ -33,7 +33,7 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
 
 ### RQ3: Deterministic vs Learned Mapping Comparison
 
-**Research Question**: Do deterministic ATT&CK–D3FEND mappings achieve higher coverage, consistency, and risk-score stability compared to learned mappings?
+**Research Question**: Do deterministic ATT&CK–D3FEND mappings achieve higher DAC_internal and actionable precision compared to learned mappings across all evaluation splits?
 
 ---
 
@@ -53,7 +53,9 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
 
 ### H3: Deterministic vs Learned Mapping Comparison
 
-**Hypothesis Statement**: Deterministic ATT&CK–D3FEND mappings exhibit higher Defense–Attack Consistency (DAC_internal), higher actionable precision, and greater risk-score stability (lower variance) compared to learned mappings, when evaluated across all available ransomware risk score splits in this environment.
+**Hypothesis Statement**: Deterministic ATT&CK–D3FEND mappings exhibit higher Defense–Attack Consistency (DAC_internal) and higher actionable precision compared to learned mappings across all evaluation splits.
+
+**Validation when variance is zero**: Deterministic mapping is always correct (100% DAC_internal); learned is always extraneous (0%). Variance reduction is 0.0 on all splits, so t-test, Wilcoxon, and Shapiro–Wilk on variance reduction are not applicable. H3 conclusions rest on **perfect separation** and **deterministic dominance**, not variance-reduction significance.
 
 **Source**: `aicra/experiments/h3_evaluation.py`, lines 27-32
 
@@ -83,7 +85,7 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
 - `small_ember`: 0.9652
 - `smoke_test`: 0.9177
 
-**Splits**: Time-ordered splits to prevent temporal leakage
+**Splits**: Time-ordered multi-split evaluation (full_ember, main, small_ember, smoke_test). H1 is also validated via supplementary **out-of-family** evaluation (`results/H1_oof_robust_eval/`; OOF AUROC 0.9615).
 
 **Source**: `results/H1_classification/H1_full_results.json`, `metrics.per_split_results[]`
 
@@ -91,7 +93,7 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
 
 **Primary Metric**: AUROC (Area Under ROC Curve)
 
-**Benchmark Threshold**: 0.88 (88% discrimination threshold)
+**Benchmark Threshold**: > 0.88 (reliability benchmark; not 0.85)
 
 **Additional Metrics Tested**:
 - AUROC ≥ 0.95 (stricter threshold)
@@ -200,7 +202,7 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
 
 **Hypothesis Statement**: Cost-aware thresholding produces lower expected loss than F1-optimized thresholds under banking-style asymmetric costs (FN cost >> FP cost), demonstrating more decision-aligned susceptibility scores for operational deployment.
 
-**Note on Calibration**: Calibration was already validated in H1 (Brier=0.049, ECE=0.016), demonstrating the model is naturally well-calibrated. H2 focuses solely on cost-aware thresholding vs F1-optimized thresholds, measured by expected loss. Calibration metrics are reported for completeness but are not part of the H2 hypothesis.
+**Note on Calibration**: Platt/isotonic regression is applied post hoc **to test whether calibration helps** (Brier, ECE, expected loss). H1 already shows strong calibration (Brier≈0.049, ECE≈0.016). H2 primary hypothesis and tests focus on **cost-aware thresholding vs F1-optimized thresholds** (expected loss). Calibration metrics are reported for completeness; post-hoc calibration does not improve expected loss on this model.
 
 ### A) Null Hypothesis (H0)
 

@@ -15,7 +15,7 @@ AI Cyber Risk Advisor (AICRA) - Ransomware Detection Model
 Binary Classification (Ransomware vs Benign)
 
 ### Architecture
-Bagged LightGBM/FFNN Classifier with Platt/Isotonic Calibration
+Bagged LightGBM/FFNN Classifier; H2 applies Platt/isotonic **post hoc to test whether calibration helps** (primary H1 model outputs are already well-calibrated)
 
 ## Model Details
 
@@ -24,12 +24,12 @@ Bagged LightGBM/FFNN Classifier with Platt/Isotonic Calibration
 - **Size**: ~500,000 samples
 - **Features**: 2,351 static analysis features + PE static features (byte histogram, headers, entropy)
 - **Classes**: Ransomware (1) vs Benign (0)
-- **Split**: Time-ordered split with out-of-family validation
+- **Split**: Time-ordered split with multi-split evaluation and supplementary out-of-family validation
 
 ### Model Architecture
 - **Base Models**: LightGBM Classifier (Option 1) or Small FFNN (Option 2)
 - **Ensemble**: Bagged ensemble with N models (configurable seeds, default 5)
-- **Calibration**: Platt scaling or isotonic regression (auto-selected via CV Brier score)
+- **Calibration (H2)**: Platt scaling or isotonic regression applied post hoc in H2 **to test whether calibration improves** Brier/ECE/expected loss (H1 outputs already well-calibrated; calibration does not improve expected loss)
 - **Hyperparameters**:
   - LightGBM: Learning rate 0.05, num_leaves 64, n_estimators 400, subsample 0.8, colsample_bytree 0.8
   - FFNN: 2-layer network with focal loss (α=0.75, γ=2.0)
@@ -45,8 +45,8 @@ Bagged LightGBM/FFNN Classifier with Platt/Isotonic Calibration
 - **Feature Engineering**: Robust feature extraction with fallback for invalid PE files
 
 ### Performance Metrics
-- **AUROC**: 0.95+
-- **PR-AUC**: 0.85+
+- **AUROC**: > 0.88 reliability benchmark (full_ember 0.9796; multi-split mean 0.9605; OOF 0.9615)
+- **PR-AUC**: 0.85+ (full_ember ~0.977)
 - **Brier Score**: <0.15
 - **Expected Calibration Error**: <0.05
 - **Lift@k**: Configurable (1%, 5%, 10%)
