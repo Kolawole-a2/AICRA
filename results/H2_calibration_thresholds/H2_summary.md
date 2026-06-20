@@ -147,22 +147,18 @@ Both experiments maintain the banking principle where **FN cost >> FP cost**, re
 
 ### Aggregated Results Across Splits
 
-**F1-Optimized Threshold (from full_ember split):**
-- Uncalibrated: 0.4586
+**F1-Optimized Threshold (from full_ember split):- Uncalibrated: 0.4586
 - Calibrated: 0.2268
 
-**Cost-Optimized Threshold (from full_ember split):**
-- Uncalibrated: 0.1040
+**Cost-Optimized Threshold (from full_ember split):- Uncalibrated: 0.1040
 - Calibrated: 0.0100
 
 ### Expected Loss (Aggregated)
 
-**F1-Optimized:**
-- Uncalibrated: 0.3648
+**F1-Optimized:- Uncalibrated: 0.3648
 - Calibrated: 0.3648
 
-**Cost-Optimized:**
-- Uncalibrated: 0.1802
+**Cost-Optimized:- Uncalibrated: 0.1802
 - Calibrated: 0.2579
 
 ### Per-Split Expected Loss
@@ -195,9 +191,7 @@ Both experiments maintain the banking principle where **FN cost >> FP cost**, re
 
 ✓ **H2 is supported**: Cost-aware thresholding produces lower expected loss than F1-optimized thresholds under banking-style asymmetric costs.
 
-**Key Findings:**
-
-- **F1-optimized (uncalibrated) Expected Loss**: 0.3648
+**Key Findings:- **F1-optimized (uncalibrated) Expected Loss**: 0.3648
 - **Cost-optimized (uncalibrated) Expected Loss**: 0.1802 (**50.6% reduction**)
 - **Cost-optimized (calibrated) Expected Loss**: 0.2579 (29.3% reduction)
 

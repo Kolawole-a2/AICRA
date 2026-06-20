@@ -167,17 +167,3 @@ if h3_results_path.exists():
 print("\n" + "=" * 80)
 print("✓ COMPLETE")
 print("=" * 80)
-
-
-
-
-
-
-
-
-
-
-
-
-
-

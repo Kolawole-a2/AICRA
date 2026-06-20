@@ -1,6 +1,5 @@
 # Deterministic Lookup Update Report
 
-
 ## 1. Lookup Discovery
 
 - **Lookup file**: `C:\Users\KLAMOS\Desktop\My Cursor Projects\AICRA\data\lookups\attack_to_d3fend.yaml`  (techniques=7, controls=14, pairs=21)

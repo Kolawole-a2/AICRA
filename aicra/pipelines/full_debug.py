@@ -143,12 +143,12 @@ class FullDebugPipeline:
         split_summary = {
             "train_rows": len(train_data),
             "test_rows": len(test_data),
-            "train_prevalence": train_labels.sum() / len(train_labels)
-            if len(train_labels) > 0
-            else 0,
-            "test_prevalence": test_labels.sum() / len(test_labels)
-            if len(test_labels) > 0
-            else 0,
+            "train_prevalence": (
+                train_labels.sum() / len(train_labels) if len(train_labels) > 0 else 0
+            ),
+            "test_prevalence": (
+                test_labels.sum() / len(test_labels) if len(test_labels) > 0 else 0
+            ),
             "split_type": "time_ordered" if time_split else "stratified",
         }
 
@@ -174,8 +174,12 @@ class FullDebugPipeline:
                 {
                     "train_max_timestamp": str(train_max_ts),
                     "test_min_timestamp": str(test_min_ts),
-                    "train_monthly_counts": train_monthly.to_dict(),
-                    "test_monthly_counts": test_monthly.to_dict(),
+                    "train_monthly_counts": {
+                        str(k): v for k, v in train_monthly.to_dict().items()
+                    },
+                    "test_monthly_counts": {
+                        str(k): v for k, v in test_monthly.to_dict().items()
+                    },
                 }
             )
 
@@ -364,6 +368,7 @@ class FullDebugPipeline:
     ) -> str:
         """Generate comprehensive debug report."""
         print("🔍 DEBUG: Generating debug report...")
+        self.debug_data["training_summary"] = training_summary
 
         # Extract metrics from Metrics object
         if hasattr(test_metrics, "auroc"):
@@ -392,12 +397,15 @@ class FullDebugPipeline:
             ):
                 probable_causes.append("Extreme class imbalance")
 
-            if len(self.debug_data["training_summary"]["top_20_features"]) < 5:
+            if len(training_summary.get("top_20_features", [])) < 5:
                 probable_causes.append(
                     "Insufficient informative features after cleaning"
                 )
 
-            if self.debug_data["split_summary"]["leakage_check"]["leakage_detected"]:
+            leakage_check = self.debug_data.get("split_summary", {}).get(
+                "leakage_check", {}
+            )
+            if leakage_check.get("leakage_detected"):
                 probable_causes.append("Data leakage between train/test sets")
 
             if training_summary["best_iteration"] < 50:

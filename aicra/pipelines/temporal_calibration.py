@@ -76,9 +76,9 @@ def evaluate_temporal_calibration_drift(
         "interpretation": {
             "significant_drift": abs(brier_drift_pct) > 10.0
             or abs(ece_drift_pct) > 10.0,
-            "recommendation": "Recalibrate"
-            if abs(brier_drift_pct) > 10.0
-            else "Monitor",
+            "recommendation": (
+                "Recalibrate" if abs(brier_drift_pct) > 10.0 else "Monitor"
+            ),
         },
     }
 
@@ -106,9 +106,11 @@ def rolling_calibration(
     data_sorted = Dataset(
         features=data.features.iloc[sort_idx].reset_index(drop=True),
         labels=data.labels.iloc[sort_idx].reset_index(drop=True),
-        families=data.families.iloc[sort_idx].reset_index(drop=True)
-        if data.families is not None
-        else None,
+        families=(
+            data.families.iloc[sort_idx].reset_index(drop=True)
+            if data.families is not None
+            else None
+        ),
         timestamps=data.timestamps.iloc[sort_idx].reset_index(drop=True),
     )
 
@@ -132,9 +134,11 @@ def rolling_calibration(
         window_data = Dataset(
             features=data_sorted.features[window_mask].reset_index(drop=True),
             labels=data_sorted.labels[window_mask].reset_index(drop=True),
-            families=data_sorted.families[window_mask].reset_index(drop=True)
-            if data_sorted.families is not None
-            else None,
+            families=(
+                data_sorted.families[window_mask].reset_index(drop=True)
+                if data_sorted.families is not None
+                else None
+            ),
             timestamps=data_sorted.timestamps[window_mask].reset_index(drop=True),
         )
 

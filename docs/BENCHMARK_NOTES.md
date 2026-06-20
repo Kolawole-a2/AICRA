@@ -147,14 +147,8 @@ The learned mapping:
 Based on the **current repository artifacts**:
 
 - **H1 (full_ember)**:
-  - Precision 0.9459, Recall 0.9363, F1 0.9411 → all **≥ 0.88**
-  - Brier 0.0426, ECE 0.0066 → both **< 0.12**
-
-- **H2 (full_ember, F1-optimized)**:
-  - Precision 0.9404, Recall 0.9429, F1 0.9416 → all **≥ 0.88**
-  - Brier/ECE values identical to/unified with H1 uncalibrated metrics → **< 0.12**
-
-These numbers are **directly read from the JSON outputs** listed at the top of this document and represent the validated state of the repository as of the last update.
+  - Precision 0.9459, Recall 0.9363, F1 0.9411 → all **≥ 0.88  - Brier 0.0426, ECE 0.0066 → both **< 0.12- **H2 (full_ember, F1-optimized)**:
+  - Precision 0.9404, Recall 0.9429, F1 0.9416 → all **≥ 0.88  - Brier/ECE values identical to/unified with H1 uncalibrated metrics → **< 0.12These numbers are **directly read from the JSON outputs** listed at the top of this document and represent the validated state of the repository as of the last update.
 
 ---
 
@@ -163,5 +157,4 @@ These numbers are **directly read from the JSON outputs** listed at the top of t
 - `results/H1_classification/H1_full_results.json`
 - `results/H2_calibration_thresholds/H2_full_results.json`
 - `results/H3_full_evaluation/H3_full_results.json`
-
 

@@ -34,15 +34,15 @@ import datetime as _dt
 import logging
 import re
 import shutil
+
+# Ensure we can import sibling modules when run as a script
+import sys as _sys
 from pathlib import Path
 
 import pandas as pd
 
-# Ensure we can import sibling modules when run as a script
-import sys as _sys
 _sys.path.insert(0, str(Path(__file__).parent.parent))
 from scripts.validate_deterministic_lookup import validate_attack_to_d3fend
-
 
 logging.basicConfig(
     level=logging.INFO,
@@ -137,7 +137,9 @@ def _validate_register_csv(split: str, path: Path) -> dict:
         if tid in present_techs:
             sub = df[df["attack_technique_id"] == tid]
             if sub.empty:
-                raise ValueError(f"{split}: {tid} appears in techniques but has no rows")
+                raise ValueError(
+                    f"{split}: {tid} appears in techniques but has no rows"
+                )
             sub_ctrl = sub["d3fend_control_id"].fillna("").astype(str).str.strip()
             if sub_ctrl.isin(["", "nan", "none", "null", "None"]).all():
                 raise ValueError(
@@ -179,8 +181,12 @@ def _write_report(
         f"controls={lookup_summary['controls']}, "
         f"pairs={lookup_summary['pairs']})"
     )
-    lines.append("- **T1055 present**: " + ("YES" if lookup_summary["has_T1055"] else "NO"))
-    lines.append("- **T1027 present**: " + ("YES" if lookup_summary["has_T1027"] else "NO"))
+    lines.append(
+        "- **T1055 present**: " + ("YES" if lookup_summary["has_T1055"] else "NO")
+    )
+    lines.append(
+        "- **T1027 present**: " + ("YES" if lookup_summary["has_T1027"] else "NO")
+    )
     lines.append("")
     lines.append("## 2. Mapping Changes (summary)\n")
     lines.append(
@@ -199,9 +205,7 @@ def _write_report(
         lines.append(f"- **Path**: `{s['path']}`")
         lines.append(f"- **Rows**: {s['rows']}")
         lines.append(f"- **Unique techniques**: {s['unique_techniques']}")
-        lines.append(
-            f"- **Technique IDs**: {', '.join(s['technique_ids'])}"
-        )
+        lines.append(f"- **Technique IDs**: {', '.join(s['technique_ids'])}")
         lines.append("")
 
     lines.append("## 4. Safety Confirmation\n")
@@ -274,5 +278,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-

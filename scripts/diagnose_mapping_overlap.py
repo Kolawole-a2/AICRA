@@ -366,9 +366,11 @@ def diagnose_mapping_overlap(
                 "total_techniques_in_risk_scores": len(risk_score_techniques),
                 "techniques_with_mappings": risk_total,
                 "exact_match_count": len(risk_exact_matches),
-                "exact_match_fraction": float(len(risk_exact_matches) / risk_total)
-                if risk_total > 0
-                else 0.0,
+                "exact_match_fraction": (
+                    float(len(risk_exact_matches) / risk_total)
+                    if risk_total > 0
+                    else 0.0
+                ),
                 "partial_overlap_count": len(risk_partial_overlaps),
                 "disjoint_count": len(risk_disjoints),
                 "exact_match_techniques": sorted(risk_exact_matches),
@@ -383,9 +385,9 @@ def diagnose_mapping_overlap(
         "intersection_pairs": len(det_pairs & learned_pairs),
         "union_pairs": len(det_pairs | learned_pairs),
         "techniques_analyzed": len(technique_classifications),
-        "techniques_in_risk_scores": len(risk_score_techniques)
-        if risk_score_techniques
-        else None,
+        "techniques_in_risk_scores": (
+            len(risk_score_techniques) if risk_score_techniques else None
+        ),
         "overlap_classification": {
             "exact_match_count": len(exact_matches),
             "partial_overlap_count": len(partial_overlaps),

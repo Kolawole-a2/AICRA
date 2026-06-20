@@ -7,16 +7,14 @@
 
 ### Current State Analysis
 
-**SMALL_EMBER (2,000 records):**
-- Benign (label=0): 1,509 samples (75.4%)
+**SMALL_EMBER (2,000 records):- Benign (label=0): 1,509 samples (75.4%)
 - Ransomware (label=1): 491 samples (24.6%)
 - **Benign High Rate:** 33.9% (511/1,509)
 - **Ransomware Mean Probability:** 0.904269 (constant - only 1 unique value!)
 - **Benign Mean Probability:** 0.308409
 - **False Positive Rate:** 33.9%
 
-**FULL_EMBER (20,002 records):**
-- Benign (label=0): 10,440 samples (52.2%)
+**FULL_EMBER (20,002 records):- Benign (label=0): 10,440 samples (52.2%)
 - Ransomware (label=1): 9,562 samples (47.8%)
 - **Benign High Rate:** 50.3% (5,253/10,440)
 - **Ransomware Mean Probability:** 0.453415
@@ -34,12 +32,10 @@
 
 ## 2. Label Correctness Verification
 
-**Label Mapping (Confirmed):**
-- `label = 0` → Benign (confirmed in `model_card.md` and code)
+**Label Mapping (Confirmed):- `label = 0` → Benign (confirmed in `model_card.md` and code)
 - `label = 1` → Ransomware (confirmed in `model_card.md` and code)
 
-**Label Distribution:**
-- Labels are correctly assigned (0 for benign, 1 for ransomware)
+**Label Distribution:- Labels are correctly assigned (0 for benign, 1 for ransomware)
 - No evidence of label inversion in the data
 
 **Conclusion:** Labels are correct. The issue is NOT label inversion.
@@ -55,12 +51,10 @@ For a properly trained ransomware detection model:
 
 ### Current Behavior
 
-**SMALL_EMBER:**
-- Ransomware: ALL samples have probability = 0.904269 (constant, only 1 unique value)
+**SMALL_EMBER:- Ransomware: ALL samples have probability = 0.904269 (constant, only 1 unique value)
 - Benign: 141 unique probabilities, but many are 0.904269 (same as ransomware)
 
-**FULL_EMBER:**
-- Both classes have 141 unique probabilities
+**FULL_EMBER:- Both classes have 141 unique probabilities
 - Mean probabilities are almost identical (0.456640 vs 0.453415)
 - This suggests probabilities are NOT from model predictions
 
@@ -71,8 +65,7 @@ The probability values in the register files are **NOT from actual model predict
 2. Incorrectly generated (possibly from a broken model or wrong data)
 3. Not regenerated from the model when registers were updated
 
-**Evidence:**
-- `regenerate_risk_registers_fixed.py` loads existing register files and re-computes susceptibility/buckets from existing (wrong) probabilities
+**Evidence:- `regenerate_risk_registers_fixed.py` loads existing register files and re-computes susceptibility/buckets from existing (wrong) probabilities
 - It does NOT generate new probabilities from `model.predict_proba()`
 - The script preserves the existing probability column: `register_df["probability"] = input_df["probability"].values`
 
@@ -90,40 +83,31 @@ df["susceptibility_bucket"] = pd.cut(
 )
 ```
 
-**Bucketing Logic:**
-- Low: [0.0, 0.33]
+**Bucketing Logic:- Low: [0.0, 0.33]
 - Medium: (0.33, 0.66]
 - High: (0.66, 1.0]
 
-**Analysis:**
-- Bucketing logic is **CORRECT**
-- Thresholds are monotonic and appropriate
+**Analysis:- Bucketing logic is **CORRECT- Thresholds are monotonic and appropriate
 - The issue is that **input probabilities are wrong**, not the bucketing
 
 ## 5. Calibration Sanity Checks
 
 **Status:** Cannot verify calibration because probabilities are not from model predictions.
 
-**Expected:**
-- Calibrated probabilities should improve calibration metrics (Brier score, ECE)
+**Expected:- Calibrated probabilities should improve calibration metrics (Brier score, ECE)
 - Calibration should be applied via `calibrator.transform(y_prob_raw)`
 
-**Current:**
-- Cannot assess calibration quality because probabilities are not from model
+**Current:- Cannot assess calibration quality because probabilities are not from model
 
 ## 6. Root Cause Analysis
 
 ### Primary Root Cause
 
-**The probability values in risk register CSV files are NOT from actual model predictions.**
-
-**Evidence:**
-1. **SMALL_EMBER**: Ransomware has only 1 unique probability (0.904269) - impossible for a real model
+**The probability values in risk register CSV files are NOT from actual model predictions.**Evidence:1. **SMALL_EMBER**: Ransomware has only 1 unique probability (0.904269) - impossible for a real model
 2. **FULL_EMBER**: Benign and ransomware have nearly identical distributions - indicates no discrimination
 3. **Regeneration Script**: `regenerate_risk_registers_fixed.py` preserves existing probabilities instead of generating new ones from the model
 
-**Why Benign Has High Susceptibility:**
-- Because the probability values are wrong (not from model)
+**Why Benign Has High Susceptibility:- Because the probability values are wrong (not from model)
 - Many benign samples have probability = 0.904269 (same as ransomware)
 - Bucketing correctly assigns High bucket to probabilities > 0.66
 - The bucketing is working correctly; the input probabilities are wrong
@@ -140,22 +124,19 @@ df["susceptibility_bucket"] = pd.cut(
 
 **File:** `regenerate_registers_with_correct_probabilities.py`
 
-**Changes Required:**
-1. Load test data from EMBER dataset
+**Changes Required:1. Load test data from EMBER dataset
 2. Generate predictions using `model.predict_proba()`
 3. Apply calibration if available
 4. Use these probabilities in register (NOT existing CSV probabilities)
 
-**Implementation:**
-- Already exists in `regenerate_registers_with_correct_probabilities.py`
+**Implementation:- Already exists in `regenerate_registers_with_correct_probabilities.py`
 - Need to ensure it runs successfully and replaces existing registers
 
 ### Fix 2: Add Validation Assertions
 
 **File:** `aicra/register.py` or validation script
 
-**Add checks:**
-1. Verify benign samples have mean probability < 0.5 (or configurable threshold)
+**Add checks:1. Verify benign samples have mean probability < 0.5 (or configurable threshold)
 2. Verify ransomware samples have mean probability > 0.5
 3. Verify probabilities have sufficient variance (not constant)
 4. Raise error if validation fails
@@ -171,8 +152,8 @@ df["susceptibility_bucket"] = pd.cut(
 ## 8. Implementation Plan
 
 1. **Run Correct Regeneration:**
+
    ```bash
-   cd "C:\Users\KLAMOS\Desktop\My Cursor Projects\AICRA"
    python scripts/regenerate_registers_with_correct_probabilities.py --debug
    ```
 
@@ -209,5 +190,4 @@ df["susceptibility_bucket"] = pd.cut(
 **Fix:** Regenerated risk registers using actual model predictions (`model.predict_proba()`) with proper calibration. This ensures benign samples receive low probabilities (low susceptibility) and ransomware samples receive high probabilities (high susceptibility), as expected from a properly trained model.
 
 **Validation:** Added assertions to verify probability distributions are correct and fail fast if benign samples have inappropriately high probabilities.
-
 

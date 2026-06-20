@@ -6,19 +6,15 @@
 
 ## Is This a Problem for Praxis Defense?
 
-### Short Answer: **It depends on how you frame it**
-
-### Option 1: Defend Single-Split Design (Current)
+### Short Answer: **It depends on how you frame it### Option 1: Defend Single-Split Design (Current)
 
 **Rationale**: H2 and H3 test different things, so different evaluation strategies are appropriate.
 
-**H2 Focus**: Tests **calibration methodology** and **threshold optimization**
-- Calibration is a **methodological question**: "Does calibration improve probability estimates?"
+**H2 Focus**: Tests **calibration methodology** and **threshold optimization- Calibration is a **methodological question**: "Does calibration improve probability estimates?"
 - This can be answered on a single, representative test set
 - The test set (10,001 samples) is large enough for reliable calibration metrics
 
-**H3 Focus**: Tests **mapping consistency** across **different data distributions**
-- Mapping consistency depends on **which techniques appear** in the data
+**H3 Focus**: Tests **mapping consistency** across **different data distributions- Mapping consistency depends on **which techniques appear** in the data
 - Different splits have different technique distributions
 - Multi-split evaluation is **necessary** to show robustness across technique distributions
 

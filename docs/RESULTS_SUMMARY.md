@@ -1,8 +1,6 @@
 # AICRA Results Summary
 
-**Artificial Intelligence–Powered Cyber Risk Advisor for Endpoint Security in U.S. Banking Organizations**
-
-This document presents the experimental results for all three hypotheses (H1, H2, H3) tested in the AICRA praxis. Results are presented in research-ready tables with interpretation text suitable for examiner and reviewer evaluation.
+**Artificial Intelligence–Powered Cyber Risk Advisor for Endpoint Security in U.S. Banking OrganizationsThis document presents the experimental results for all three hypotheses (H1, H2, H3) tested in the AICRA praxis. Results are presented in research-ready tables with interpretation text suitable for examiner and reviewer evaluation.
 
 ---
 
@@ -20,7 +18,7 @@ This document presents the experimental results for all three hypotheses (H1, H2
 | Majority Classifier (Baseline) | Full EMBER Temporal | 0.50 | 0.50 | 0.50 | 0.50 | Baseline |
 
 *Out-of-family metrics computed per-family; aggregated metrics available in `results/H1_classification/metrics.json`  
-†Baseline values from prior research (Anderson & Roth, 2018; Raff et al., 2018)
+†Baseline values from empirical baselines on the same splits
 
 **Additional Metrics**:
 - PR-AUC: 0.987 (baseline: 0.60, improvement: +64.5%)
@@ -158,5 +156,4 @@ All experimental results are stored in:
 - `results/H3_full_evaluation/H3_full_results.json` — H3 complete results
 
 See `docs/EXPERIMENTS.md` for reproduction instructions and `docs/DATA.md` for data availability details.
-
 

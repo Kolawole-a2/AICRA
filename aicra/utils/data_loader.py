@@ -66,15 +66,15 @@ def load_ember_2024(
         # Time-ordered split: sort by timestamp and split chronologically
         sorted_indices = train.timestamps.argsort()
         split_point = int(n_train * (1 - val_split))
-        
+
         if stratified:
             # Combined stratified + time-ordered split
             # Strategy: Sort by time, then perform stratified sampling within time windows
             # to preserve both temporal ordering AND class distribution
             from sklearn.model_selection import train_test_split
-            
+
             sorted_labels = train.labels.values[sorted_indices]
-            
+
             # Use stratified split on sorted indices to maintain class balance
             # This will try to preserve class distribution while respecting time order
             train_indices_sorted, val_indices_sorted = train_test_split(
@@ -83,19 +83,19 @@ def load_ember_2024(
                 stratify=sorted_labels,
                 random_state=seed,
             )
-            
+
             # Map back to original indices
             train_indices_temp = sorted_indices[train_indices_sorted]
             val_indices_temp = sorted_indices[val_indices_sorted]
-            
+
             # Verify time ordering is maintained
             train_timestamps = train.timestamps.values[train_indices_temp]
             val_timestamps = train.timestamps.values[val_indices_temp]
-            
+
             if len(train_timestamps) > 0 and len(val_timestamps) > 0:
                 max_train_ts = train_timestamps.max()
                 min_val_ts = val_timestamps.min()
-                
+
                 if max_train_ts < min_val_ts:
                     # Time ordering is preserved - use stratified result
                     train_indices = train_indices_temp
@@ -105,17 +105,22 @@ def load_ember_2024(
                     # Split into time windows and do stratified sampling within each
                     n_windows = max(10, int(1 / val_split))  # Adaptive window count
                     window_size = n_train // n_windows
-                    
+
                     train_indices_list = []
                     val_indices_list = []
-                    
+
                     for i in range(n_windows):
                         start_idx = i * window_size
-                        end_idx = (i + 1) * window_size if i < n_windows - 1 else n_train
+                        end_idx = (
+                            (i + 1) * window_size if i < n_windows - 1 else n_train
+                        )
                         window_indices = sorted_indices[start_idx:end_idx]
                         window_labels = train.labels.values[window_indices]
-                        
-                        if len(window_indices) > 1 and len(np.unique(window_labels)) > 1:
+
+                        if (
+                            len(window_indices) > 1
+                            and len(np.unique(window_labels)) > 1
+                        ):
                             # Stratified split within window
                             win_train, win_val = train_test_split(
                                 np.arange(len(window_indices)),
@@ -130,7 +135,7 @@ def load_ember_2024(
                             win_split = int(len(window_indices) * (1 - val_split))
                             train_indices_list.extend(window_indices[:win_split])
                             val_indices_list.extend(window_indices[win_split:])
-                    
+
                     train_indices = np.array(train_indices_list)
                     val_indices = np.array(val_indices_list)
             else:
@@ -168,24 +173,32 @@ def load_ember_2024(
     val = Dataset(
         features=train.features.iloc[val_indices].reset_index(drop=True),
         labels=train.labels.iloc[val_indices].reset_index(drop=True),
-        families=train.families.iloc[val_indices].reset_index(drop=True)
-        if train.families is not None
-        else None,
-        timestamps=train.timestamps.iloc[val_indices].reset_index(drop=True)
-        if train.timestamps is not None
-        else None,
+        families=(
+            train.families.iloc[val_indices].reset_index(drop=True)
+            if train.families is not None
+            else None
+        ),
+        timestamps=(
+            train.timestamps.iloc[val_indices].reset_index(drop=True)
+            if train.timestamps is not None
+            else None
+        ),
     )
 
     # Create reduced training dataset
     train_reduced = Dataset(
         features=train.features.iloc[train_indices].reset_index(drop=True),
         labels=train.labels.iloc[train_indices].reset_index(drop=True),
-        families=train.families.iloc[train_indices].reset_index(drop=True)
-        if train.families is not None
-        else None,
-        timestamps=train.timestamps.iloc[train_indices].reset_index(drop=True)
-        if train.timestamps is not None
-        else None,
+        families=(
+            train.families.iloc[train_indices].reset_index(drop=True)
+            if train.families is not None
+            else None
+        ),
+        timestamps=(
+            train.timestamps.iloc[train_indices].reset_index(drop=True)
+            if train.timestamps is not None
+            else None
+        ),
     )
 
     return train_reduced, val, test

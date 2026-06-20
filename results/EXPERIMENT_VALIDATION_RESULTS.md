@@ -52,17 +52,15 @@ All three research hypotheses have been validated through rigorous multi-split e
 | **Precision** | 0.7726 | 0.6398 | -13.8%* |
 | **Recall** | 0.6378 | 0.9985 | **+56.5%** |
 | **F1** | 0.6988 | 0.7794 | **+14.3%** |
-| **False Negative Rate** | 45% (academic) | 0.20% | **-99.6%** |
+| **False Negative Rate** | 36.2% (empirical baseline) | 0.20% | **~99.5%** |
 
 *Precision is lower because the banking-optimized threshold (0.0298) prioritizes recall to minimize false negatives, which is appropriate for banking security where missed ransomware is extremely costly.
 
 #### Alert Fatigue Reduction
 
-- **Academic Baseline FN Rate:** 45% (typical for simple classifiers with recall 50-60%, Anderson & Roth, 2018)
+- **Empirical Baseline FN Rate:** 36.2% (logistic regression recall 63.78% on same test split)
 - **AICRA FN Rate:** 0.20% (9 FNs out of 4,592 ransomware samples)
-- **FN Rate Reduction:** 99.6% reduction compared to academic baseline
-- **Estimated Analyst Alert Fatigue Reduction:** 99.6%
-  - **Methodology:** Alert fatigue reduction is directly proportional to FN rate reduction (FN reduction is the direct, measurable metric)
+- **FN Rate Reduction:** ~99.5% vs empirical baseline
 
 #### Confusion Matrix (full_ember split, 10,001 samples)
 
@@ -95,15 +93,6 @@ Ransomware        9       4583
 
 **Best Baseline Used:** Logistic Regression (higher AUROC)
 
-**Academic FN Rate Baseline:**
-- **45% FN Rate** (based on typical recall 50-60% for simple classifiers on malware data, Anderson & Roth, 2018)
-- This represents the expected false negative rate for baseline models in malware classification
-
-**Academic Sources:**
-- Anderson, H. S., & Roth, P. (2018). EMBER: An Open Dataset for Training Static PE Malware Machine Learning Models. arXiv:1804.04637
-- Raff, E., et al. (2018). Malware Detection by Eating a Whole EXE. arXiv:1710.09435
-- Hastie, T., Tibshirani, R., & Friedman, J. (2009). The Elements of Statistical Learning (2nd ed.). Springer
-
 #### Statistical Validation
 
 - **Bootstrap 95% CI for AUROC:** [0.9331, 0.9796]
@@ -116,8 +105,7 @@ Ransomware        9       4583
 
 **Key Findings:**
 - AICRA improves AUC by **+25.9%** over baseline models
-- AICRA reduces false-negative rate by **99.6%** compared to academic baseline (45% → 0.20%)
-- Estimated analyst alert fatigue reduction: **99.6%**
+- AICRA reduces false-negative rate by **~99.5%** vs empirical baseline (36.2% → 0.20%)
 - Banking-optimized threshold (0.0298) prioritizes recall (99.8%) to minimize missed ransomware
 
 **Canonical Statement:** AICRA improves ransomware-prediction AUC by +25.9% and reduces SOC alert fatigue by 99.6%.
@@ -175,18 +163,9 @@ Ransomware        9       4583
 
 #### Baseline Comparison
 
-**Typical Baseline Values (from literature):**
-- **Brier Score:** 0.18-0.22 (typical uncalibrated EMBER-style models)
-- **ECE:** 6-10% (typical for uncalibrated tree-based models)
+**Primary comparison:** F1-optimized vs cost-optimized threshold on the same H1 model (FN cost = 100, FP cost = 1).
 
-**AICRA Performance vs Baseline:**
-- **Brier Score:** 0.0490 (71.3% better than 0.200 baseline)
-- **ECE:** 0.0162 (79.8% better than 0.080 baseline)
-
-**Academic Sources:**
-- Guo, C., et al. (2017). On Calibration of Modern Neural Networks. ICML 2017. arXiv:1706.04599
-- Niculescu-Mizil, A., & Caruana, R. (2005). Predicting Good Probabilities with Supervised Learning. ICML 2005
-- Anderson & Roth (2018). EMBER dataset performance characteristics
+**Calibration:** Uncalibrated vs isotonic-calibrated probabilities from the same model.
 
 ### Conclusion
 
@@ -241,15 +220,8 @@ Cost-aware thresholding significantly reduces expected loss compared to F1-optim
 #### Baseline Comparison
 
 **Baseline Models:**
-1. **Naive Mapping:** Random or no mapping (0% agreement)
-2. **Learned Mapping:** Data-driven mapping using embedding similarity or heuristic matching (0% agreement with reference pairs)
-3. **Deterministic Mapping:** Expert-curated ATT&CK-D3FEND mappings from MITRE (100% agreement by definition)
-
-**Academic Sources:**
-- Faria, D., et al. (2013). AgreementMakerLight: A Scalable Automated Ontology Matching System. In OTM 2013. DOI: 10.1007/978-3-642-41030-7_38
-- Euzenat, J., & Shvaiko, P. (2013). Ontology Matching (2nd ed.). Springer. DOI: 10.1007/978-3-642-38721-0
-- MITRE D3FEND. https://d3fend.mitre.org/ (Deterministic mapping ground truth)
-- MITRE ATT&CK. https://attack.mitre.org/
+1. **Learned Mapping:** Embedding/heuristic mapping (`data/mappings/learned_mapping.csv`)
+2. **Deterministic Mapping:** Expert-curated ransomware-focused mapping (`data/mappings/deterministic_attack_defense_lookup.csv`) — H3 ground truth
 
 ### Conclusion
 
@@ -257,7 +229,7 @@ Cost-aware thresholding significantly reduces expected loss compared to F1-optim
 
 **Key Findings:**
 - Deterministic mapping achieves 100% DAC_internal (by definition, as expert-curated ground truth)
-- Learned mapping achieves 0% DAC_internal (no agreement with reference pairs)
+- Learned mapping achieves 0% DAC_internal (no agreement with deterministic ground truth)
 - This validates that deterministic, curated mappings provide superior consistency for cybersecurity risk analytics
 
 **Research Contribution:** Introduces the Defense-Attack Consistency (DAC) metric as a quantitative measure for evaluating mapping quality between attack and defense ontologies.
@@ -270,7 +242,7 @@ Cost-aware thresholding significantly reduces expected loss compared to F1-optim
 
 | Hypothesis | Status | Primary Metric | Achievement | Key Contribution |
 |-----------|--------|---------------|-------------|------------------|
-| **H1** | ✅ **SUPPORTED** | AUROC >= 0.95 | **0.9605** (+25.9%) | 99.5% FN reduction, 79.6% alert fatigue reduction |
+| **H1** | ✅ **SUPPORTED** | AUROC >= 0.95 | **0.9605** (+25.9%) | ~99.5% FN reduction vs empirical baseline |
 | **H2** | ✅ **SUPPORTED** | Expected Loss Reduction | **-50.6%** | Cost-aware thresholding for banking |
 | **H3** | ✅ **SUPPORTED** | DAC_internal | **100%** | Introduces DAC metric for mapping quality |
 
@@ -288,7 +260,7 @@ Cost-aware thresholding significantly reduces expected loss compared to F1-optim
 
 #### Baseline Comparisons
 - **H1:** Compared against Logistic Regression and Majority Classifier baselines
-- **H2:** Compared against typical uncalibrated model baselines from literature
+- **H2:** Compared F1-optimal vs cost-optimal thresholds on the same H1 model
 - **H3:** Compared against naive and learned mapping baselines
 
 #### Reproducibility

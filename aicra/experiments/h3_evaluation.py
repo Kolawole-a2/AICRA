@@ -639,13 +639,15 @@ def validate_mapping_results(
         "iqr_increased": mapped_iqr > baseline_iqr,
         "iqr_decreased": mapped_iqr < baseline_iqr,
         "variance_change_pct": (
-            (mapped_variance - baseline_variance) / baseline_variance * 100
-        )
-        if baseline_variance > 0
-        else 0.0,
-        "iqr_change_pct": ((mapped_iqr - baseline_iqr) / baseline_iqr * 100)
-        if baseline_iqr > 0
-        else 0.0,
+            ((mapped_variance - baseline_variance) / baseline_variance * 100)
+            if baseline_variance > 0
+            else 0.0
+        ),
+        "iqr_change_pct": (
+            ((mapped_iqr - baseline_iqr) / baseline_iqr * 100)
+            if baseline_iqr > 0
+            else 0.0
+        ),
         "warnings": [],
         "contradictions": [],
     }
@@ -1408,74 +1410,96 @@ def aggregate_metrics(all_results: list[dict]) -> dict:
         "dac": {
             "ttest": {
                 "statistic": float(tstat_dac) if tstat_dac is not None else None,
-                "pvalue": float(pvalue_dac_ttest)
-                if pvalue_dac_ttest is not None
-                else None,
+                "pvalue": (
+                    float(pvalue_dac_ttest) if pvalue_dac_ttest is not None else None
+                ),
                 "note": "Tests learned DAC vs deterministic baseline (100%)",
             },
             "wilcoxon": {
                 "statistic": float(wstat_dac) if wstat_dac is not None else None,
-                "pvalue": float(pvalue_dac_wilcoxon)
-                if pvalue_dac_wilcoxon is not None
-                else None,
+                "pvalue": (
+                    float(pvalue_dac_wilcoxon)
+                    if pvalue_dac_wilcoxon is not None
+                    else None
+                ),
             },
             "spearman_vs_precision": {
-                "rho_learned": float(rho_dac_prec_learned)
-                if rho_dac_prec_learned is not None
-                else None,
-                "pvalue_learned": float(pval_dac_prec_learned)
-                if pval_dac_prec_learned is not None
-                else None,
-                "note": "Undefined if DAC is constant across splits"
-                if (learned_dac_std <= 1e-10)
-                else None,
+                "rho_learned": (
+                    float(rho_dac_prec_learned)
+                    if rho_dac_prec_learned is not None
+                    else None
+                ),
+                "pvalue_learned": (
+                    float(pval_dac_prec_learned)
+                    if pval_dac_prec_learned is not None
+                    else None
+                ),
+                "note": (
+                    "Undefined if DAC is constant across splits"
+                    if (learned_dac_std <= 1e-10)
+                    else None
+                ),
             },
             "spearman_vs_variance_reduction": {
-                "rho_learned": float(rho_dac_var_learned)
-                if rho_dac_var_learned is not None
-                else None,
-                "pvalue_learned": float(pval_dac_var_learned)
-                if pval_dac_var_learned is not None
-                else None,
-                "note": "Undefined if DAC is constant across splits"
-                if (learned_dac_std <= 1e-10)
-                else None,
+                "rho_learned": (
+                    float(rho_dac_var_learned)
+                    if rho_dac_var_learned is not None
+                    else None
+                ),
+                "pvalue_learned": (
+                    float(pval_dac_var_learned)
+                    if pval_dac_var_learned is not None
+                    else None
+                ),
+                "note": (
+                    "Undefined if DAC is constant across splits"
+                    if (learned_dac_std <= 1e-10)
+                    else None
+                ),
             },
         },
         "actionable_precision": {
             "ttest": {
-                "statistic": float(tstat_precision)
-                if tstat_precision is not None
-                else None,
-                "pvalue": float(pvalue_precision_ttest)
-                if pvalue_precision_ttest is not None
-                else None,
+                "statistic": (
+                    float(tstat_precision) if tstat_precision is not None else None
+                ),
+                "pvalue": (
+                    float(pvalue_precision_ttest)
+                    if pvalue_precision_ttest is not None
+                    else None
+                ),
             },
             "wilcoxon": {
-                "statistic": float(wstat_precision)
-                if wstat_precision is not None
-                else None,
-                "pvalue": float(pvalue_precision_wilcoxon)
-                if pvalue_precision_wilcoxon is not None
-                else None,
+                "statistic": (
+                    float(wstat_precision) if wstat_precision is not None else None
+                ),
+                "pvalue": (
+                    float(pvalue_precision_wilcoxon)
+                    if pvalue_precision_wilcoxon is not None
+                    else None
+                ),
             },
         },
         "variance_reduction": {
             "ttest": {
-                "statistic": float(tstat_var_red)
-                if tstat_var_red is not None
-                else None,
-                "pvalue": float(pvalue_var_red_ttest)
-                if pvalue_var_red_ttest is not None
-                else None,
+                "statistic": (
+                    float(tstat_var_red) if tstat_var_red is not None else None
+                ),
+                "pvalue": (
+                    float(pvalue_var_red_ttest)
+                    if pvalue_var_red_ttest is not None
+                    else None
+                ),
             },
             "wilcoxon": {
-                "statistic": float(wstat_var_red)
-                if wstat_var_red is not None
-                else None,
-                "pvalue": float(pvalue_var_red_wilcoxon)
-                if pvalue_var_red_wilcoxon is not None
-                else None,
+                "statistic": (
+                    float(wstat_var_red) if wstat_var_red is not None else None
+                ),
+                "pvalue": (
+                    float(pvalue_var_red_wilcoxon)
+                    if pvalue_var_red_wilcoxon is not None
+                    else None
+                ),
             },
         },
     }
@@ -1859,27 +1883,28 @@ def generate_markdown_report(
                     )
                     f.write("H3 results may show very similar metrics.\n\n")
 
-            # Det vs Reference (secondary benchmark)
+            # Det vs Reference (optional; not part of canonical H3)
             if "det_vs_reference" in overlap_metrics:
                 det_ref = overlap_metrics["det_vs_reference"]
-                f.write("#### Deterministic vs External Reference Pairs\n\n")
-                f.write(
-                    f"**Pair Overlap:** {det_ref.get('intersection_pairs', 0)}/{det_ref.get('total_det_pairs', 0)} pairs\n"
-                )
-                f.write(
-                    f"**Jaccard Similarity:** {det_ref.get('jaccard', 0.0) * 100:.2f}%\n\n"
-                )
+                if det_ref.get("total_reference_pairs", 0) > 0:
+                    f.write("#### Deterministic vs External Reference Pairs\n\n")
+                    f.write(
+                        f"**Pair Overlap:** {det_ref.get('intersection_pairs', 0)}/{det_ref.get('total_det_pairs', 0)} pairs\n"
+                    )
+                    f.write(
+                        f"**Jaccard Similarity:** {det_ref.get('jaccard', 0.0) * 100:.2f}%\n\n"
+                    )
 
-            # Learned vs Reference (secondary benchmark)
             if "learned_vs_reference" in overlap_metrics:
                 learned_ref = overlap_metrics["learned_vs_reference"]
-                f.write("#### Learned vs External Reference Pairs\n\n")
-                f.write(
-                    f"**Pair Overlap:** {learned_ref.get('intersection_pairs', 0)}/{learned_ref.get('total_learned_pairs', 0)} pairs\n"
-                )
-                f.write(
-                    f"**Jaccard Similarity:** {learned_ref.get('jaccard', 0.0) * 100:.2f}%\n\n"
-                )
+                if learned_ref.get("total_reference_pairs", 0) > 0:
+                    f.write("#### Learned vs External Reference Pairs\n\n")
+                    f.write(
+                        f"**Pair Overlap:** {learned_ref.get('intersection_pairs', 0)}/{learned_ref.get('total_learned_pairs', 0)} pairs\n"
+                    )
+                    f.write(
+                        f"**Jaccard Similarity:** {learned_ref.get('jaccard', 0.0) * 100:.2f}%\n\n"
+                    )
 
             if overlap_metrics.get("risk_score_coverage"):
                 rsc = overlap_metrics["risk_score_coverage"]
@@ -2480,7 +2505,10 @@ def generate_markdown_report(
                     f.write(f"  - {pair['technique_id']} → {pair['control_id']}\n")
                 f.write("\n")
 
-            if "reference_pairs_info" in output:
+            if (
+                "reference_pairs_info" in output
+                and output["reference_pairs_info"].get("n_pairs", 0) > 0
+            ):
                 ref_info = output["reference_pairs_info"]
                 f.write("### External Reference Pairs (Secondary Benchmark)\n\n")
                 f.write(
@@ -2544,7 +2572,9 @@ def generate_markdown_report(
         f.write("### Mapping File Hashes (SHA256)\n\n")
         f.write(f"- **Deterministic mapping:** `{file_hashes['deterministic']}`\n")
         f.write(f"- **Learned mapping:** `{file_hashes['learned']}`\n")
-        f.write(f"- **Reference pairs:** `{file_hashes['reference']}`\n\n")
+        if file_hashes.get("reference"):
+            f.write(f"- **Reference pairs:** `{file_hashes['reference']}`\n")
+        f.write("\n")
 
         f.write("### Configuration\n\n")
         f.write("- **Config file:** `config/h3_splits.yaml`\n\n")
@@ -2567,7 +2597,7 @@ def run_h3_evaluation(
     splits_config_path: Path,
     det_mapping_path: Path,
     learned_mapping_path: Path,
-    ref_pairs_path: Path,
+    ref_pairs_path: Path | None,
     output_dir: Path,
     repo_root: Path | None = None,
 ) -> dict:
@@ -2578,7 +2608,7 @@ def run_h3_evaluation(
         splits_config_path: Path to config/h3_splits.yaml
         det_mapping_path: Path to deterministic mapping CSV
         learned_mapping_path: Path to learned mapping CSV
-        ref_pairs_path: Path to reference pairs CSV
+        ref_pairs_path: Optional path to external reference pairs CSV (secondary benchmark)
         output_dir: Directory to save results
         repo_root: Repository root directory (for resolving relative paths)
 
@@ -2605,11 +2635,13 @@ def run_h3_evaluation(
 
     # Compute file hashes
     logger.info("Computing file hashes...")
+    use_reference_pairs = ref_pairs_path is not None and ref_pairs_path.exists()
     file_hashes = {
         "deterministic": compute_file_hash(det_mapping_path),
         "learned": compute_file_hash(learned_mapping_path),
-        "reference": compute_file_hash(ref_pairs_path),
     }
+    if use_reference_pairs:
+        file_hashes["reference"] = compute_file_hash(ref_pairs_path)
 
     # Load mappings with proper filtering
     logger.info(f"Loading deterministic mapping from {det_mapping_path}")
@@ -2701,22 +2733,27 @@ def run_h3_evaluation(
     logger.info("  - No data leakage: Verified - does not peek at DAC ground truth")
     logger.info("=" * 80)
 
-    logger.info(f"Loading reference pairs from {ref_pairs_path}")
-    ref_pairs = load_mapping_csv(ref_pairs_path)
+    if use_reference_pairs:
+        logger.info(f"Loading reference pairs from {ref_pairs_path}")
+        ref_pairs = load_mapping_csv(ref_pairs_path)
 
-    # Log reference pairs metadata
-    logger.info("=" * 80)
-    logger.info("REFERENCE PAIRS METADATA")
-    logger.info("=" * 80)
-    logger.info(f"Path: {ref_pairs_path}")
-    logger.info(f"SHA256: {file_hashes['reference']}")
-    logger.info(f"Total pairs: {len(ref_pairs)}")
-    logger.info(f"Unique techniques: {ref_pairs['technique_id'].nunique()}")
-    logger.info(f"Unique controls: {ref_pairs['control_id'].nunique()}")
-    logger.info("Sample pairs (first 10):")
-    for i, (_, row) in enumerate(ref_pairs.head(10).iterrows()):
-        logger.info(f"  {i + 1}. {row['technique_id']} -> {row['control_id']}")
-    logger.info("=" * 80)
+        logger.info("=" * 80)
+        logger.info("REFERENCE PAIRS METADATA")
+        logger.info("=" * 80)
+        logger.info(f"Path: {ref_pairs_path}")
+        logger.info(f"SHA256: {file_hashes['reference']}")
+        logger.info(f"Total pairs: {len(ref_pairs)}")
+        logger.info(f"Unique techniques: {ref_pairs['technique_id'].nunique()}")
+        logger.info(f"Unique controls: {ref_pairs['control_id'].nunique()}")
+        logger.info("Sample pairs (first 10):")
+        for i, (_, row) in enumerate(ref_pairs.head(10).iterrows()):
+            logger.info(f"  {i + 1}. {row['technique_id']} -> {row['control_id']}")
+        logger.info("=" * 80)
+    else:
+        ref_pairs = pd.DataFrame(columns=["technique_id", "control_id"])
+        logger.info(
+            "External reference pairs not loaded (H3 uses deterministic vs learned only)."
+        )
 
     # CRITICAL VALIDATION: Check if mappings are identical
     logger.info("=" * 80)
@@ -2838,47 +2875,33 @@ def run_h3_evaluation(
     logger.info("=" * 80)
 
     # SANITY CHECK 1: Reference pairs must NOT be identical to deterministic mapping
-    det_hash = compute_file_hash(det_mapping_path)
-    ref_hash = compute_file_hash(ref_pairs_path)
+    if use_reference_pairs:
+        det_hash = compute_file_hash(det_mapping_path)
+        ref_hash = compute_file_hash(ref_pairs_path)
 
-    if det_hash == ref_hash:
-        logger.error("=" * 80)
-        logger.error(
-            "CRITICAL ERROR: Reference pairs file is IDENTICAL to deterministic mapping!"
-        )
-        logger.error("=" * 80)
-        logger.error(f"Reference pairs SHA256: {ref_hash}")
-        logger.error(f"Deterministic mapping SHA256: {det_hash}")
-        logger.error(
-            "The reference_pairs file must point to the canonical ATT&CK-D3FEND reference,"
-        )
-        logger.error("NOT to the deterministic mapping file.")
-        logger.error(f"Reference file: {ref_pairs_path}")
-        logger.error(f"Deterministic file: {det_mapping_path}")
-        logger.error("\nSOLUTION: Create canonical reference pairs from YAML:")
-        logger.error("  python scripts/create_reference_pairs.py")
-        logger.error("=" * 80)
-        raise RuntimeError(
-            "Reference pairs file is identical to deterministic mapping. "
-            "Reference pairs must be the canonical ATT&CK-D3FEND reference, "
-            "not the deterministic mapping. Run: python scripts/create_reference_pairs.py"
-        )
+        if det_hash == ref_hash:
+            logger.error("=" * 80)
+            logger.error(
+                "CRITICAL ERROR: Reference pairs file is IDENTICAL to deterministic mapping!"
+            )
+            logger.error("=" * 80)
+            logger.error(f"Reference pairs SHA256: {ref_hash}")
+            logger.error(f"Deterministic mapping SHA256: {det_hash}")
+            logger.error(f"Reference file: {ref_pairs_path}")
+            logger.error(f"Deterministic file: {det_mapping_path}")
+            logger.error("=" * 80)
+            raise RuntimeError(
+                "Reference pairs file is identical to deterministic mapping."
+            )
 
-    # SANITY CHECK 2: Reference pairs should be a subset or different from deterministic
-    if det_pairs == ref_pairs_set:
-        logger.warning("=" * 80)
-        logger.warning(
-            "WARNING: Reference pairs set is identical to deterministic pairs set!"
-        )
-        logger.warning(
-            "This may be acceptable if deterministic mapping IS the canonical reference,"
-        )
-        logger.warning(
-            "but typically reference pairs should be the authoritative MITRE mapping."
-        )
-        logger.warning("=" * 80)
+        if det_pairs == ref_pairs_set:
+            logger.warning("=" * 80)
+            logger.warning(
+                "WARNING: Reference pairs set is identical to deterministic pairs set!"
+            )
+            logger.warning("=" * 80)
 
-    # SANITY CHECK 3: Deterministic and learned mappings must be different
+    # SANITY CHECK 2: Deterministic and learned mappings must be different
     if len(only_in_det) == 0 and len(only_in_learned) == 0 and len(det_pairs) > 0:
         logger.error("=" * 80)
         logger.error("CRITICAL ERROR: Mappings are IDENTICAL!")
@@ -3478,9 +3501,9 @@ def run_h3_evaluation(
             "total_techniques_in_risk_scores": len(risk_score_techniques),
             "techniques_with_mappings": risk_total,
             "exact_match_count": len(risk_exact_matches),
-            "exact_match_fraction": float(len(risk_exact_matches) / risk_total)
-            if risk_total > 0
-            else 0.0,
+            "exact_match_fraction": (
+                float(len(risk_exact_matches) / risk_total) if risk_total > 0 else 0.0
+            ),
             "partial_overlap_count": len(risk_partial_overlaps),
             "disjoint_count": len(risk_disjoints),
         }
@@ -3633,7 +3656,9 @@ def run_h3_evaluation(
                 "description": "Learned mapping is constructed using sentence-transformers to compute semantic similarity between ATT&CK technique descriptions and D3FEND control descriptions. The deterministic CSV is used ONLY to extract unique attack/defense names for text descriptions. The mapping pairs are generated PURELY from embedding similarity scores (top-k most similar controls per technique). It does NOT use deterministic pairs or reference pairs as labels or supervision, ensuring no data leakage for DAC evaluation.",
             },
         },
-        "reference_pairs_info": {
+    }
+    if use_reference_pairs:
+        output["reference_pairs_info"] = {
             "path": str(ref_pairs_path),
             "sha256": file_hashes["reference"],
             "n_pairs": len(ref_pairs),
@@ -3646,8 +3671,7 @@ def run_h3_evaluation(
                 }
                 for _, row in ref_pairs.head(10).iterrows()
             ],
-        },
-    }
+        }
 
     # Add mapping_interpretation to top level if available
     if "mapping_interpretation" in aggregated:
@@ -3766,7 +3790,7 @@ def main() -> None:
         "--reference",
         type=Path,
         default=None,
-        help="Path to reference pairs CSV (default: d3fend_reference_pairs.csv)",
+        help="Path to external reference pairs CSV (default: d3fend_reference_pairs.csv)",
     )
     parser.add_argument(
         "--output",
@@ -3853,7 +3877,15 @@ def main() -> None:
         args.learned = repo_root / "data" / "mappings" / "learned_mapping.csv"
 
     if args.reference is None:
-        args.reference = repo_root / "d3fend_reference_pairs.csv"
+        ref_candidates = [
+            repo_root / "d3fend_reference_pairs.csv",
+            repo_root / "data" / "ontology" / "d3fend_reference_pairs.csv",
+        ]
+        for candidate in ref_candidates:
+            if candidate.exists():
+                args.reference = candidate
+                logger.info(f"Using external reference pairs: {args.reference}")
+                break
 
     if args.output is None:
         args.output = repo_root / "results" / "H3_full_evaluation"

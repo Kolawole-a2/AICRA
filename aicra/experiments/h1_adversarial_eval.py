@@ -159,11 +159,11 @@ def evaluate_robustness(
             results["perturbations"][ptype][f"strength_{strength}"] = {
                 "auroc": float(auroc_pert),
                 "auroc_drop": float(auroc_baseline - auroc_pert),
-                "auroc_drop_pct": float(
-                    (auroc_baseline - auroc_pert) / auroc_baseline * 100
-                )
-                if auroc_baseline > 0
-                else 0.0,
+                "auroc_drop_pct": (
+                    float((auroc_baseline - auroc_pert) / auroc_baseline * 100)
+                    if auroc_baseline > 0
+                    else 0.0
+                ),
                 "precision": float(tp / (tp + fp)) if (tp + fp) > 0 else 0.0,
                 "recall": float(tp / (tp + fn)) if (tp + fn) > 0 else 0.0,
                 "label_flips": int(label_flips),

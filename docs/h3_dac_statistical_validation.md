@@ -91,29 +91,24 @@ This will:
 
 ### Required Inputs
 
-1. **`data/mappings/deterministic_attack_defense_lookup.csv`**
-   - Columns: `attack_id`, `defense_id` (and optionally others)
+1. **`data/mappings/deterministic_attack_defense_lookup.csv`   - Columns: `attack_id`, `defense_id` (and optionally others)
    - Gold standard mapping from ontology
 
-2. **`data/mappings/learned_attack_defense_mapping.csv`**
-   - Columns: `attack_id`, `defense_id` (and optionally others)
+2. **`data/mappings/learned_attack_defense_mapping.csv`   - Columns: `attack_id`, `defense_id` (and optionally others)
    - ML-based learned mapping
 
-3. **`results/ransomware_performance_by_attack.csv`**
-   - Columns: `attack_id`, `precision_det`, `precision_learned`, `variance_det`, `variance_learned`
+3. **`results/ransomware_performance_by_attack.csv`   - Columns: `attack_id`, `precision_det`, `precision_learned`, `variance_det`, `variance_learned`
    - Performance metrics for each attack
 
 ## Output Files
 
 ### Generated Outputs
 
-1. **`results/h3_metrics_attack_level.csv`**
-   - One row per attack_id
+1. **`results/h3_metrics_attack_level.csv`   - One row per attack_id
    - Contains DAC metrics, performance metrics, and delta metrics
    - Columns: `attack_id`, `n_det_pairs`, `n_learned_pairs`, `n_overlap_pairs`, `dac_attack`, `precision_learned_wrt_det_attack`, `coverage_det`, `coverage_learned`, `precision_det`, `precision_learned`, `variance_det`, `variance_learned`, `delta_precision`, `variance_reduction`
 
-2. **`results/h3_dac_stat_tests.json`**
-   - Statistical test results
+2. **`results/h3_dac_stat_tests.json`   - Statistical test results
    - Contains:
      - `delta_precision_ttest`: Paired t-test results for Δprecision
      - `variance_reduction_ttest`: Paired t-test results for variance reduction
@@ -136,30 +131,4 @@ This will:
 - **DAC vs variance_reduction**: Tests if higher DAC correlates with variance reduction
 
 These correlations validate Hypothesis H3: that deterministic mapping (higher DAC) yields better operational outcomes (precision and consistency).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

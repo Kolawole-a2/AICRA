@@ -87,9 +87,6 @@ def train_and_score(output_root: Path | None = None) -> None:
     all_features = pd.concat([train_ds.features, test_ds.features], ignore_index=True)
     all_labels = pd.concat([train_ds.labels, test_ds.labels], ignore_index=True)
     all_families = pd.concat([train_ds.families, test_ds.families], ignore_index=True)
-    all_timestamps = pd.concat(
-        [train_ds.timestamps, test_ds.timestamps], ignore_index=True
-    )
     n_all = len(all_features)
     logger.info(f"Full dataset (train+test) size for full_ember: {n_all} samples")
 
@@ -212,7 +209,9 @@ def train_and_score(output_root: Path | None = None) -> None:
     splits = _make_split_indices(n_all)
 
     for split_name, idx in splits.items():
-        logger.info(f"\nWriting risk_scores for split '{split_name}' ({len(idx)} samples)")
+        logger.info(
+            f"\nWriting risk_scores for split '{split_name}' ({len(idx)} samples)"
+        )
         split_dir = output_root / split_name
         split_dir.mkdir(parents=True, exist_ok=True)
 
@@ -246,5 +245,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-

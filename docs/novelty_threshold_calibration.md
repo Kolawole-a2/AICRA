@@ -77,9 +77,7 @@ This alignment ensures:
 
 AICRA uses **Isotonic calibration** to produce **SIEM-ready susceptibility scores**:
 
-- Calibrated scores `S ∈ [0,1]` are **well-calibrated probabilities**
-- Low ECE (Expected Calibration Error) ensures scores are **reliable for operational use**
-- Temporal calibration evaluation detects **drift** over time
+- Calibrated scores `S ∈ [0,1]` are **well-calibrated probabilities- Low ECE (Expected Calibration Error) ensures scores are **reliable for operational use- Temporal calibration evaluation detects **drift** over time
 
 This is **novel** in the context of:
 - **Transferability:** Scores work in SIEM pipelines without re-calibration
@@ -87,15 +85,11 @@ This is **novel** in the context of:
 
 ## Formula Summary
 
-**Optimal Threshold Selection:**
-
-```
+**Optimal Threshold Selection:```
 t* = argmin_t [Σ_i (p_i × Impact_i × I(p_i ≥ t) × (1 - y_i)) + C_FP × I(p_i ≥ t) × y_i]
 ```
 
-**Expected Loss at Threshold `t`:**
-
-```
+**Expected Loss at Threshold `t`:```
 E[Loss | t] = (1/N) × [Σ_i (p_i × Impact_i × I(p_i ≥ t) × (1 - y_i)) + C_FP × Σ_i (I(p_i ≥ t) × y_i)]
 ```
 
@@ -110,10 +104,4 @@ Where:
 - **Expected Loss:** `aicra/experiments/h2_calibration_thresholds.py:93-116`
 - **Risk Register Mapping:** `aicra/register.py`, `aicra/pipelines/policy.py`
 - **Calibration:** `aicra/pipelines/calibration.py`
-
-## References
-
-- Cost-sensitive learning: Elkan (2001), "The Foundations of Cost-Sensitive Learning"
-- Calibration: Guo et al. (2017), "On Calibration of Modern Neural Networks"
-- Risk-based decision theory: Raiffa & Schlaffer (1961), "Applied Statistical Decision Theory"
 

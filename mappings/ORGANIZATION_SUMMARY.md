@@ -24,8 +24,7 @@ The AICRA project has been organized according to the desired structure:
 
 ### 📁 Data Structure
 
-**Expected locations:**
-- `data/ontology/attack_techniques.csv` - ATT&CK techniques with descriptions
+**Expected locations:- `data/ontology/attack_techniques.csv` - ATT&CK techniques with descriptions
 - `data/ontology/d3fend_controls.csv` - D3FEND controls with descriptions
 - `data/ontology/d3fend_reference_pairs.csv` - Reference pairs (optional)
 - `data/mappings/deterministic_lookup.csv` - Deterministic mapping

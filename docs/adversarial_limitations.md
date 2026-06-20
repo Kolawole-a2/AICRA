@@ -10,13 +10,11 @@ AICRA's static PE feature-based ransomware detection is evaluated for robustness
 
 **Method:** Add Gaussian or uniform noise to feature vectors within plausible ranges.
 
-**Perturbation Types:**
-- **Gaussian:** `x' = x + N(0, σ)` where σ = strength × feature_std
+**Perturbation Types:- **Gaussian:** `x' = x + N(0, σ)` where σ = strength × feature_std
 - **Uniform:** `x' = x + U(-strength, +strength)`
 - **Mimicry:** Shift ransomware features toward benign distribution mean
 
-**Metrics:**
-- AUROC drop under perturbation
+**Metrics:- AUROC drop under perturbation
 - % of samples with classification flips
 - % of ransomware samples that evade detection (FN increase)
 
@@ -24,8 +22,7 @@ AICRA's static PE feature-based ransomware detection is evaluated for robustness
 
 **Method:** Shift ransomware feature distributions toward benign samples to evade detection.
 
-**Attack Model:**
-```
+**Attack Model:```
 x_mimicry = (1 - α) × x_ransomware + α × μ_benign
 ```
 
@@ -33,20 +30,17 @@ Where:
 - `α` = mimicry strength (0.0 = no change, 1.0 = full shift to benign)
 - `μ_benign` = mean of benign feature distribution
 
-**Evaluation:**
-- Evasion rate: % of ransomware samples classified as benign after mimicry
+**Evaluation:- Evasion rate: % of ransomware samples classified as benign after mimicry
 - Risk score reduction: Mean decrease in susceptibility score
 
 ## Findings
 
 ### Robustness Characteristics
 
-**Strengths:**
-- LightGBM ensemble with multiple seeds provides some robustness to small perturbations
+**Strengths:- LightGBM ensemble with multiple seeds provides some robustness to small perturbations
 - Static PE features (byte histograms, headers) are less easily manipulated than dynamic features
 
-**Vulnerabilities:**
-- **Mimicry attacks:** Ransomware samples can evade detection by shifting features toward benign distribution
+**Vulnerabilities:- **Mimicry attacks:** Ransomware samples can evade detection by shifting features toward benign distribution
 - **Feature-level noise:** Large perturbations (>10%) cause significant AUROC drops
 - **Static analysis limitation:** Cannot detect runtime behavior changes
 
@@ -86,5 +80,5 @@ See `results/H1_adversarial/` for detailed results:
 ## References
 
 - Adversarial ML: Goodfellow et al. (2014), "Explaining and Harnessing Adversarial Examples"
-- Malware evasion: Anderson et al. (2018), "Learning to Evade Static PE Machine Learning Malware Models"
+- Malware evasion: 
 

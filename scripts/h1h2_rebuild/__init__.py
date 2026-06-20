@@ -15,5 +15,3 @@ All outputs are written under:
 The canonical H1/H2/H3 experiments under aicra.experiments/* and results/H1_*/H2_*/H3_*
 are not modified by this pipeline.
 """
-
-

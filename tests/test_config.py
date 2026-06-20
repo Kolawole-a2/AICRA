@@ -44,7 +44,7 @@ def test_set_settings() -> None:
     assert current_settings.random_seed == 123
 
 
-@patch('subprocess.run')
+@patch("subprocess.run")
 def test_git_commit(mock_run) -> None:
     """Test git commit retrieval."""
     from aicra.config import _get_git_commit
@@ -58,6 +58,7 @@ def test_git_commit(mock_run) -> None:
 
     # Mock failed git command - use CalledProcessError instead of generic Exception
     from subprocess import CalledProcessError
+
     mock_run.side_effect = CalledProcessError(1, "git")
     commit = _get_git_commit()
     assert commit == "unknown"

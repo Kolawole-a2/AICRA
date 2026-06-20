@@ -12,19 +12,13 @@ from aicra.core.data import Dataset, _synthetic_dataset, load_ember_2024
 def test_dataset_creation() -> None:
     """Test Dataset creation."""
     # Create synthetic data
-    features = pd.DataFrame({
-        'feature_0': [1, 2, 3],
-        'feature_1': [4, 5, 6]
-    })
+    features = pd.DataFrame({"feature_0": [1, 2, 3], "feature_1": [4, 5, 6]})
     labels = pd.Series([0, 1, 0])
-    families = pd.Series(['benign', 'ransomware', 'benign'])
-    timestamps = pd.Series(pd.date_range('2024-01-01', periods=3))
+    families = pd.Series(["benign", "ransomware", "benign"])
+    timestamps = pd.Series(pd.date_range("2024-01-01", periods=3))
 
     dataset = Dataset(
-        features=features,
-        labels=labels,
-        families=families,
-        timestamps=timestamps
+        features=features, labels=labels, families=families, timestamps=timestamps
     )
 
     assert len(dataset.features) == 3
@@ -42,7 +36,7 @@ def test_synthetic_dataset() -> None:
 
     # Check sizes
     assert len(train.features) == 800  # 80% of 1000
-    assert len(test.features) == 200   # 20% of 1000
+    assert len(test.features) == 200  # 20% of 1000
 
     # Check features
     assert train.features.shape[1] == 50
@@ -53,8 +47,8 @@ def test_synthetic_dataset() -> None:
     assert set(test.labels.unique()) <= {0, 1}
 
     # Check families
-    assert set(train.families.unique()) <= {'lockbit', 'blackcat', 'benign'}
-    assert set(test.families.unique()) <= {'lockbit', 'blackcat', 'benign'}
+    assert set(train.families.unique()) <= {"lockbit", "blackcat", "benign"}
+    assert set(test.families.unique()) <= {"lockbit", "blackcat", "benign"}
 
 
 def test_synthetic_dataset_deterministic() -> None:
@@ -82,7 +76,7 @@ def test_synthetic_dataset_different_seeds() -> None:
     assert not train1.labels.equals(train2.labels)
 
 
-@patch('aicra.core.data.get_settings')
+@patch("aicra.core.data.get_settings")
 def test_load_ember_2024_file_not_found(mock_get_settings) -> None:
     """Test load_ember_2024 when files don't exist."""
     # Mock settings
@@ -93,9 +87,9 @@ def test_load_ember_2024_file_not_found(mock_get_settings) -> None:
         load_ember_2024()
 
 
-@patch('aicra.core.data.get_settings')
-@patch('builtins.open', new_callable=mock_open)
-@patch('pandas.read_json')
+@patch("aicra.core.data.get_settings")
+@patch("builtins.open", new_callable=mock_open)
+@patch("pandas.read_json")
 def test_load_ember_2024_success(mock_read_json, mock_file, mock_get_settings):
     """Test successful load_ember_2024."""
     # Mock settings
@@ -103,16 +97,23 @@ def test_load_ember_2024_success(mock_read_json, mock_file, mock_get_settings):
     mock_settings.ember_dir = Path("/mock/path")
 
     # Mock file existence
-    with patch('pathlib.Path.exists', return_value=True):
+    with patch("pathlib.Path.exists", return_value=True):
         # Mock pandas read_json
-        mock_features = pd.DataFrame({
-            'feature_0': [1, 2, 3],
-            'feature_1': [4, 5, 6],
-            'family': ['benign', 'ransomware', 'benign']
-        })
-        mock_labels = pd.DataFrame({'label': [0, 1, 0]})
+        mock_features = pd.DataFrame(
+            {
+                "feature_0": [1, 2, 3],
+                "feature_1": [4, 5, 6],
+                "family": ["benign", "ransomware", "benign"],
+            }
+        )
+        mock_labels = pd.DataFrame({"label": [0, 1, 0]})
 
-        mock_read_json.side_effect = [mock_features, mock_labels, mock_features, mock_labels]
+        mock_read_json.side_effect = [
+            mock_features,
+            mock_labels,
+            mock_features,
+            mock_labels,
+        ]
 
         train, test = load_ember_2024()
 

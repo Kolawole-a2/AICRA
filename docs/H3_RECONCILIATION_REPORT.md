@@ -93,16 +93,13 @@ def compute_score_consistency(
 
 ### 2.2 Why Variance Reduction is 0.0
 
-**Root Cause Analysis:**
-
-1. **All techniques have mapped controls:** In all evaluation splits (main, small_ember, full_ember, smoke_test), every ATT&CK technique present in the risk scores has at least one mapped D3FEND control in both the deterministic and learned mappings.
+**Root Cause Analysis:1. **All techniques have mapped controls:** In all evaluation splits (main, small_ember, full_ember, smoke_test), every ATT&CK technique present in the risk scores has at least one mapped D3FEND control in both the deterministic and learned mappings.
 
 2. **No score adjustments occur:** Because all techniques have controls, the `adjust_score` function never applies the `demotion_factor`. It always returns `row["risk_score"]` unchanged.
 
 3. **Identical variances:** Since `risk_score == risk_score_adjusted` for all rows, `baseline_var == adjusted_var`, resulting in `variance_reduction = 0.0`.
 
-**Evidence from Results:**
-- Deterministic mapping: 173 pairs covering 46 unique techniques
+**Evidence from Results:- Deterministic mapping: 173 pairs covering 46 unique techniques
 - Learned mapping: 190 pairs covering 47 unique techniques
 - All techniques in evaluation splits are covered by both mappings
 
@@ -144,8 +141,7 @@ The **-47%** claim appears in:
 - `README.md` (line 393)
 - `SOURCE_CONTRIBUTION_AND_AICRA_IMPROVEMENTS.md` (line 93)
 
-**From `SOURCE_CONTRIBUTION_AND_AICRA_IMPROVEMENTS.md`:**
-```
+**From `SOURCE_CONTRIBUTION_AND_AICRA_IMPROVEMENTS.md`:```
 | **Combined Baselines** | Risk Score Variance | High (learned mapping) | Low (deterministic) | -47% variance | **47% Variance Reduction** |
 ```
 
@@ -174,8 +170,7 @@ The theoretical assumption that deterministic mappings reduce variance doesn't h
 
 **Decision:** Update documentation to reflect actual computed values (**0.0%** variance reduction) rather than theoretical values (**-47%**).
 
-**Rationale:**
-1. **Scientific accuracy:** Documentation must match experimental results
+**Rationale:1. **Scientific accuracy:** Documentation must match experimental results
 2. **Reproducibility:** Readers should be able to verify claims against actual outputs
 3. **Transparency:** The explanation of why variance reduction is 0.0 is operationally meaningful (all techniques are mapped, so no score adjustments occur)
 
@@ -183,8 +178,7 @@ The theoretical assumption that deterministic mappings reduce variance doesn't h
 
 **Decision:** Do NOT modify the variance reduction computation code.
 
-**Rationale:**
-1. **No bug in computation:** The code correctly computes `variance_reduction = baseline_var - adjusted_var`. The result is 0.0 because no adjustments occur, which is mathematically correct.
+**Rationale:1. **No bug in computation:** The code correctly computes `variance_reduction = baseline_var - adjusted_var`. The result is 0.0 because no adjustments occur, which is mathematically correct.
 2. **Design choice:** The current implementation measures variance reduction from score demotion, not from mapping consistency. This is a valid design choice, even if it doesn't produce the expected variance reduction in this evaluation.
 3. **Future work:** If variance reduction from mapping consistency is desired, it would require a different computation (e.g., comparing variance of risk scores when using deterministic vs learned mappings directly, not after score adjustment).
 
@@ -194,21 +188,17 @@ The theoretical assumption that deterministic mappings reduce variance doesn't h
 
 ### 5.1 Corrected Variance Reduction Statement
 
-**Old Claim (README.md line 533):**
-> "Deterministic mapping increases ATT&CK–D3FEND mapping coverage by 30% and reduces risk-score variance by 47%."
+**Old Claim (README.md line 533):> "Deterministic mapping increases ATT&CK–D3FEND mapping coverage by 30% and reduces risk-score variance by 47%."
 
-**Corrected Claim:**
-> "Deterministic mapping increases ATT&CK–D3FEND mapping coverage by 48.1% and achieves 100% Defense-Attack Consistency (DAC). Variance reduction is 0.0% because all ATT&CK techniques in the evaluation splits have mapped D3FEND controls in both deterministic and learned mappings, so no score adjustments occur."
+**Corrected Claim:> "Deterministic mapping increases ATT&CK–D3FEND mapping coverage by 48.1% and achieves 100% Defense-Attack Consistency (DAC). Variance reduction is 0.0% because all ATT&CK techniques in the evaluation splits have mapped D3FEND controls in both deterministic and learned mappings, so no score adjustments occur."
 
 ### 5.2 Corrected Table Entry
 
-**Old Claim (README.md line 393):**
-```
+**Old Claim (README.md line 393):```
 | **H3** | Combined | 100% | Variance reduction | **-47%** |
 ```
 
-**Corrected Claim:**
-```
+**Corrected Claim:```
 | **H3** | Combined | 100% | Variance reduction | **0.0%** |
 ```
 
@@ -253,18 +243,15 @@ The theoretical assumption that deterministic mappings reduce variance doesn't h
 
 ### 7.1 How to Reproduce Variance Reduction = 0.0
 
-**Command:**
-```bash
+**Command:```bash
 python experiments/h3_mapping_compare.py
 ```
 
-**Expected Output:**
-- `results/H3_full_evaluation/H3_full_results.json`
+**Expected Output:- `results/H3_full_evaluation/H3_full_results.json`
 - Check `aggregated_metrics.deterministic.variance_reduction.mean` → Should be 0.0
 - Check `aggregated_metrics.learned.variance_reduction.mean` → Should be 0.0
 
-**Verification:**
-```bash
+**Verification:```bash
 # Extract variance reduction values
 python -c "
 import json
@@ -277,22 +264,19 @@ with open('results/H3_full_evaluation/H3_full_results.json') as f:
 "
 ```
 
-**Expected Output:**
-```
+**Expected Output:```
 Deterministic variance reduction: 0.0
 Learned variance reduction: 0.0
 ```
 
 ### 7.2 Why Variance Reduction is 0.0
 
-**Explanation:**
-1. All ATT&CK techniques in the evaluation splits have mapped D3FEND controls in both deterministic and learned mappings.
+**Explanation:1. All ATT&CK techniques in the evaluation splits have mapped D3FEND controls in both deterministic and learned mappings.
 2. The `compute_score_consistency` function only demotes risk scores for unmapped positives (techniques with no controls).
 3. Since all techniques are mapped, no score demotion occurs: `risk_score == risk_score_adjusted` for all rows.
 4. Therefore, `baseline_variance == mapped_variance`, resulting in `variance_reduction = 0.0`.
 
-**Code Reference:**
-- `aicra/experiments/h3_evaluation.py`, lines 528-575: `compute_score_consistency()`
+**Code Reference:- `aicra/experiments/h3_evaluation.py`, lines 528-575: `compute_score_consistency()`
 - `results/H3_full_evaluation/H3_full_results.json`: Per-split `consistency_metrics.variance_reduction` values
 
 ---
@@ -319,9 +303,6 @@ Learned variance reduction: 0.0
 1. `README.md` (lines 393, 533, 535)
 2. `SOURCE_CONTRIBUTION_AND_AICRA_IMPROVEMENTS.md` (line 93, 156) - Note: This file may be intentionally theoretical; add a note clarifying it's an expected value, not computed
 
----
-
-**Report Generated:** 2024-12-19  
+--**Report Generated:** 2024-12-19  
 **Next Steps:** Apply README updates as documented in Section 5.
-
 

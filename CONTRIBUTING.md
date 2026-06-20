@@ -12,14 +12,12 @@ Thank you for your interest in contributing to AICRA! This guide will help you g
 
 ### Installation
 
-1. **Clone the repository**
-   ```bash
+1. **Clone the repository   ```bash
    git clone <repository-url>
    cd AICRA
    ```
 
-2. **Install dependencies**
-   ```bash
+2. **Install dependencies   ```bash
    make setup
    ```
    
@@ -30,8 +28,7 @@ Thank you for your interest in contributing to AICRA! This guide will help you g
    pre-commit install
    ```
 
-3. **Verify installation**
-   ```bash
+3. **Verify installation   ```bash
    make test
    ```
 
@@ -278,8 +275,7 @@ The hooks include:
 
 ### Before Submitting
 
-1. **Run all checks**
-   ```bash
+1. **Run all checks   ```bash
    make lint
    make typecheck
    make test
@@ -334,13 +330,7 @@ We use semantic versioning (MAJOR.MINOR.PATCH):
 ### Release Steps
 
 1. **Update version** in `pyproject.toml`
-2. **Update changelog**
-3. **Create release branch**
-4. **Run full test suite**
-5. **Create GitHub release**
-6. **Update documentation**
-
-## Documentation
+2. **Update changelog3. **Create release branch4. **Run full test suite5. **Create GitHub release6. **Update documentation## Documentation
 
 ### Code Documentation
 

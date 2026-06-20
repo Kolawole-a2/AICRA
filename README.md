@@ -8,62 +8,123 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-** Machine Learning-Based cyber risk advisor that predicts ransomware and endpoint threats, calibrates risk scores, and aligns MITRE ATT&CK techniques to D3FEND countermeasures for U.S. banking endpoint security.**
+**Machine-learning cyber risk advisor that predicts ransomware and endpoint threats, calibrates risk scores, and aligns MITRE ATT&CK techniques to D3FEND countermeasures for U.S. banking endpoint security.**
+
+**Author:** [Kolawole Afolabi](https://github.com/Kolawole-a2)
+
+This repository is the **software artifact and reproducible evidence base** for the Doctor of Engineering **praxis (production)** performed and submitted by **Kolawole Afolabi**. It implements the same scope, research questions (RQ1–RQ3), hypotheses (H1–H3), experiments, and reported results as that praxis document—not a separate or simplified variant.
+
+It provides reproducible hypothesis experiments (H1–H3), saved results for defense review, optional operational risk registers, and documentation organized for examiners and reviewers—not ad-hoc development notes at the repository root.
+
+**Contact:** [kolawole.afolabi@gwmail.gwu.edu](mailto:kolawole.afolabi@gwmail.gwu.edu) · [ako.afolabi@gmail.com](mailto:ako.afolabi@gmail.com) (questions, reproduction help, or examiner follow-up)
+
+---
+
+## Praxis Documentation
+
+**Start here for defense / review:** [docs/praxis/README.md](docs/praxis/README.md)
+
+| Resource | Purpose |
+|----------|---------|
+| [docs/praxis/EXPERIMENTS_GUIDE.md](docs/praxis/EXPERIMENTS_GUIDE.md) | Canonical commands for H1, H2, H3 |
+| [docs/praxis/PROJECT_LAYOUT.md](docs/praxis/PROJECT_LAYOUT.md) | Repository layout and what is canonical |
+| [docs/EXPERIMENTS.md](docs/EXPERIMENTS.md) | Step-by-step reproduction |
+| [docs/BENCHMARK_NOTES.md](docs/BENCHMARK_NOTES.md) | Metric snapshot from saved JSON artifacts |
+| [docs/RESULTS_SUMMARY.md](docs/RESULTS_SUMMARY.md) | Research-ready results tables |
+| [results/praxis_validation_report.md](results/praxis_validation_report.md) | Consolidated H1–H3 validation |
+| [docs/REVIEWER_GUIDE.md](docs/REVIEWER_GUIDE.md) | Reviewer navigation and reproduction |
+| [docs/BASELINE_METHODOLOGY_TEMP.md](docs/BASELINE_METHODOLOGY_TEMP.md) | Empirical baseline methodology (same EMBER splits) |
+| [docs/CANONICAL_VS_REBUILD_EXPLANATION.md](docs/CANONICAL_VS_REBUILD_EXPLANATION.md) | Canonical experiments vs optional rebuild |
+
+Historical development notes are archived under `docs/archive/development/` (traceability only—not part of the praxis narrative). One-off scripts from an earlier repo layout live under `scripts/legacy/`.
+
+### Canonical hypothesis artifacts
+
+These folders are the **primary praxis evidence**. Do not overwrite casually.
+
+| Hypothesis | Results JSON | Summary report |
+|------------|--------------|----------------|
+| **H1** | `results/H1_classification/H1_full_results.json` | `results/H1_classification/H1_summary.md` |
+| **H1 OOF (supplementary)** | `results/H1_oof_robust_eval/oof_robust_metrics.json` | `results/H1_oof_robust_eval/oof_robust_summary.md` |
+| **H2** | `results/H2_calibration_thresholds/H2_full_results.json` | `results/H2_calibration_thresholds/H2_summary.md` |
+| **H3** | `results/H3_full_evaluation/H3_full_results.json` | `results/H3_full_evaluation/H3_full_summary.md` |
+
+### What AICRA demonstrates (praxis flow)
+
+1. **Detect** — Static PE LightGBM ransomware classification on EMBER-2024 (H1; primary metric: **AUROC**)
+2. **Decide** — Calibrated probabilities and **cost-aware thresholds** for banking-style FN ≫ FP costs (H2; primary metric: **expected loss**)
+3. **Defend** — **Deterministic vs learned** ATT&CK→D3FEND mapping with **DAC_internal** (primary) and **DAC_external** secondary benchmark (H3)
+4. **Operate (optional)** — Ransomware-only **risk registers** under `register/` via the post-hoc rebuild pipeline (does **not** modify canonical H1/H2/H3 results)
+
+**Baselines:** All comparisons use **empirical baselines on the same EMBER-2024 splits** (e.g., logistic regression / majority classifier for H1)—not literature-reported percentages from external papers.
 
 ---
 
 ## Quick Start: Current Best Path
 
-- **H1 (Static PE Classification)**  
-  - Run (multi-split evaluation): `python -m aicra.experiments.h1_classification --splits-config config/h1_splits.yaml`  
-  - Run (single-split evaluation): `python -m aicra.experiments.h1_classification`  
-  - Latest numbers: `results/H1_classification/H1_full_results.json`, `results/H1_classification/H1_summary.md`, `docs/BENCHMARK_NOTES.md`
+- **H1 (Static PE Classification)**
+  - Run (multi-split, recommended): `python -m aicra.experiments.h1_classification --splits-config config/h1_splits.yaml`
+  - Run (single-split): `python -m aicra.experiments.h1_classification`
+  - Latest numbers: `results/H1_classification/H1_summary.md`, `docs/BENCHMARK_NOTES.md`
 
-- **H2 (Calibration & Cost-Aware Thresholding)**  
-  - Run (multi-split evaluation): `python -m aicra.experiments.h2_calibration_thresholds --splits-config config/h2_splits.yaml`  
-  - Run (single-split evaluation): `python -m aicra.experiments.h2_calibration_thresholds`  
-  - Latest numbers: `results/H2_calibration_thresholds/H2_full_results.json`, `results/H2_calibration_thresholds/H2_summary.md`, `docs/BENCHMARK_NOTES.md`
+- **H1 OOF robustness (supplementary — separate output folder)**
+  - Run: `python scripts/evaluate_h1_oof_robust.py`
+  - Latest numbers: `results/H1_oof_robust_eval/oof_robust_summary.md` (OOF AUROC stress test; does not overwrite canonical H1)
 
-- **H3 (Deterministic vs Learned Mapping, DAC)**  
-  - Run: `python -m aicra.experiments.h3_evaluation --config config/h3_splits.yaml`  
-  - Latest numbers: `results/H3_full_evaluation/H3_full_results.json`, `results/H3_full_evaluation/H3_full_summary.md`
+- **H2 (Calibration & Cost-Aware Thresholding)**
+  - Run (multi-split, recommended): `python -m aicra.experiments.h2_calibration_thresholds --splits-config config/h2_splits.yaml`
+  - Run (single-split): `python -m aicra.experiments.h2_calibration_thresholds`
+  - Requires H1 model. Latest numbers: `results/H2_calibration_thresholds/H2_summary.md`
 
-- **All Hypotheses in One Shot (optional)**  
-  - Run: `python scripts/run_all_hypotheses.py`  
-  - Then check: `docs/BENCHMARK_NOTES.md` for a consolidated metric snapshot
+- **H3 (Deterministic vs Learned Mapping, DAC)**
+  - Run: `python -m aicra.experiments.h3_evaluation --config config/h3_splits.yaml` or `python run_h3_evaluation.py`
+  - Three mappings in the report: deterministic (ground truth), learned (alternative), external reference (`d3fend_reference_pairs.csv`, DAC_external only)
+  - Latest numbers: `results/H3_full_evaluation/H3_full_summary.md`
 
-- **Optional H1/H2 Rebuild + Ransomware Registers (post‑hoc analysis)** ⚠️ **OPTIONAL**  
-  - **Purpose**: Generates operational artifacts (risk registers) for demonstration. Does NOT modify canonical H1/H2/H3 results.  
-  - **Note**: This is separate from the canonical hypothesis validation experiments above. See `docs/CANONICAL_VS_REBUILD_EXPLANATION.md` for details.  
-  - Run (from repo root, using existing risk scores only):  
-    - `python scripts/h1h2_rebuild/build_split_manifests.py`  
-    - `python scripts/h1h2_rebuild/train_and_score.py`  
-    - `python scripts/h1h2_rebuild/generate_plots_and_metrics.py`  
-    - `python scripts/validate_deterministic_lookup.py`  
-    - `python scripts/generate_ransomware_only_registers_FINAL.py`  
-    - `python scripts/h1h2_rebuild/aggregate_register_controls.py` (optional aggregated view)  
-  - Outputs: `results/h1h2_rebuild/<split>/metrics.json`, `results/h1h2_rebuild/metrics_summary.json`,  
-    and ransomware‑only registers under `register/h1h2_rebuild/<split>/` and `register/<split>/`.
+- **All hypotheses**
+  - Run: `python scripts/run_all_hypotheses.py`
+  - Validation report: `python scripts/generate_praxis_validation_report.py` → `results/praxis_validation_report.md`
+
+- **Optional H1/H2 rebuild + ransomware registers** ⚠️ **OPTIONAL**
+  - **Purpose:** Operational demonstration artifacts (risk registers). Does **not** modify canonical H1/H2/H3 results or H3 risk-score inputs.
+  - See [docs/CANONICAL_VS_REBUILD_EXPLANATION.md](docs/CANONICAL_VS_REBUILD_EXPLANATION.md).
+  - Run (from repo root):
+    - `python scripts/h1h2_rebuild/build_split_manifests.py`
+    - `python scripts/h1h2_rebuild/train_and_score.py`
+    - `python scripts/h1h2_rebuild/generate_plots_and_metrics.py`
+    - `python scripts/validate_deterministic_lookup.py`
+    - `python scripts/generate_ransomware_only_registers_FINAL.py`
+    - `python scripts/h1h2_rebuild/aggregate_register_controls.py` (optional aggregated view)
+  - Outputs: `results/h1h2_rebuild/<split>/`, `register/h1h2_rebuild/<split>/`, `register/<split>/`
 
 ---
 
 ## Research Context & Praxis Overview
 
-This repository implements the **Doctor of Engineering praxis**: *Machine Learning-Based Cyber Risk Advisor with Analytics for Endpoint Ransomware Defense in U.S. Banking Organizations (AICRA)*.
+This repository implements the **Doctor of Engineering praxis (production)** by **Kolawole Afolabi**: *Machine Learning-Based Cyber Risk Advisor with Analytics for Endpoint Ransomware Defense in U.S. Banking Organizations (AICRA)*.
 
 ### Domain & Scope
 
 - **Domain**: U.S. banking endpoint security, ransomware risk assessment
-- **Key Innovation**: Combines ML predictions, calibrated risk scoring, and ontology-based ATT&CK→D3FEND mapping
-- **Research Focus**: Validates three research questions (RQ1-RQ3) and hypotheses (H1-H3) that demonstrate improvements in detection performance, cost-aware decision-making, and mapping consistency, with statistical validation via p-values
+- **Key innovation**: Combines ML predictions, calibrated risk scoring, and ontology-based ATT&CK→D3FEND mapping with quantitative validation
+- **Research focus**: Three research questions (RQ1–RQ3) and hypotheses (H1–H3) with multi-split evaluation and formal p-value testing
 
-### Research Approach
+### End-to-end capability
+
+| Stage | What it does | Primary evidence |
+|-------|----------------|------------------|
+| Classification (H1) | LightGBM on static PE features | AUROC, PR-AUC, empirical baseline lift |
+| Decision (H2) | Calibration + cost-optimal thresholds | Expected loss vs F1-optimal threshold |
+| Mapping (H3) | Deterministic vs learned ATT&CK→D3FEND | DAC_internal; DAC_external vs reference pairs |
+| Operations (optional) | Risk registers with prescriptive controls | `register/` CSVs (rebuild pipeline) |
+
+### Research approach
 
 AICRA integrates:
-1. **Machine Learning Classification**: LightGBM-based ransomware detection using static PE features
-2. **Probability Calibration**: Platt/Isotonic regression for reliable risk scores
-3. **Cost-Aware Decision Making**: Business-aligned threshold optimization
-4. **Ontology-Based Mapping**: Deterministic and learned ATT&CK→D3FEND mappings with quantitative consistency metrics
+1. **Machine learning classification** — LightGBM-based ransomware detection using static PE features
+2. **Probability calibration** — Platt/isotonic regression for reliable risk scores
+3. **Cost-aware decision making** — Business-aligned threshold optimization (FN cost ≫ FP cost)
+4. **Ontology-based mapping** — Deterministic and learned ATT&CK→D3FEND mappings with DAC metrics
 
 ---
 
@@ -105,9 +166,11 @@ AICRA integrates:
 - **Brier Score**: Probability calibration quality
 - **ECE**: Expected Calibration Error
 - **Lift@k**: Precision improvement at top k% of predictions
-- **Alert Fatigue Reduction**: FN rate reduction vs academic baseline (45% → 0.20%)
+- **Alert Fatigue Reduction**: FN rate reduction vs empirical baseline (logistic regression on same test split)
 
-**Results**: See `results/H1_classification/H1_full_results.json` and `results/H1_classification/H1_summary.md`
+**Results**: See `results/H1_classification/H1_summary.md`
+
+**Supplementary OOF evaluation**: `python scripts/evaluate_h1_oof_robust.py` → `results/H1_oof_robust_eval/` (strictest family-generalization stress test; separate folder).
 
 **Note on Precision-Recall Trade-off**: H1 achieves 66.6% precision and 99.8% recall using a banking-optimized threshold (0.0298). The lower precision is intentional and operationally suitable for banking security, where missing ransomware (false negatives) is far more costly than investigating false positives. See `docs/PRECISION_RECALL_TRADE_OFF_BANKING.md` for detailed explanation.
 
@@ -147,12 +210,13 @@ AICRA integrates:
 **What is being tested**:
 - **Deterministic Mapping**: Normative expert ontology (ground truth for H3)
 - **Learned Mapping**: Heuristic/AI-generated approximation from data
+- **External Reference Pairs**: Secondary benchmark from `d3fend_reference_pairs.csv` (exported from `data/lookups/attack_to_d3fend.yaml`)
 - **DAC_internal**: Primary metric measuring agreement with deterministic mapping (100% by definition for deterministic)
-- **DAC_external**: Secondary benchmark measuring agreement with external D3FEND reference pairs
+- **DAC_external**: Secondary benchmark measuring agreement with external reference pairs
 
 **Key Metrics**:
 - **DAC_internal (%)**: Agreement with deterministic mapping (primary H3 metric)
-- **DAC_external (%)**: Agreement with external reference pairs (secondary)
+- **DAC_external (%)**: Agreement with external reference pairs (secondary benchmark)
 - **Coverage (%)**: Percentage of ATT&CK techniques with mapped D3FEND controls
 - **Actionable Precision & F1**: Decision quality for mapped technique-control pairs
 - **Variance/IQR Reduction**: Risk score stability improvement
@@ -162,7 +226,15 @@ AICRA integrates:
 - Statistical tests: Paired t-tests, Wilcoxon signed-rank tests
 - Bootstrap confidence intervals for aggregated metrics
 
-**Note**: H1 and H2 now support multi-split evaluation (similar to H3) for robust performance assessment across different data sizes.
+**Three mappings in the H3 report** (see `H3_full_summary.md`):
+
+| Mapping | File | Role |
+|---------|------|------|
+| Deterministic | `data/mappings/deterministic_attack_defense_lookup.csv` | Primary ground truth (DAC_internal) |
+| Learned | `data/mappings/learned_mapping.csv` | Alternative mapping under test |
+| External reference | `d3fend_reference_pairs.csv` | Secondary benchmark (DAC_external) |
+
+**Note**: H1 and H2 support multi-split evaluation (similar to H3) for robust performance assessment across different data sizes.
 
 **Results**: See `results/H3_full_evaluation/H3_full_results.json` and `results/H3_full_evaluation/H3_full_summary.md`
 
@@ -288,71 +360,39 @@ This script:
 
 ## Repository Structure
 
+See **[docs/praxis/PROJECT_LAYOUT.md](docs/praxis/PROJECT_LAYOUT.md)** for the full praxis-oriented layout.
+
 ```
-aicra/
-├── experiments/          # Hypothesis experiment modules
-│   ├── h1_classification.py          # H1: Baseline predictive performance
-│   ├── h1_out_of_sample_eval.py      # H1: Out-of-sample & temporal evaluation
-│   ├── h1_adversarial_eval.py        # H1: Adversarial robustness evaluation
-│   ├── h2_calibration_thresholds.py   # H2: Calibration and thresholding
-│   └── h3_evaluation.py              # H3: DAC and mapping comparison
-├── core/                # Core functionality
-│   ├── data.py          # Dataset loading and management (with time-ordered splits)
-│   ├── evaluation.py    # Metrics computation
-│   ├── calibration.py   # Probability calibration
-│   └── benchmarks.py    # Baseline computation and improvement calculations
-├── models/              # ML model implementations
-│   └── lightgbm.py      # BaggedLightGBM ensemble
-├── pipelines/           # ML pipelines
-│   ├── training.py      # Model training pipeline
-│   ├── calibration.py   # Calibration pipeline
-│   ├── temporal_calibration.py  # Temporal calibration drift evaluation
-│   └── evaluation.py    # Evaluation pipeline
-├── metrics/             # Custom metrics
-│   └── dac.py           # Defense-Attack Consistency computation
-├── utils/               # Utilities
-│   ├── data_loader.py   # Data loading utilities
-│   ├── policy_writer.py # Risk register generation (with secure loading)
-│   ├── train_lightgbm.py # LightGBM training utility (with secure loading)
-│   ├── train_ffnn.py    # FFNN training utility (with secure loading)
-│   └── evaluate.py      # Evaluation utility (with secure loading)
-└── mappings/            # ATT&CK→D3FEND mapping implementations
-    ├── heuristic_mapping.py
-    └── embedding_learned_mapping.py
-
-config/
-├── h1_config.yaml       # H1 experiment configuration (single-split)
-├── h1_splits.yaml       # H1 multi-split evaluation configuration
-├── h2_config.yaml        # H2 experiment configuration (single-split)
-├── h2_splits.yaml        # H2 multi-split evaluation configuration
-└── h3_splits.yaml        # H3 evaluation split configuration
-
-results/
-├── H1_classification/
-│   ├── H1_full_results.json    # Complete H1 metrics
-│   ├── H1_summary.md           # Human-readable H1 summary
-│   ├── metrics.json            # Backward compatibility
-│   └── summary.md              # Backward compatibility
-├── H2_calibration_thresholds/
-│   ├── H2_full_results.json    # Complete H2 metrics
-│   ├── H2_summary.md           # Human-readable H2 summary
-│   ├── metrics.json            # Backward compatibility
-│   └── summary.md              # Backward compatibility
-├── H3_full_evaluation/
-│   ├── H3_full_results.json    # Complete H3 metrics with statistical tests
-│   ├── H3_full_summary.md      # Comprehensive H3 report
-│   └── plots/                  # Visualization plots
-└── praxis_validation_report.md # Final validation report with % improvements
-
-scripts/
-├── run_all_hypotheses.py              # Orchestrates H1, H2, H3
-└── generate_praxis_validation_report.py  # Generates validation report
-
-tests/
-├── test_h1_classification.py   # H1 experiment tests
-├── test_h2_calibration.py      # H2 experiment tests
-└── test_h3_variance_expectation.py  # H3 statistical validation
+AICRA/
+├── README.md                      # This file — praxis overview
+├── docs/praxis/                   # Praxis documentation hub
+├── aicra/experiments/             # Canonical H1, H2, H3 modules
+├── config/                        # h1_splits.yaml, h2_splits.yaml, h3_splits.yaml
+├── data/
+│   ├── ember2024_real/            # EMBER-2024 (fetch locally — not in git)
+│   ├── mappings/                  # deterministic + learned mapping CSVs
+│   ├── lookups/                   # ATT&CK / D3FEND YAML lookups
+│   └── ontology/                  # d3fend_reference_pairs.csv (H3 external benchmark)
+├── d3fend_reference_pairs.csv     # H3 external reference (root copy for compatibility)
+├── results/
+│   ├── H1_classification/         # Canonical H1
+│   ├── H1_oof_robust_eval/        # Supplementary OOF evaluation
+│   ├── H2_calibration_thresholds/ # Canonical H2
+│   ├── H3_full_evaluation/        # Canonical H3
+│   └── praxis_validation_report.md
+├── register/                      # Risk registers (operational artifacts — unchanged by H3 eval)
+├── scripts/
+│   ├── run_all_hypotheses.py
+│   ├── evaluate_h1_oof_robust.py
+│   ├── h1h2_rebuild/              # Optional rebuild + registers
+│   └── legacy/                    # Archived one-off scripts
+├── tests/
+└── run_h3_evaluation.py           # Thin H3 wrapper
 ```
+
+**Canonical code entry points:** `aicra/experiments/h1_classification.py`, `h2_calibration_thresholds.py`, `h3_evaluation.py`
+
+**What not to use for canonical results:** root-level archived scripts in `scripts/legacy/`; literature-based baseline percentages; overwriting canonical `results/H1_classification/`, `H2_calibration_thresholds/`, or `H3_full_evaluation/` without intent.
 
 ---
 
@@ -422,9 +462,6 @@ python -m aicra.experiments.h1_classification --splits-config config/h1_splits.y
 
 # Single-split evaluation (backward compatible)
 python -m aicra.experiments.h1_classification
-
-# Or using the convenience script:
-python run_h1_h2_experiments.py
 ```
 
 **Configuration**: 
@@ -444,6 +481,12 @@ python run_h1_h2_experiments.py
 - Lift@1%, Lift@5%, Lift@10%
 - Out-of-family AUROC (if families available)
 
+**Supplementary — OOF robustness (does not overwrite canonical H1):**
+```bash
+python scripts/evaluate_h1_oof_robust.py
+```
+Outputs: `results/H1_oof_robust_eval/oof_robust_summary.md`
+
 ---
 
 ### H2 – Calibration & Risk Scoring
@@ -459,9 +502,6 @@ python -m aicra.experiments.h2_calibration_thresholds --splits-config config/h2_
 
 # Single-split evaluation (backward compatible)
 python -m aicra.experiments.h2_calibration_thresholds
-
-# Or using the convenience script:
-python run_h1_h2_experiments.py
 ```
 
 **Configuration**: 
@@ -530,6 +570,11 @@ python run_h3_evaluation.py
   - **Versioning statement**:  
     - *H3 results were computed using deterministic lookup v1.0.*  
     - *Later versions (v1.1+) extend coverage for prescriptive ransomware‑only registers (e.g., adding controls for T1055 and T1027) and do **not** affect H3 DAC or evaluation metrics.*
+
+- **External reference pairs (secondary H3 benchmark)**:  
+  - File: `d3fend_reference_pairs.csv` (also `data/ontology/d3fend_reference_pairs.csv`)  
+  - Role: Supplementary ontology sanity check for **DAC_external**; not primary ground truth for H3.  
+  - Source: Exported from `data/lookups/attack_to_d3fend.yaml` via `scripts/create_reference_pairs.py`.
 
 ---
 
@@ -647,199 +692,69 @@ python -m aicra.utils.benchmark_reporter
 
 For detailed step-by-step reproduction instructions, see **`docs/EXPERIMENTS.md`**.
 
-### Benchmark Sources and Methodology
+### Baseline Methodology (AICRA-internal)
 
-All baseline values are derived from verifiable academic sources and standard machine learning practices. Each benchmark is documented with citations to ensure reproducibility and academic rigor.
+All baseline comparisons use models and mappings **trained or computed on the same EMBER-2024 splits and artifacts** as AICRA.
 
-**📊 For detailed source contribution analysis and AICRA improvement quantification, see:**
-- **`SOURCE_CONTRIBUTION_AND_AICRA_IMPROVEMENTS.md`** - Complete breakdown of:
-  - Source contribution percentages for each hypothesis (H1, H2, H3)
-  - AICRA improvements over each baseline source
-  - Overall research contribution summary
+| Hypothesis | Baseline | AICRA comparison |
+|------------|----------|------------------|
+| **H1** | Logistic regression + majority classifier on canonical train/test split | LightGBM on same split |
+| **H2** | F1-optimized threshold + uncalibrated probabilities from H1 model | Cost-optimal threshold + isotonic calibration |
+| **H3** | Learned embedding mapping | Deterministic expert-curated mapping (ground truth) |
 
-### Quick Reference: Source Contributions & AICRA Improvements
-
-| Hypothesis | Primary Source | Source Contribution % | Key AICRA Improvement | % Improvement |
-|------------|---------------|----------------------|----------------------|---------------|
-| **H1** | Anderson & Roth (2018) | 50% | AUC improvement | **+71.6%** |
-| **H1** | Anderson & Roth (2018) | 50% | Precision improvement | **+137.5%+** |
-| **H1** | Combined | 100% | Alert fatigue reduction | **99.6%** |
-| **H2** | Guo et al. (2017) | 50% | Brier Score reduction | **-75.0%** |
-| **H2** | Guo et al. (2017) | 50% | ECE reduction | **-42.9%** |
-| **H2** | Combined | 100% | Expected Loss reduction | **-65.4%** |
-| **H3** | Faria et al. (2013) | 35% | Coverage improvement | **+48.1%** |
-| **H3** | Euzenat & Shvaiko (2013) | 30% | Consistency improvement | **+60.0%** |
-| **H3** | Combined | 100% | Variance reduction | **0.0%** (see note) |
-
-**Note on H3 Variance Reduction:** Variance reduction is 0.0% because all ATT&CK techniques in the evaluation splits have mapped D3FEND controls in both deterministic and learned mappings, so no score adjustments occur. See `docs/H3_RECONCILIATION_REPORT.md` for detailed explanation.
-
-**See `SOURCE_CONTRIBUTION_AND_AICRA_IMPROVEMENTS.md` for complete breakdown with all sources and detailed metrics.**
+For detailed reproduction steps, see **`docs/EXPERIMENTS.md`**.
 
 ---
 
 ### H1: Static PE Classification
 
-**Baseline Performance:**
-- **Empirically Computed Baselines** (trained on EMBER-2024 dataset):
-  - AUROC: 0.7781 (Logistic Regression, best baseline)
-  - Precision: 0.7726
-  - Recall: 0.6378
-  - F1: 0.6988
-- **Academic Expected Ranges** (from literature):
-  - AUC: 50-65% (typical for simple linear models on static PE features)
-  - Precision: 35-45% (typical for imbalanced malware classification)
-  - Recall: 50-60% (typical for simple classifiers on malware data)
-  - **Academic FN Rate Baseline**: 45% (derived from typical recall 50-60%, Anderson & Roth, 2018)
+**Empirical baselines (same EMBER-2024 split):**
+- **Logistic Regression** and **majority classifier** trained on the canonical train partition
+- Best baseline selected by highest AUROC (typically logistic regression)
+- See `results/H1_classification/H1_summary.md` for computed baseline values
 
-**Baseline Methodology & Sources:**
-
-1. **Empirically Computed Baselines:**
-   - **Logistic Regression**: Trained on EMBER-2024 dataset, evaluated on test set
-     - Implementation: scikit-learn `LogisticRegression` with default parameters
-     - Methodology: Standard linear baseline for binary classification (Hastie et al., 2009)
-     - Source: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
-   - **Majority Classifier**: Dummy classifier using most frequent class
-     - Implementation: scikit-learn `DummyClassifier` with `strategy='most_frequent'`
-     - Methodology: Standard ML baseline
-     - Source: https://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html
-   - **Best Baseline Selection**: Model with highest AUROC (typically Logistic Regression)
-   - **Note**: These baselines are computed by training simple models on the EMBER-2024 dataset. See `docs/BASELINE_METHODOLOGY_TEMP.md` for details.
-
-2. **Academic Expected Performance Ranges:**
-   - Based on EMBER-2024 dataset and similar static PE malware classification studies
-   - **AUC 50-65%**: Typical range for simple linear models on static PE features
-     - Source: Anderson & Roth (2018). EMBER: An Open Dataset for Training Static PE Malware Machine Learning Models. arXiv:1804.04637
-     - Source: Raff et al. (2018). Malware Detection by Eating a Whole EXE. arXiv:1710.09435
-   - **Precision 35-45%**: Typical for imbalanced malware classification with simple classifiers
-     - Source: Anderson & Roth (2018)
-     - Source: Raff et al. (2018)
-   - **Recall 50-60%**: Typical recall for simple classifiers on malware data
-     - Source: Anderson & Roth (2018)
-   - **FN Rate 45%**: Academic baseline for alert fatigue comparison (derived from typical recall 50-60%)
-     - Source: Anderson & Roth (2018)
-
-**Academic References:**
-- Anderson, H. S., & Roth, P. (2018). EMBER: An Open Dataset for Training Static PE Malware Machine Learning Models. arXiv:1804.04637. https://arxiv.org/abs/1804.04637
-- Raff, E., et al. (2018). Malware Detection by Eating a Whole EXE. arXiv:1710.09435. https://arxiv.org/abs/1710.09435
-- Hastie, T., Tibshirani, R., & Friedman, J. (2009). The Elements of Statistical Learning (2nd ed.). Springer. https://web.stanford.edu/~hastie/ElemStatLearn/
-
-**AICRA Improvements:**
-- **AICRA improves ransomware-prediction AUC by +25.9% and reduces SOC alert fatigue by 99.6%.**
-- AUROC improvement: +25.9% (0.9605 vs 0.7781 baseline)
-- Recall improvement: +56.5% (0.9985 vs 0.6378 baseline)
-- False-negative rate reduction: 99.6% (Academic baseline: 45.0% vs AICRA: 0.20%)
-- Estimated analyst alert fatigue reduction: 99.6% (directly proportional to FN rate reduction)
+**AICRA improvements** are reported vs the empirical best baseline (AUROC, precision, recall, F1) and vs baseline false-negative rate on the held-out test set.
 
 **Example Output:**
-After running H1, check `results/H1_classification/H1_summary.md` for:
-- Baseline comparison section
-- % improvement metrics
-- Alert fatigue reduction calculation
+After running H1, check `results/H1_classification/H1_summary.md` for baseline comparison and % improvements.
 
 **Key Metrics to Check:**
 - `metrics.baseline.best_baseline.auroc` - Baseline AUC
 - `metrics.improvement.auroc_pct` - % improvement over baseline
-- `metrics.alert_fatigue_reduction.estimated_analyst_fatigue_reduction_pct` - Alert fatigue reduction
+- `metrics.alert_fatigue_reduction.baseline_fn_rate` - Baseline FN rate (empirical)
+- `metrics.alert_fatigue_reduction.estimated_analyst_fatigue_reduction_pct` - FN reduction vs baseline
 
 ---
 
 ### H2: Calibration & Transferability
 
-**Baseline Performance:**
-- Brier Score: 0.18-0.22 (typical uncalibrated EMBER-style models)
-- ECE: 6-10%
-
-**Baseline Methodology & Sources:**
-
-1. **Brier Score Baseline (0.18-0.22):**
-   - Typical range for uncalibrated gradient boosting models (LightGBM, XGBoost) on binary classification
-   - Based on empirical studies of uncalibrated tree-based models
-   - **Source:** Guo et al. (2017). On Calibration of Modern Neural Networks. ICML 2017. https://arxiv.org/abs/1706.04599
-   - **Source:** Niculescu-Mizil & Caruana (2005). Predicting Good Probabilities with Supervised Learning. ICML 2005. https://www.cs.cornell.edu/~alexn/papers/calibration.icml05.crc.rev3.pdf
-   - **Context:** Anderson & Roth (2018) EMBER dataset performance characteristics
-
-2. **ECE Baseline (6-10%):**
-   - Expected Calibration Error for uncalibrated tree-based models
-   - Typical ECE range for gradient boosting models without calibration
-   - **Source:** Guo et al. (2017). On Calibration of Modern Neural Networks. ICML 2017. https://arxiv.org/abs/1706.04599
-   - **Source:** Kull et al. (2017). Beyond temperature scaling: Obtaining well-calibrated multiclass probabilities with Dirichlet calibration. NeurIPS 2019. https://arxiv.org/abs/1910.12656
-
-**Academic References (with DOIs/Identifiers):**
-- Guo, C., et al. (2017). On Calibration of Modern Neural Networks. ICML 2017. **arXiv:1706.04599** (Note: arXiv preprints do not have DOIs). https://arxiv.org/abs/1706.04599
-- Niculescu-Mizil, A., & Caruana, R. (2005). Predicting Good Probabilities with Supervised Learning. ICML 2005. **Note:** ICML 2005 proceedings may not have DOI; paper available via Cornell repository. https://www.cs.cornell.edu/~alexn/papers/calibration.icml05.crc.rev3.pdf
-- Kull, M., et al. (2017). Beyond temperature scaling: Obtaining well-calibrated multiclass probabilities with Dirichlet calibration. NeurIPS 2019. **arXiv:1910.12656** (Note: arXiv preprints do not have DOIs). https://arxiv.org/abs/1910.12656
-- Anderson, H. S., & Roth, P. (2018). EMBER: An Open Dataset for Training Static PE Malware Machine Learning Models. **arXiv:1804.04637** (Note: arXiv preprints do not have DOIs). https://arxiv.org/abs/1804.04637
-
-**AICRA Improvements:**
-- **Isotonic calibration improves ECE by 55%, resulting in more stable SIEM-ready susceptibility scores.**
-- Brier Score improvement: 20-30%
-- ECE reduction: 40-60%
+**Primary comparison:** Same H1 model probabilities — uncalibrated vs isotonic-calibrated; F1-optimal vs cost-optimal threshold under banking-style costs (FN cost >> FP cost).
 
 **Example Output:**
-After running H2, check `results/H2_calibration_thresholds/H2_summary.md` for:
-- Calibration improvement section
-- % improvements vs baseline
-- Comparison vs typical baseline values
+After running H2, check `results/H2_calibration_thresholds/H2_summary.md`.
 
 **Key Metrics to Check:**
-- `metrics.calibration.brier_improvement_pct` - Brier % improvement
+- `metrics.calibration.brier_improvement_pct` - Brier % improvement (uncalibrated → calibrated)
 - `metrics.calibration.ece_improvement_pct` - ECE % improvement
-- `metrics.calibration.baseline_brier` - Baseline Brier value
-- `metrics.calibration.baseline_ece` - Baseline ECE value
+- Cost-optimal expected loss vs F1-optimal expected loss
 
 ---
 
 ### H3: Deterministic vs Learned Mapping
 
-**Baseline Performance (Learned Mapping):**
-- Coverage: 60-75%
-- Consistency: 55-70%
-- Score variance: High (instability)
+**Primary comparison:** Deterministic mapping (`data/mappings/deterministic_attack_defense_lookup.csv`) vs learned mapping (`data/mappings/learned_mapping.csv`).
 
-**Baseline Methodology & Sources:**
+**Secondary benchmark:** External reference pairs (`d3fend_reference_pairs.csv`) for DAC_external overlap checks.
 
-1. **Coverage Baseline (60-75%):**
-   - Typical coverage for learned/heuristic mappings using embedding similarity or top-k selection
-   - Based on ontology alignment and matching literature
-   - **Source:** Faria et al. (2013). AgreementMakerLight: A Scalable Automated Ontology Matching System. In OTM 2013. https://doi.org/10.1007/978-3-642-41030-7_38
-   - **Source:** Euzenat, J., & Shvaiko, P. (2013). Ontology Matching (2nd ed.). Springer. https://doi.org/10.1007/978-3-642-38721-0
-
-2. **Consistency (DAC) Baseline (55-70%):**
-   - Typical agreement rate for similarity-based ontology matching vs expert-curated ground truth
-   - Based on learned mapping approaches (embedding similarity, string matching, etc.)
-   - **Source:** Cheatham, M., & Hitzler, P. (2014). String similarity metrics for ontology alignment. In ISWC 2014. https://doi.org/10.1007/978-3-319-11964-9_3
-   - **Source:** Euzenat, J., & Shvaiko, P. (2013). Ontology Matching (2nd ed.). Springer. https://doi.org/10.1007/978-3-642-38721-0
-
-3. **Deterministic Mapping (Ground Truth):**
-   - Expert-curated ATT&CK-D3FEND mappings from MITRE
-   - Achieves 100% consistency by definition (ground truth)
-   - **Source:** MITRE D3FEND. https://d3fend.mitre.org/
-   - **Source:** MITRE ATT&CK. https://attack.mitre.org/
-
-**Academic References (with DOIs/Identifiers):**
-- Faria, D., et al. (2013). AgreementMakerLight: A Scalable Automated Ontology Matching System. In OTM 2013. **DOI: 10.1007/978-3-642-41030-7_38**. https://doi.org/10.1007/978-3-642-41030-7_38
-- Euzenat, J., & Shvaiko, P. (2013). Ontology Matching (2nd ed.). Springer. **DOI: 10.1007/978-3-642-38721-0**, **ISBN-13: 978-3-642-38720-3**. https://doi.org/10.1007/978-3-642-38721-0
-- Cheatham, M., & Hitzler, P. (2014). String similarity metrics for ontology alignment. In ISWC 2014. **DOI: 10.1007/978-3-319-11964-9_3**. https://doi.org/10.1007/978-3-319-11964-9_3
-- MITRE D3FEND. **Type:** Framework/Knowledge Base (no DOI available). https://d3fend.mitre.org/ (Deterministic mapping ground truth)
-- MITRE ATT&CK. **Type:** Framework/Knowledge Base (no DOI available). https://attack.mitre.org/ (Attack technique ontology)
-
-**AICRA Improvements:**
-- **Deterministic mapping increases ATT&CK–D3FEND mapping coverage by 48.1% and achieves 100% Defense-Attack Consistency (DAC).**
-- Coverage increase: +48.1% (from 67.5% baseline to 100%)
-- Consistency (DAC) improvement: +60.0% (from 62.5% baseline to 100%)
-- Variance reduction: 0.0% (all techniques have mapped controls, so no score adjustments occur; see `docs/H3_RECONCILIATION_REPORT.md` for details)
-- Alert fatigue reduction: 20% (estimated from consistency improvements)
+**Key metrics:** DAC_internal (primary), DAC_external (secondary), actionable precision/F1, variance/IQR reduction across evaluation splits.
 
 **Example Output:**
-After running H3, check `results/H3_full_evaluation/H3_full_summary.md` for:
-- Improvements over learned mapping section
-- % improvements for all metrics
-- Alert fatigue reduction calculation
+After running H3, check `results/H3_full_evaluation/H3_full_summary.md`.
 
 **Key Metrics to Check:**
-- `aggregated_metrics.improvements.coverage_improvement_pct` - Coverage % improvement
-- `aggregated_metrics.improvements.variance_reduction_pct` - Variance reduction %
-- `aggregated_metrics.improvements.estimated_fatigue_reduction_pct` - Alert fatigue reduction %
+- `aggregated_metrics.deltas.delta_dac_%` - DAC improvement (deterministic vs learned)
+- `aggregated_metrics.deterministic.dac_%` - Deterministic DAC (100% by definition)
+- `aggregated_metrics.learned.dac_%` - Learned DAC vs deterministic ground truth
 
 ---
 ## Key Metrics & Improvements (High-Level)
@@ -857,8 +772,9 @@ After running H3, check `results/H3_full_evaluation/H3_full_summary.md` for:
 | H2         | Expected Loss (cost-optimal, ↓)  | 0.50*           | 0.1729                       | -0.3271    | -65.4%         |
 | H3         | DAC_internal (Deterministic)      | 0.0%*           | 100.0%                       | +100.0%    | Perfect        |
 | H3         | DAC_internal (Learned)            | 0.0%*           | 0.0%                         | 0.0%       | Baseline       |
+| H3         | DAC_external vs reference (Lrn)   | —               | 73.33% (11/15 ref pairs)     | —          | Secondary only |
 
-\* Baseline values from prior research or internal uncalibrated/naive baselines. See `results/praxis_validation_report.md` for detailed baseline definitions.
+\* Baseline values are computed on the same EMBER-2024 splits (see `results/H1_classification/H1_summary.md`, `results/H2_calibration_thresholds/H2_summary.md`, `results/H3_full_evaluation/H3_full_summary.md`). H3 deterministic–external overlap is 0% by design (different control vocabularies).
 
 ### Latest H1/H2 Metrics (Multi-Split Evaluation)
 
@@ -872,7 +788,7 @@ The concrete H1/H2 metrics below are taken directly from the current repository 
   - **F1**: 0.7794 (std: 0.0267) - **full_ember**: 0.7989
   - **Brier Score**: 0.0758 (std: 0.0304) - **full_ember**: 0.0554
   - **ECE**: 0.0261 (std: 0.0285) - **full_ember**: 0.0081
-  - **Alert Fatigue Reduction**: 99.6% (Academic baseline FN rate: 45.0% vs AICRA: 0.20%)
+  - **FN rate reduction**: ~99.5% vs empirical baseline (36.2% → 0.20% on full_ember)
   - **Confusion Matrix (full_ember)**: TN=3111, FP=2298, FN=9, TP=4583
 
 - **H2 (Calibration & cost-aware thresholding, aggregated across splits)** – from `results/H2_calibration_thresholds/H2_full_results.json`:
@@ -906,133 +822,18 @@ From the metrics above, the **current repository outputs meet the target thresho
 These values are computed from the **actual JSON artifacts in this repository** and reflect the latest validated H1/H2 runs with multi-split evaluation.
 
 **Key Findings (current repo state)**:
-- **H1**: Multi-split evaluation shows robust performance across all splits. On the full_ember split (10,001 samples), AICRA achieves AUROC of 0.9796 with Precision 0.6660, Recall 0.9980, F1 0.7989, Brier 0.0554, and ECE 0.0081. The lower precision (66.6%) is intentional and operationally suitable for banking security, where high recall (99.8%) is prioritized to minimize false negatives. Alert fatigue reduction is 99.6% compared to academic baseline (45% FN rate → 0.20% FN rate).
+- **H1**: Multi-split evaluation shows robust performance across all splits. On the full_ember split (10,001 samples), AICRA achieves AUROC of 0.9796 with Precision 0.6660, Recall 0.9980, F1 0.7989, Brier 0.0554, and ECE 0.0081. The lower precision (66.6%) is intentional and operationally suitable for banking security, where high recall (99.8%) is prioritized to minimize false negatives. FN rate reduction is ~99.5% vs the empirical logistic-regression baseline on the same split. **OOF supplementary run:** AUROC 0.9615 on held-out malware families (`results/H1_oof_robust_eval/oof_robust_summary.md`).
 - **H2**: Cost-optimal thresholding under a banking-style cost ratio (FN cost >> FP cost) significantly reduces expected loss vs the F1-optimized baseline (from ≈0.3027 to ≈0.1729 for uncalibrated, 0.2148 for calibrated) while maintaining high recall (96.5-98.5%) suitable for banking security.
-- **H3**: Deterministic mapping achieves perfect DAC_internal (100%) by construction, validating expert-curated ontology superiority.
-- **Optional H1/H2 rebuild**: Across small_ember, main, and full_ember splits, the rebuild pipeline achieves AUROC in the ≈0.998–1.000 range, Precision/Recall/F1 ≥ 0.98, and Brier/ECE well below 0.02, confirming that the per-sample scoring and ransomware‑only registers are consistent with the main H1/H2 model performance.
+- **H3**: Deterministic mapping achieves perfect DAC_internal (100%) by construction; external reference pairs provide DAC_external as a secondary ontology sanity check (`H3_full_summary.md`).
+- **Optional H1/H2 rebuild**: Per-sample scoring and ransomware-only registers under `register/` are consistent with main H1/H2 model performance and do **not** alter canonical hypothesis outputs.
 
 For complete results and detailed analysis, see:
-- `results/praxis_validation_report.md` - Comprehensive validation report
+- `results/praxis_validation_report.md` - Consolidated validation report
 - `results/H1_classification/H1_summary.md` - H1 detailed results
+- `results/H1_oof_robust_eval/oof_robust_summary.md` - H1 OOF supplementary evaluation
 - `results/H2_calibration_thresholds/H2_summary.md` - H2 detailed results
-- `results/H3_full_evaluation/H3_full_summary.md` - H3 detailed results
-- `docs/BENCHMARK_NOTES.md` - Concise summary of current H1/H2/H3 metrics from this repository
-
----
-
-## Scientific Context and Citations
-
-### Primary References (with DOIs and Identifiers)
-
-1. **Anderson, H. S., & Roth, P. (2018)** - EMBER: An Open Dataset for Training Static PE Malware Machine Learning Models
-   - Dataset: EMBER-2024 (extended version)
-   - Baseline models: Logistic regression, majority classifier
-   - Performance ranges: AUC 50-65%, Precision 35-45%, Recall 50-60%
-   - **arXiv ID:** arXiv:1804.04637 (Note: arXiv preprints do not have DOIs)
-   - **Paper URL:** https://arxiv.org/abs/1804.04637
-   - **Dataset Repository:** https://github.com/elastic/ember
-   - **Verification:** Access via arXiv: https://arxiv.org/abs/1804.04637
-
-2. **Raff, E., et al. (2018)** - Malware Detection by Eating a Whole EXE
-   - Static PE feature extraction and classification
-   - Baseline performance on malware datasets
-   - **arXiv ID:** arXiv:1710.09435 (Note: arXiv preprints do not have DOIs)
-   - **Paper URL:** https://arxiv.org/abs/1710.09435
-   - **Verification:** Access via arXiv: https://arxiv.org/abs/1710.09435
-
-3. **Guo, C., et al. (2017)** - On Calibration of Modern Neural Networks
-   - Brier Score and ECE baselines for uncalibrated models
-   - Typical ranges: Brier 0.18-0.22, ECE 6-10%
-   - **Conference:** ICML 2017
-   - **arXiv ID:** arXiv:1706.04599 (Note: arXiv preprints do not have DOIs)
-   - **Paper URL:** https://arxiv.org/abs/1706.04599
-   - **Verification:** Access via arXiv: https://arxiv.org/abs/1706.04599
-
-4. **Niculescu-Mizil, A., & Caruana, R. (2005)** - Predicting Good Probabilities with Supervised Learning
-   - Calibration error in machine learning models
-   - Brier Score baselines for tree-based models
-   - **Conference:** ICML 2005
-   - **Paper URL:** https://www.cs.cornell.edu/~alexn/papers/calibration.icml05.crc.rev3.pdf
-   - **Note:** ICML 2005 proceedings may not have DOI; paper available via Cornell repository
-   - **Verification:** Access via: https://www.cs.cornell.edu/~alexn/papers/calibration.icml05.crc.rev3.pdf
-
-5. **Kull, M., et al. (2017)** - Beyond temperature scaling: Obtaining well-calibrated multiclass probabilities with Dirichlet calibration
-   - ECE baselines for uncalibrated models
-   - **Conference:** NeurIPS 2019
-   - **arXiv ID:** arXiv:1910.12656 (Note: arXiv preprints do not have DOIs)
-   - **Paper URL:** https://arxiv.org/abs/1910.12656
-   - **Verification:** Access via arXiv: https://arxiv.org/abs/1910.12656
-
-6. **Euzenat, J., & Shvaiko, P. (2013)** - Ontology Matching (2nd ed.)
-   - Ontology alignment baseline performance
-   - Learned mapping coverage and consistency ranges
-   - **Publisher:** Springer
-   - **DOI:** 10.1007/978-3-642-38721-0
-   - **ISBN-13:** 978-3-642-38720-3
-   - **ISBN-10:** 3642387202
-   - **DOI URL:** https://doi.org/10.1007/978-3-642-38721-0
-   - **Verification:** Access via DOI: https://doi.org/10.1007/978-3-642-38721-0
-
-7. **Faria, D., et al. (2013)** - AgreementMakerLight: A Scalable Automated Ontology Matching System
-   - Coverage baselines for learned ontology mappings (60-75%)
-   - **Conference:** OTM 2013 (On the Move to Meaningful Internet Systems)
-   - **DOI:** 10.1007/978-3-642-41030-7_38
-   - **DOI URL:** https://doi.org/10.1007/978-3-642-41030-7_38
-   - **Verification:** Access via DOI: https://doi.org/10.1007/978-3-642-41030-7_38
-
-8. **Cheatham, M., & Hitzler, P. (2014)** - String similarity metrics for ontology alignment
-   - Consistency baselines for similarity-based mappings (55-70%)
-   - **Conference:** ISWC 2014 (International Semantic Web Conference)
-   - **DOI:** 10.1007/978-3-319-11964-9_3
-   - **DOI URL:** https://doi.org/10.1007/978-3-319-11964-9_3
-   - **Verification:** Access via DOI: https://doi.org/10.1007/978-3-319-11964-9_3
-
-9. **Hastie, T., Tibshirani, R., & Friedman, J. (2009)** - The Elements of Statistical Learning: Data Mining, Inference, and Prediction (2nd ed.)
-   - Standard machine learning baselines (logistic regression)
-   - **Publisher:** Springer
-   - **ISBN-13:** 978-0-387-84857-0
-   - **ISBN-10:** 0387848576
-   - **Online Version:** https://web.stanford.edu/~hastie/ElemStatLearn/
-   - **Note:** Book does not have DOI; ISBN provided for verification
-   - **Verification:** Access via ISBN or online version: https://web.stanford.edu/~hastie/ElemStatLearn/
-
-10. **MITRE D3FEND** - D3FEND: A Knowledge Graph of Security Countermeasures
-    - ATT&CK–D3FEND mapping ontology (deterministic ground truth)
-    - **Type:** Framework/Knowledge Base (no DOI available)
-    - **URL:** https://d3fend.mitre.org/
-    - **Verification:** Access via: https://d3fend.mitre.org/
-
-11. **MITRE ATT&CK** - ATT&CK Framework
-    - Attack technique ontology
-    - **Type:** Framework/Knowledge Base (no DOI available)
-    - **URL:** https://attack.mitre.org/
-    - **Verification:** Access via: https://attack.mitre.org/
-
-12. **Caldera Framework** - MITRE Caldera
-    - ATT&CK technique validation
-    - Adversary emulation
-    - **Type:** Open Source Software (no DOI available)
-    - **Repository:** https://github.com/mitre/caldera
-    - **Verification:** Access via: https://github.com/mitre/caldera
-
-13. **Khayat et al. (2023)** - SOC+AI: A Systematic Literature Review
-    - Alert fatigue in Security Operations Centers
-    - Cost-sensitive thresholding for banking environments
-    - **Status:** Citation pending (DOI to be added when available)
-    - **Reference:** [Add citation when available]
-
-### Notes on Identifiers
-
-- **DOI (Digital Object Identifier):** Permanent identifier for published works. Access via `https://doi.org/[DOI]`
-- **arXiv ID:** Preprint identifier for papers on arXiv. Access via `https://arxiv.org/abs/[arXiv ID]`
-- **ISBN:** International Standard Book Number for books. Verify via library catalogs or ISBN search engines
-- **No DOI Available:** Some sources (frameworks, software, older conference papers) do not have DOIs. Alternative identifiers (URLs, ISBNs) are provided for verification
-
-### Complete Bibliography
-
-For a complete bibliography with all citations, see the benchmark documentation in:
-- `aicra/core/benchmarks.py` - Source code with inline citations
-- Each experiment output JSON includes baseline source references
+- `results/H3_full_evaluation/H3_full_summary.md` - H3 detailed results (three-way mapping + DAC_external)
+- `docs/BENCHMARK_NOTES.md` - Concise metric snapshot
 
 ---
 
@@ -1109,22 +910,21 @@ python -m aicra.experiments.h2_calibration_thresholds \
 
 ```bash
 # Run H3 experiment
-python -m aicra.experiments.h3_evaluation \
-    --config config/h3_splits.yaml
+python -m aicra.experiments.h3_evaluation --config config/h3_splits.yaml
+# or
+python run_h3_evaluation.py
 ```
 
 **Expected Output:**
-- `H3_full_results.json` - Complete metrics with mapping comparisons
-- `H3_full_summary.md` - Human-readable summary with % improvements
-- Coverage improvement: +48.1% (deterministic vs learned)
-- Consistency (DAC) improvement: +60.0% (deterministic achieves 100% by definition)
-- Variance reduction: 0.0% (see `docs/H3_RECONCILIATION_REPORT.md` for explanation)
-- Alert fatigue reduction: 20% (estimated)
+- `H3_full_results.json` - Complete metrics with mapping comparisons and file hashes
+- `H3_full_summary.md` - Three-way mapping report (deterministic, learned, external reference)
+- Key metrics: DAC_internal (primary), DAC_external (secondary), actionable precision, variance reduction
 
 **Key Metrics to Check:**
-- `aggregated_metrics.improvements.coverage_improvement_pct` - Coverage % improvement
-- `aggregated_metrics.improvements.variance_reduction_pct` - Variance reduction %
-- `aggregated_metrics.improvements.estimated_fatigue_reduction_pct` - Alert fatigue reduction %
+- `aggregated_metrics.deltas.delta_dac_%` - DAC_internal improvement (deterministic vs learned)
+- `aggregated_metrics.deterministic.dac_%` - Deterministic DAC (100% by definition)
+- `aggregated_metrics.learned.dac_%` - Learned DAC vs deterministic ground truth
+- `overlap_metrics.det_vs_reference` / `learned_vs_reference` - External reference pair overlap
 
 ---
 
@@ -1133,16 +933,13 @@ Experiment outputs (e.g., artifacts/results/models) are intentionally ignored by
 
 ### Risk Register Outputs
 
-**Risk Register Outputs**
+This repository includes representative **risk register outputs** generated from EMBER subsets and full split evaluations. These are **operational demonstration artifacts**—they are not modified by canonical H1/H2/H3 hypothesis runs.
 
-This repository includes representative risk register outputs generated from both **small EMBER subsets** and **full EMBER split evaluations**.
+- **Included in git:** e.g. `register/risk_register_small_ember.csv`, `register/risk_register_main.csv`
+- **Per-split ransomware-only registers:** `register/<split>/ransomware_only_risk_register.csv` (via optional rebuild pipeline)
+- **Aggregated view:** `register/h1h2_rebuild/<split>/ransomware_only_risk_register_AGGREGATED.csv`
 
-- Small EMBER risk registers (e.g., `register/risk_register_small_ember.csv` and `.json`) are included to demonstrate end-to-end correctness, structure, and reproducibility of the AICRA pipeline.
-- Full EMBER evaluations generate **derived artifacts only** (risk scores, diagnostics, and mapping metrics) stored under `results/`, while raw EMBER JSONL files are intentionally excluded due to size and licensing constraints.
-
-This design balances transparency, reproducibility, and repository hygiene while still providing clear evidence of scalability across dataset sizes.
-
-See `docs/DATA.md` for data availability and exclusion rationale.
+Full EMBER evaluations store derived artifacts (risk scores, diagnostics, mapping metrics) under `results/`; raw EMBER JSONL files are excluded due to size and licensing. See `docs/DATA.md`.
 
 ### Imbalanced Data Handling
 
@@ -1331,9 +1128,7 @@ Docker configuration is hardened for production use:
 
 ### Security Documentation
 
-For complete security audit and remediation details, see:
-- `AICRA_SECURITY_AND_EXPERIMENTAL_DESIGN_AUDIT.md` - Full security audit report
-- `SECURITY_AND_EXPERIMENTAL_FIXES_APPLIED.md` - Summary of applied fixes
+For complete security audit and remediation details, see archived reports under `docs/archive/development/` (e.g. `AICRA_SECURITY_AND_EXPERIMENTAL_DESIGN_AUDIT.md`, `SECURITY_AND_EXPERIMENTAL_FIXES_APPLIED.md`).
 
 ---
 
@@ -1341,7 +1136,6 @@ For complete security audit and remediation details, see:
 
 ### Current Limitations
 
-- **External Reference Pairs**: Limited external D3FEND reference pairs for DAC_external benchmark (15 pairs)
 - **Dataset Scope**: Current focus on ransomware and endpoint logs; potential extension to other threat families
 - **Learned Mapping**: Current learned mapping implementation may be improved with more sophisticated ML approaches
 - **Calibration Methods**: Currently supports Platt and Isotonic; could explore other calibration techniques
@@ -1462,10 +1256,11 @@ aicra/
 
 ```bibtex
 @software{aicra2024,
-  title={AICRA: AI Cyber Risk Advisor for Endpoint Security in U.S. Banking Organizations},
-  author={AICRA Team},
+  title={AICRA: Machine Learning-Based Cyber Risk Advisor with Analytics for Endpoint Ransomware Defense in U.S. Banking Organizations},
+  author={Afolabi, Kolawole},
+  note={Doctor of Engineering praxis (production) software artifact},
   year={2024},
-  url={https://github.com/aicra/aicra}
+  url={https://github.com/Kolawole-a2/AICRA}
 }
 ```
 
@@ -1496,25 +1291,34 @@ aicra/
 
 ### Security & Experimental Design
 
-- **Security Audit**: `AICRA_SECURITY_AND_EXPERIMENTAL_DESIGN_AUDIT.md` - Complete security audit and experimental design review
-- **Applied Fixes**: `SECURITY_AND_EXPERIMENTAL_FIXES_APPLIED.md` - Summary of all security and experimental fixes
-- **Output Verification**: `VERIFY_EXPERIMENT_OUTPUTS_UNCHANGED.md` - Verification that H1-H3 outputs remain unchanged
+- **Security audit (archived):** `docs/archive/development/AICRA_SECURITY_AND_EXPERIMENTAL_DESIGN_AUDIT.md`
+- **Applied fixes (archived):** `docs/archive/development/SECURITY_AND_EXPERIMENTAL_FIXES_APPLIED.md`
+- **Output verification (archived):** `docs/archive/development/VERIFY_EXPERIMENT_OUTPUTS_UNCHANGED.md`
 
-### Source Documentation
+---
 
-- **Source Contributions**: `SOURCE_CONTRIBUTION_AND_AICRA_IMPROVEMENTS.md` - Breakdown of source contributions and AICRA improvements
-- **Benchmark Sources**: `BENCHMARK_SOURCES_DOCUMENTATION.md` - Complete bibliography of benchmark sources
-- **DOI References**: `COMPLETE_SOURCE_DOI_REFERENCE.md` - All DOIs, arXiv IDs, and verification URLs
+## Author & Contact
+
+| | |
+|---|---|
+| **Praxis author** | Kolawole Afolabi |
+| **Role** | Doctor of Engineering praxis (production)—this repository matches that submission |
+| **GWU email** | [kolawole.afolabi@gwmail.gwu.edu](mailto:kolawole.afolabi@gwmail.gwu.edu) |
+| **Personal email** | [ako.afolabi@gmail.com](mailto:ako.afolabi@gmail.com) |
+
+For reproduction questions, artifact clarification, or examiner follow-up, contact either address above.
 
 ---
 
 ## Support
 
-- **Documentation**: See `HYPOTHESIS_EXPERIMENTS_GUIDE.md` for detailed experiment guide
-- **Results**: See `results/praxis_validation_report.md` for comprehensive validation report
-- **Security**: See `AICRA_SECURITY_AND_EXPERIMENTAL_DESIGN_AUDIT.md` for security details
-- **Issues**: [GitHub Issues](https://github.com/aicra/aicra/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/aicra/aicra/discussions)
+- **Author:** Kolawole Afolabi — [kolawole.afolabi@gwmail.gwu.edu](mailto:kolawole.afolabi@gwmail.gwu.edu) · [ako.afolabi@gmail.com](mailto:ako.afolabi@gmail.com)
+- **Praxis hub:** [docs/praxis/README.md](docs/praxis/README.md)
+- **Experiments:** [docs/praxis/EXPERIMENTS_GUIDE.md](docs/praxis/EXPERIMENTS_GUIDE.md)
+- **Validation:** [results/praxis_validation_report.md](results/praxis_validation_report.md)
+- **Reviewer guide:** [docs/REVIEWER_GUIDE.md](docs/REVIEWER_GUIDE.md)
+- **Issues:** [GitHub Issues](https://github.com/aicra/aicra/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/aicra/aicra/discussions)
 
 ---
 

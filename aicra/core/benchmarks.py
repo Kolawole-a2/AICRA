@@ -63,29 +63,9 @@ def compute_h1_baselines(
     """
     Compute H1 baseline models (logistic regression, majority classifier).
 
-    Baseline Methodology:
-    - Logistic Regression: Standard linear baseline for binary classification
-      (Hastie et al., 2009; scikit-learn documentation)
-    - Majority Classifier: Dummy classifier using most frequent class
-      (scikit-learn DummyClassifier, standard ML baseline)
-
-    Expected Performance Ranges (from EMBER-2024 and similar malware datasets):
-    - AUC: 50-65% for simple linear models on static PE features
-      (Anderson & Roth, 2018; Raff et al., 2018)
-    - Precision: 35-45% for imbalanced malware classification
-      (Raff et al., 2018; Anderson & Roth, 2018)
-    - Recall: 50-60% for simple classifiers on malware data
-      (Anderson & Roth, 2018)
-
-    Sources:
-    - Anderson, H. S., & Roth, P. (2018). EMBER: An Open Dataset for Training
-      Static PE Malware Machine Learning Models. arXiv:1804.04637
-    - Raff, E., et al. (2018). Malware Detection by Eating a Whole EXE.
-      arXiv:1710.09435
-    - Hastie, T., Tibshirani, R., & Friedman, J. (2009). The Elements of
-      Statistical Learning (2nd ed.). Springer.
-    - scikit-learn: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
-    - scikit-learn: https://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html
+    Both baselines are trained on the same EMBER-2024 train partition and evaluated
+    on the held-out test partition as AICRA (logistic regression via scikit-learn;
+    majority class via DummyClassifier).
 
     Args:
         X_train: Training features
@@ -188,7 +168,7 @@ def compute_h1_improvements(
         baseline_metrics: Baseline metrics to compare against
         aicra_fn: AICRA false negatives count
         n_positives: Total number of positive (ransomware) samples in test set
-                     (required for academic FN rate comparison)
+                     (required for baseline FN rate comparison)
 
     Returns:
         ImprovementMetrics with % improvements
@@ -218,26 +198,24 @@ def compute_h1_improvements(
         else 0.0
     )
 
-    # Alert fatigue reduction based on academic FN rate percentages
-    # Academic baseline: Typical recall 50-60% for simple classifiers on malware data
-    # (Anderson & Roth, 2018) implies FN rate of 40-50%
-    # Using conservative estimate: 45% FN rate for baseline
-    academic_baseline_fn_rate = 0.45  # 45% FN rate (based on recall 50-60% from Anderson & Roth, 2018)
-    
+    baseline_fn_rate = 0.0
+    if (
+        n_positives is not None
+        and n_positives > 0
+        and baseline_metrics.false_negatives is not None
+    ):
+        baseline_fn_rate = baseline_metrics.false_negatives / n_positives
+
     fn_reduction_pct = 0.0
     estimated_fatigue_reduction_pct = 0.0
-    
+
     if n_positives is not None and n_positives > 0 and aicra_fn is not None:
-        # Calculate AICRA FN rate
         aicra_fn_rate = aicra_fn / n_positives
-        
-        # Calculate reduction compared to academic baseline FN rate
-        if academic_baseline_fn_rate > 0:
+
+        if baseline_fn_rate > 0:
             fn_reduction_pct = (
-                100 * (academic_baseline_fn_rate - aicra_fn_rate) / academic_baseline_fn_rate
+                100 * (baseline_fn_rate - aicra_fn_rate) / baseline_fn_rate
             )
-            # Alert fatigue reduction is directly proportional to FN reduction
-            # (No multiplier needed - FN reduction is the direct, measurable metric)
             estimated_fatigue_reduction_pct = fn_reduction_pct
 
     return ImprovementMetrics(
@@ -252,38 +230,18 @@ def compute_h1_improvements(
 
 def compute_h2_baselines() -> dict[str, float]:
     """
-    Return H2 baseline values (typical uncalibrated EMBER-style models).
+    Return H2 reference values for reporting uncalibrated-model calibration error.
 
-    Baseline Methodology:
-    These values represent typical calibration error for uncalibrated gradient
-    boosting models (LightGBM, XGBoost) on binary classification tasks,
-    particularly for imbalanced datasets like malware classification.
-
-    Expected Performance Ranges:
-    - Brier Score: 0.18-0.22 for uncalibrated gradient boosting models
-      (Guo et al., 2017; Niculescu-Mizil & Caruana, 2005)
-    - ECE: 6-10% (0.06-0.10) for uncalibrated tree-based models
-      (Guo et al., 2017; Kull et al., 2017)
-
-    Sources:
-    - Guo, C., et al. (2017). On Calibration of Modern Neural Networks.
-      ICML 2017. https://arxiv.org/abs/1706.04599
-    - Niculescu-Mizil, A., & Caruana, R. (2005). Predicting Good Probabilities
-      with Supervised Learning. ICML 2005.
-      https://www.cs.cornell.edu/~alexn/papers/calibration.icml05.crc.rev3.pdf
-    - Kull, M., et al. (2017). Beyond temperature scaling: Obtaining well-calibrated
-      multiclass probabilities with Dirichlet calibration. NeurIPS 2019.
-      https://arxiv.org/abs/1910.12656
-    - Anderson, H. S., & Roth, P. (2018). EMBER: An Open Dataset for Training
-      Static PE Malware Machine Learning Models. arXiv:1804.04637
-      (For context on EMBER-style model performance)
+    H2 primary comparisons use the same H1 model probabilities (uncalibrated vs
+    calibrated). These defaults are fallbacks when split-level uncalibrated
+    metrics are unavailable in aggregated reporting.
 
     Returns:
         Dictionary with 'brier' and 'ece' baseline values
     """
     return {
-        "brier": 0.20,  # Midpoint of 0.18-0.22 range (Guo et al., 2017)
-        "ece": 0.08,  # Midpoint of 6-10% (0.06-0.10) range (Guo et al., 2017)
+        "brier": 0.20,
+        "ece": 0.08,
     }
 
 
@@ -316,7 +274,6 @@ def compute_h2_improvements(
         else 0.0
     )
 
-    # Compare against typical baseline
     baselines = compute_h2_baselines()
     brier_vs_baseline_pct = (
         100 * (baselines["brier"] - brier_calibrated) / baselines["brier"]
@@ -341,46 +298,16 @@ def compute_h2_improvements(
 
 def compute_h3_baselines() -> dict[str, float]:
     """
-    Return H3 baseline values (typical learned mapping performance).
-
-    Baseline Methodology:
-    These values represent typical performance of learned/heuristic mappings
-    for ATT&CK-D3FEND technique-control pairs, based on embedding-based and
-    similarity-based approaches.
-
-    Expected Performance Ranges:
-    - Coverage: 60-75% for learned mappings using embedding similarity
-      (Typical range for top-k selection methods in ontology alignment)
-    - Consistency (DAC): 55-70% for learned mappings vs deterministic ground truth
-      (Based on typical performance of similarity-based ontology matching)
-
-    Sources:
-    - MITRE D3FEND: https://d3fend.mitre.org/
-      (Deterministic mapping ground truth)
-    - MITRE ATT&CK: https://attack.mitre.org/
-      (Attack technique ontology)
-    - Euzenat, J., & Shvaiko, P. (2013). Ontology Matching (2nd ed.).
-      Springer. (For ontology alignment baseline performance)
-    - Cheatham, M., & Hitzler, P. (2014). String similarity metrics for
-      ontology alignment. In ISWC 2014.
-      https://doi.org/10.1007/978-3-319-11964-9_3
-      (For similarity-based mapping performance ranges)
-    - Faria, D., et al. (2013). AgreementMakerLight: A Scalable Automated
-      Ontology Matching System. In OTM 2013.
-      (For learned mapping coverage baselines: 60-75% typical)
-    - Similarity-based ontology matching typically achieves 55-70% agreement
-      with expert-curated mappings (Euzenat & Shvaiko, 2013; Cheatham & Hitzler, 2014)
-
-    Note: These baselines represent typical performance of learned/heuristic
-    approaches. Deterministic expert-curated mappings (ground truth) achieve
-    100% consistency by definition.
+    Legacy fallback values for H3 reporting when split-level learned metrics
+    are unavailable. H3 primary comparisons use learned vs deterministic
+    mappings from the same evaluation run (DAC_internal, actionable precision).
 
     Returns:
-        Dictionary with baseline values
+        Dictionary with fallback baseline values
     """
     return {
-        "coverage": 67.5,  # Midpoint of 60-75% range (Faria et al., 2013; Euzenat & Shvaiko, 2013)
-        "consistency": 62.5,  # Midpoint of 55-70% range (Cheatham & Hitzler, 2014; Euzenat & Shvaiko, 2013)
+        "coverage": 67.5,
+        "consistency": 62.5,
     }
 
 

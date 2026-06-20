@@ -59,22 +59,17 @@ Each split must have a risk scores CSV file with at least:
 
 For each evaluation split, the pipeline computes:
 
-1. **Defense-Attack Consistency (DAC)**
-   - Proportion of correctly aligned ATT&CK→D3FEND pairs
+1. **Defense-Attack Consistency (DAC)   - Proportion of correctly aligned ATT&CK→D3FEND pairs
    - Computed separately for deterministic and learned mappings
 
-2. **Coverage**
-   - Percentage of techniques with at least one mapped control
+2. **Coverage   - Percentage of techniques with at least one mapped control
 
-3. **Actionable Precision**
-   - Precision for actionable positives (predicted_label==1 AND mapping exists AND is canonical-consistent)
+3. **Actionable Precision   - Precision for actionable positives (predicted_label==1 AND mapping exists AND is canonical-consistent)
 
-4. **Variance Reduction**
-   - Reduction in risk score variance from applying mapping
+4. **Variance Reduction   - Reduction in risk score variance from applying mapping
    - Unmapped positives are demoted by a factor (default 0.90)
 
-5. **Deltas**
-   - Δ DAC = DAC_deterministic - DAC_learned
+5. **Deltas   - Δ DAC = DAC_deterministic - DAC_learned
    - Δ Precision = Precision_deterministic - Precision_learned
    - Δ Variance Reduction = VarRed_deterministic - VarRed_learned
 
@@ -82,14 +77,11 @@ For each evaluation split, the pipeline computes:
 
 All outputs are saved to `results/H3_full_evaluation/`:
 
-1. **`h3_results_by_split.csv`**
-   - Detailed metrics for each split
+1. **`h3_results_by_split.csv`   - Detailed metrics for each split
 
-2. **`h3_summary.json`**
-   - Summary statistics across all splits
+2. **`h3_summary.json`   - Summary statistics across all splits
 
-3. **`h3_report.md`**
-   - Human-readable markdown report with tables and interpretation
+3. **`h3_report.md`   - Human-readable markdown report with tables and interpretation
 
 ## Module Structure
 

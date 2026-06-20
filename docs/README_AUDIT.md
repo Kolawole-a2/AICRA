@@ -63,50 +63,39 @@ All H1 and H2 claims in README are accurate and verified against experimental re
 ## Changes Applied
 
 ### 1. README.md Line 393
-**Before:**
-```
+**Before:```
 | **H3** | Combined | 100% | Variance reduction | **-47%** |
 ```
 
-**After:**
-```
+**After:```
 | **H3** | Combined | 100% | Variance reduction | **0.0%** (see note) |
 ```
 
-**Note added:**
-> Variance reduction is 0.0% because all ATT&CK techniques in the evaluation splits have mapped D3FEND controls in both deterministic and learned mappings, so no score adjustments occur. See `docs/H3_RECONCILIATION_REPORT.md` for detailed explanation.
+**Note added:> Variance reduction is 0.0% because all ATT&CK techniques in the evaluation splits have mapped D3FEND controls in both deterministic and learned mappings, so no score adjustments occur. See `docs/H3_RECONCILIATION_REPORT.md` for detailed explanation.
 
 ### 2. README.md Lines 532-537
-**Before:**
-```
-**AICRA Improvements:**
-- **Deterministic mapping increases ATT&CK–D3FEND mapping coverage by 30% and reduces risk-score variance by 47%.**
-- Coverage increase: +25-35%
+**Before:```
+**AICRA Improvements:- **Deterministic mapping increases ATT&CK–D3FEND mapping coverage by 30% and reduces risk-score variance by 47%.- Coverage increase: +25-35%
 - Variance reduction: 40-50%
 - Alert fatigue reduction: 20%
 - Defense–attack consistency improvement: 30%
 ```
 
-**After:**
-```
-**AICRA Improvements:**
-- **Deterministic mapping increases ATT&CK–D3FEND mapping coverage by 48.1% and achieves 100% Defense-Attack Consistency (DAC).**
-- Coverage increase: +48.1% (from 67.5% baseline to 100%)
+**After:```
+**AICRA Improvements:- **Deterministic mapping increases ATT&CK–D3FEND mapping coverage by 48.1% and achieves 100% Defense-Attack Consistency (DAC).- Coverage increase: +48.1% (from 67.5% baseline to 100%)
 - Consistency (DAC) improvement: +60.0% (from 62.5% baseline to 100%)
 - Variance reduction: 0.0% (all techniques have mapped controls, so no score adjustments occur; see `docs/H3_RECONCILIATION_REPORT.md` for details)
 - Alert fatigue reduction: 20% (estimated from consistency improvements)
 ```
 
 ### 3. README.md Lines 762-767
-**Before:**
-```
+**Before:```
 - Coverage improvement: % increase
 - Variance reduction: % decrease
 - Alert fatigue reduction: % decrease
 ```
 
-**After:**
-```
+**After:```
 - Coverage improvement: +48.1% (deterministic vs learned)
 - Consistency (DAC) improvement: +60.0% (deterministic achieves 100% by definition)
 - Variance reduction: 0.0% (see `docs/H3_RECONCILIATION_REPORT.md` for explanation)
@@ -169,16 +158,10 @@ with open('results/H3_full_evaluation/H3_full_results.json') as f:
 
 ## Conclusion
 
-✅ **All README claims now match actual experimental results.**
+✅ **All README claims now match actual experimental results.The only discrepancies were H3 variance reduction claims, which have been corrected. All H1 and H2 claims were already accurate. The README now provides a reliable, verifiable summary of AICRA's experimental results.
 
-The only discrepancies were H3 variance reduction claims, which have been corrected. All H1 and H2 claims were already accurate. The README now provides a reliable, verifiable summary of AICRA's experimental results.
-
-**Next Steps:**
-- Review `docs/H3_RECONCILIATION_REPORT.md` for detailed explanation of variance reduction = 0.0%
+**Next Steps:- Review `docs/H3_RECONCILIATION_REPORT.md` for detailed explanation of variance reduction = 0.0%
 - Consider updating `SOURCE_CONTRIBUTION_AND_AICRA_IMPROVEMENTS.md` to clarify that -47% is a theoretical/expected value, not computed
 
----
-
-**Report Generated:** 2024-12-19
-
+--**Report Generated:** 2024-12-19
 

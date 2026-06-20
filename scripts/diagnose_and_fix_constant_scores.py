@@ -150,17 +150,3 @@ print("  1. Regenerate register files using the working small_ember model")
 print("  2. Or regenerate risk_scores.csv directly from EMBER data using the model")
 print("  3. Add validation to prevent constant scores in future")
 print("=" * 80)
-
-
-
-
-
-
-
-
-
-
-
-
-
-

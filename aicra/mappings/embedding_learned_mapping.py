@@ -581,17 +581,3 @@ if __name__ == "__main__":
         model_name="sentence-transformers/all-MiniLM-L6-v2",
         top_k=3,
     )
-
-
-
-
-
-
-
-
-
-
-
-
-
-

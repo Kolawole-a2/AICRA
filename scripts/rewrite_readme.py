@@ -15,19 +15,19 @@ def load_latest_metrics():
     """Load latest metrics for README."""
     metrics = {}
     splits = ["smoke_test", "small_ember", "main", "full_ember"]
-    
+
     for split in splits:
         metrics_path = repo_root / "results" / split / "metrics_optimized.json"
         if metrics_path.exists():
-            with open(metrics_path, "r", encoding="utf-8") as f:
+            with open(metrics_path, encoding="utf-8") as f:
                 metrics[split] = json.load(f)
-    
+
     return metrics
 
 
 def create_readme(metrics: dict):
     """Create new README.md content."""
-    
+
     # Get latest metrics summary
     metrics_summary = ""
     if metrics:
@@ -40,7 +40,7 @@ def create_readme(metrics: dict):
                 m = metrics[split]
                 metrics_summary += f"| {split} | {m.get('precision', 0):.4f} | {m.get('recall', 0):.4f} | {m.get('f1', 0):.4f} | {m.get('brier_score', 0):.4f} | {m.get('ece', 0):.4f} | {m.get('auroc', 0):.4f} |\n"
         metrics_summary += "\nFor detailed metrics, see `docs/BENCHMARK_NOTES.md`.\n"
-    
+
     readme_content = f"""# AICRA – Machine Learning-Based Cyber Risk Advisor for Endpoint Security in U.S. Banking Organizations
 
 [![CI](https://github.com/Kolawole-a2/AICRA/actions/workflows/ci.yml/badge.svg)](https://github.com/Kolawole-a2/AICRA/actions/workflows/ci.yml)
@@ -339,7 +339,7 @@ If you use AICRA in your research, please cite:
 
 **Last Updated**: {Path(__file__).stat().st_mtime if Path(__file__).exists() else 'N/A'}
 """
-    
+
     return readme_content
 
 
@@ -348,21 +348,21 @@ def main():
     print("=" * 80)
     print("Rewriting README.md")
     print("=" * 80)
-    
+
     # Load metrics
     print("\n[1] Loading latest metrics...")
     metrics = load_latest_metrics()
     print(f"Loaded metrics for {len(metrics)} splits")
-    
+
     # Create README
     print("\n[2] Creating new README.md...")
     readme_content = create_readme(metrics)
-    
+
     # Write README
     readme_path = repo_root / "README.md"
     with open(readme_path, "w", encoding="utf-8") as f:
         f.write(readme_content)
-    
+
     print(f"\n[OK] Rewritten README.md: {readme_path.relative_to(repo_root)}")
     print("\n" + "=" * 80)
     print("README.md Update Complete")
@@ -371,4 +371,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

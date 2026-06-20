@@ -203,9 +203,11 @@ ax.grid(alpha=0.3, axis="y")
 ax.set_ylim(
     [
         0,
-        max(max(det_prec_arr), max(learned_prec_arr)) * 1.2
-        if max(max(det_prec_arr), max(learned_prec_arr)) > 0
-        else 1.2,
+        (
+            max(max(det_prec_arr), max(learned_prec_arr)) * 1.2
+            if max(max(det_prec_arr), max(learned_prec_arr)) > 0
+            else 1.2
+        ),
     ]
 )
 

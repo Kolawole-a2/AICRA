@@ -2,18 +2,11 @@
 
 ## Answer: Which Outputs to Show for Hypothesis Validation
 
-**For validating research hypotheses H1 and H2, you should use:**
-
-1. **Primary Results**: Canonical H1/H2 experiment outputs (JSON + Markdown summaries) ⭐ **REQUIRED**
-2. **Plots**: ⚠️ **IMPORTANT**: The rebuild pipeline plots are **NOT equivalent** to canonical results (see warning below)
+**For validating research hypotheses H1 and H2, you should use:1. **Primary Results**: Canonical H1/H2 experiment outputs (JSON + Markdown summaries) ⭐ **REQUIRED2. **Plots**: ⚠️ **IMPORTANT**: The rebuild pipeline plots are **NOT equivalent** to canonical results (see warning below)
 
 **⚠️ CRITICAL WARNING**: The rebuild pipeline evaluates on **different data** (train+test combined) than canonical experiments (test-only), producing **different metrics**. Do NOT use rebuild plots to represent canonical validation results without clear disclaimers.
 
-**See `docs/H1_H2_REBUILD_VS_CANONICAL_COMPARISON.md` for detailed comparison.**
-
----
-
-## Canonical H1/H2 Experiment Outputs (Primary Research Results)
+**See `docs/H1_H2_REBUILD_VS_CANONICAL_COMPARISON.md` for detailed comparison.--## Canonical H1/H2 Experiment Outputs (Primary Research Results)
 
 ### H1: Static PE Classification
 
@@ -21,8 +14,7 @@
 
 #### Required Files for Hypothesis Validation:
 
-1. **`H1_full_results.json`** ⭐ **PRIMARY**
-   - Complete metrics including:
+1. **`H1_full_results.json`** ⭐ **PRIMARY   - Complete metrics including:
      - `metrics.auroc` - Area Under ROC Curve
      - `metrics.pr_auc` - Precision-Recall AUC
      - `metrics.precision`, `metrics.recall`, `metrics.f1`
@@ -32,8 +24,7 @@
      - `metrics.improvement` - % improvements over baseline
      - `metrics.alert_fatigue_reduction` - Alert fatigue metrics
    
-2. **`H1_summary.md`** ⭐ **PRIMARY**
-   - Human-readable summary report
+2. **`H1_summary.md`** ⭐ **PRIMARY   - Human-readable summary report
    - Baseline comparison section
    - AICRA improvements over baseline
    - Alert fatigue reduction
@@ -50,18 +41,13 @@
 - ✅ **Alert fatigue reduction**: Estimated reduction percentage
 
 #### Plots from Canonical H1:
-❌ **The canonical H1 experiment does NOT generate plots directly**
-
----
-
-### H2: Calibration & Cost-Aware Thresholding
+❌ **The canonical H1 experiment does NOT generate plots directly--### H2: Calibration & Cost-Aware Thresholding
 
 **Location**: `results/H2_calibration_thresholds/`
 
 #### Required Files for Hypothesis Validation:
 
-1. **`H2_full_results.json`** ⭐ **PRIMARY**
-   - Complete metrics including:
+1. **`H2_full_results.json`** ⭐ **PRIMARY   - Complete metrics including:
      - `metrics.calibration.brier_before` / `brier_after` - Calibration improvement
      - `metrics.calibration.ece_before` / `ece_after` - ECE improvement
      - `metrics.calibration.brier_improvement_pct` - % improvement
@@ -74,8 +60,7 @@
      - `metrics.expected_loss.cost_optimal` - Expected loss at cost-optimal threshold
      - `metrics.improvement_statement` - Canonical statement
 
-2. **`H2_summary.md`** ⭐ **PRIMARY**
-   - Human-readable summary report
+2. **`H2_summary.md`** ⭐ **PRIMARY   - Human-readable summary report
    - Calibration results (before/after)
    - Comparison vs typical baseline
    - Threshold comparison (F1-optimized vs cost-optimal)
@@ -92,11 +77,7 @@
 - ✅ **Expected loss reduction**: Banking-specific cost structure optimization
 
 #### Plots from Canonical H2:
-❌ **The canonical H2 experiment does NOT generate plots directly**
-
----
-
-## ⚠️ Rebuild Pipeline Plots (NOT Equivalent to Canonical Results)
+❌ **The canonical H2 experiment does NOT generate plots directly--## ⚠️ Rebuild Pipeline Plots (NOT Equivalent to Canonical Results)
 
 **Location**: `results/h1h2_rebuild/<split>/plots/`
 
@@ -105,9 +86,7 @@
 - They produce **different metrics** (e.g., AUROC 0.9980 vs 0.9866)
 - They include **training data in evaluation** (data leakage)
 
-**Do NOT use these plots to represent canonical validation results without clear disclaimers.**
-
-### Available Plots (For Demonstration Only):
+**Do NOT use these plots to represent canonical validation results without clear disclaimers.### Available Plots (For Demonstration Only):
 
 1. **`roc.png`** - ROC Curve
    - ⚠️ Different AUROC than canonical (0.9980 vs 0.9866)
@@ -129,9 +108,7 @@
 - `smoke_test/` - Small test set (200 samples)
 - `small_ember/` - Small EMBER subset (2,000 samples)
 - `main/` - Main split (10,000 samples)
-- `full_ember/` - Full EMBER dataset (50,006 samples) ⚠️ **Includes training data**
-
-### Metrics Files:
+- `full_ember/` - Full EMBER dataset (50,006 samples) ⚠️ **Includes training data### Metrics Files:
 - `results/h1h2_rebuild/<split>/metrics.json` - Per-split metrics (different from canonical)
 - `results/h1h2_rebuild/metrics_summary.json` - Aggregated metrics (different from canonical)
 
@@ -255,5 +232,4 @@ These contain the complete metrics that validate my hypotheses. For visualizatio
 
 **⚠️ CRITICAL**: The optional rebuild pipeline does NOT produce equivalent results to canonical experiments. It evaluates on different data and produces different metrics. Do NOT use rebuild plots to represent canonical validation results without clear disclaimers.
 
-**See `docs/H1_H2_REBUILD_VS_CANONICAL_COMPARISON.md` for detailed comparison.**
-
+**See `docs/H1_H2_REBUILD_VS_CANONICAL_COMPARISON.md` for detailed comparison.

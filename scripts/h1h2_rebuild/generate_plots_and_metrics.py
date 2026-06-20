@@ -25,14 +25,12 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Dict
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.calibration import calibration_curve
 from sklearn.metrics import (
-    auc,
     average_precision_score,
     brier_score_loss,
     confusion_matrix,
@@ -128,7 +126,9 @@ def plot_confusion(y_true, y_pred, out_path: Path) -> None:
 
 
 def plot_reliability(y_true, y_prob, out_path: Path) -> None:
-    prob_true, prob_pred = calibration_curve(y_true, y_prob, n_bins=15, strategy="uniform")
+    prob_true, prob_pred = calibration_curve(
+        y_true, y_prob, n_bins=15, strategy="uniform"
+    )
     plt.figure(figsize=(6, 6))
     plt.plot(prob_pred, prob_true, marker="o", label="Model")
     plt.plot([0, 1], [0, 1], "k--", label="Perfectly Calibrated")
@@ -142,25 +142,27 @@ def plot_reliability(y_true, y_prob, out_path: Path) -> None:
     plt.close()
 
 
-def generate_metrics_for_split(split_name: str, repo_root: Path) -> Dict:
+def generate_metrics_for_split(split_name: str, repo_root: Path) -> dict:
     """Generate metrics and plots for a single split."""
     logger.info("=" * 80)
     logger.info(f"Generating plots and metrics for split: {split_name}")
     logger.info("=" * 80)
 
     # Load risk_scores
-    risk_path = (
-        repo_root / "results" / "h1h2_rebuild" / split_name / "risk_scores.csv"
-    )
+    risk_path = repo_root / "results" / "h1h2_rebuild" / split_name / "risk_scores.csv"
     if not risk_path.exists():
-        raise FileNotFoundError(f"risk_scores.csv not found for split {split_name}: {risk_path}")
+        raise FileNotFoundError(
+            f"risk_scores.csv not found for split {split_name}: {risk_path}"
+        )
 
     df = pd.read_csv(risk_path)
     y_true = df["true_label"].values
     y_prob = df["p_ransomware"].values
 
     logger.info(f"Loaded {len(df)} samples for {split_name}")
-    logger.info(f"  Ransomware (1): {y_true.sum()}, Benign (0): {len(y_true) - y_true.sum()}")
+    logger.info(
+        f"  Ransomware (1): {y_true.sum()}, Benign (0): {len(y_true) - y_true.sum()}"
+    )
 
     # Basic metrics
     auroc = roc_auc_score(y_true, y_prob)
@@ -175,7 +177,11 @@ def generate_metrics_for_split(split_name: str, repo_root: Path) -> Dict:
 
     precision = precision_score(y_true, y_pred, zero_division=0)
     recall = recall_score(y_true, y_pred, zero_division=0)
-    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
+    f1 = (
+        2 * precision * recall / (precision + recall)
+        if (precision + recall) > 0
+        else 0.0
+    )
 
     cm = confusion_matrix(y_true, y_pred)
     tn, fp, fn, tp = cm.ravel()
@@ -233,7 +239,7 @@ def main() -> None:
     repo_root = Path(__file__).parent.parent.parent
     splits = ["smoke_test", "small_ember", "main", "full_ember"]
 
-    all_metrics: Dict[str, Dict] = {}
+    all_metrics: dict[str, dict] = {}
     for split in splits:
         try:
             m = generate_metrics_for_split(split, repo_root)
@@ -250,5 +256,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-

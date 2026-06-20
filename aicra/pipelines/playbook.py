@@ -111,9 +111,11 @@ def generate_attack_playbook(
                 "canonical_family": str(row.get("canonical_family", "unknown")),
                 "techniques": techniques if isinstance(techniques, list) else [],
                 "d3fend_controls": controls if isinstance(controls, list) else [],
-                "prescriptive_controls": prescriptive_controls
-                if isinstance(prescriptive_controls, list)
-                else [],
+                "prescriptive_controls": (
+                    prescriptive_controls
+                    if isinstance(prescriptive_controls, list)
+                    else []
+                ),
             }
         )
 
@@ -159,9 +161,11 @@ def generate_attack_playbook(
                 "canonical_family": str(row.get("canonical_family", "unknown")),
                 "techniques": techniques if isinstance(techniques, list) else [],
                 "d3fend_controls": controls if isinstance(controls, list) else [],
-                "prescriptive_controls": prescriptive_controls
-                if isinstance(prescriptive_controls, list)
-                else [],
+                "prescriptive_controls": (
+                    prescriptive_controls
+                    if isinstance(prescriptive_controls, list)
+                    else []
+                ),
             }
         )
 
@@ -193,14 +197,16 @@ def generate_attack_playbook(
         playbook["recommendations"].append(
             {
                 "technique_id": technique_id,
-                "priority": "High"
-                if technique_id
-                in [
-                    t
-                    for asset in playbook["high_risk_assets"]
-                    for t in asset.get("techniques", [])
-                ]
-                else "Medium",
+                "priority": (
+                    "High"
+                    if technique_id
+                    in [
+                        t
+                        for asset in playbook["high_risk_assets"]
+                        for t in asset.get("techniques", [])
+                    ]
+                    else "Medium"
+                ),
                 "affected_assets": len(
                     [
                         a

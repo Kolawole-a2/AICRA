@@ -71,7 +71,7 @@ _D3FEND_CONTROL_NAMES: dict[str, str] = {
 
 
 def load_family_to_attack(path: Path) -> dict[str, list[str]]:
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         data = yaml.safe_load(f)
     mappings = data.get("mappings", {})
     # Normalize keys to lower case for robust lookup
@@ -80,7 +80,7 @@ def load_family_to_attack(path: Path) -> dict[str, list[str]]:
 
 def load_attack_to_d3fend(path: Path) -> dict[str, list[str]]:
     """Load deterministic ATT&CK → D3FEND mapping as {tech_id: [control_ids...]}."""
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         data = yaml.safe_load(f)
     mappings = data.get("mappings", {})
     clean: dict[str, list[str]] = {}
@@ -121,7 +121,9 @@ def generate_register_for_split(
 
     risk_path = repo_root / "results" / "h1h2_rebuild" / split_name / "risk_scores.csv"
     if not risk_path.exists():
-        raise FileNotFoundError(f"risk_scores.csv not found for split {split_name}: {risk_path}")
+        raise FileNotFoundError(
+            f"risk_scores.csv not found for split {split_name}: {risk_path}"
+        )
 
     df = pd.read_csv(risk_path)
     logger.info(f"Loaded {len(df)} rows from {risk_path}")
@@ -148,7 +150,9 @@ def generate_register_for_split(
         return out_path
 
     # Load lookups
-    fam_to_attack = load_family_to_attack(repo_root / "data" / "lookups" / "family_to_attack.yaml")
+    fam_to_attack = load_family_to_attack(
+        repo_root / "data" / "lookups" / "family_to_attack.yaml"
+    )
     attack_to_d3 = load_attack_to_d3fend(
         repo_root / "data" / "lookups" / "attack_to_d3fend.yaml"
     )
@@ -240,5 +244,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-

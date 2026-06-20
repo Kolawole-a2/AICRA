@@ -1,8 +1,6 @@
 # Threats to Validity
 
-**AICRA: Artificial Intelligence–Powered Cyber Risk Advisor for Endpoint Security in U.S. Banking Organizations**
-
-This document identifies potential threats to the validity of the AICRA praxis results and describes mitigations implemented in the experimental design and codebase.
+**AICRA: Artificial Intelligence–Powered Cyber Risk Advisor for Endpoint Security in U.S. Banking OrganizationsThis document identifies potential threats to the validity of the AICRA praxis results and describes mitigations implemented in the experimental design and codebase.
 
 ---
 
@@ -37,7 +35,7 @@ Internal validity concerns whether the experimental design correctly establishes
 **Impact**: If assumptions are violated, model performance may degrade in production or fail to generalize to new malware variants.
 
 **Mitigation in AICRA**:
-- Uses EMBER-2024's standardized feature set (2,381 features) validated in prior research (Anderson & Roth, 2018)
+- Uses EMBER-2024's standardized feature set (2,381 features) validated in empirical baselines on the same splits
 - Combines EMBER features with additional PE static features for robustness
 - Temporal evaluation tests feature stability across time periods
 - Out-of-family evaluation tests generalization to malware families not seen during training
@@ -263,10 +261,6 @@ While some risks remain (label noise, concept drift, adversarial evasion), these
 
 ## References
 
-- Anderson, H. S., & Roth, P. (2018). EMBER: An Open Dataset for Training Static PE Malware Machine Learning Models. arXiv:1804.04637
-- Raff, E., et al. (2018). Malware Detection by Eating a Whole EXE. arXiv:1710.09435
-- Guo, C., et al. (2017). On Calibration of Modern Neural Networks. ICML 2017. https://arxiv.org/abs/1706.04599
 - MITRE ATT&CK: https://attack.mitre.org/
 - MITRE D3FEND: https://d3fend.mitre.org/
-
 

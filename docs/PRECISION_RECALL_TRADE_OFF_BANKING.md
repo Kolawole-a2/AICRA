@@ -42,9 +42,7 @@ AICRA's threshold optimization is based on banking-specific cost parameters:
 | | | - Minimal operational impact |
 | | | - No regulatory consequences |
 
-**Cost Ratio**: FN cost / FP cost = **100:1**
-
-### Expected Loss Minimization
+**Cost Ratio**: FN cost / FP cost = **100:1### Expected Loss Minimization
 
 The banking-optimized threshold (0.0298) minimizes **Expected Loss**:
 
@@ -77,8 +75,7 @@ Actual Benign   3111      2298    (FP = 2,298)
 Ransomware        9       4583    (TP = 4,583)
 ```
 
-**Key Numbers:**
-- **True Positives**: 4,583 ransomware correctly identified
+**Key Numbers:- **True Positives**: 4,583 ransomware correctly identified
 - **False Positives**: 2,298 benign files flagged (will be investigated)
 - **False Negatives**: 9 ransomware missed (critical metric, very low)
 - **True Negatives**: 3,111 benign files correctly ignored
@@ -98,25 +95,21 @@ Ransomware        9       4583    (TP = 4,583)
 
 ### 1. Operational Efficiency
 
-**66.6% precision means:**
-- **2 out of 3 alerts are real threats** - This is a manageable ratio for SOC analysts
+**66.6% precision means:- **2 out of 3 alerts are real threats** - This is a manageable ratio for SOC analysts
 - **1 out of 3 alerts are false positives** - These can be quickly triaged and dismissed
 - **Analyst workload**: With proper triage workflows, false positives can be filtered efficiently
 
-**Industry Context:**
-- Many production security systems operate with precision in the 60-70% range
+**Industry Context:- Many production security systems operate with precision in the 60-70% range
 - Security operations centers (SOCs) are designed to handle false positive rates of 30-40%
 - The key is having efficient triage processes, not eliminating all false positives
 
 ### 2. Critical Threat Detection
 
-**99.8% recall means:**
-- **Only 9 ransomware samples missed** out of 4,592 total
+**99.8% recall means:- **Only 9 ransomware samples missed** out of 4,592 total
 - **99.8% of ransomware is caught** - This is critical for banking security
 - **Regulatory compliance**: Banking regulations require high detection rates
 
-**Cost Analysis:**
-- **Missed ransomware cost**: 9 FNs × $5M = $45M potential impact
+**Cost Analysis:- **Missed ransomware cost**: 9 FNs × $5M = $45M potential impact
 - **False positive cost**: 2,298 FPs × $100 = $229,800 investigation cost
 - **Total cost**: $45.23M (dominated by FN risk)
 
@@ -137,13 +130,11 @@ These metrics indicate the model is **highly capable** - the lower precision is 
 
 ### 4. Banking Regulatory Context
 
-**Regulatory Requirements:**
-- Banking regulations emphasize **threat detection** over false positive reduction
+**Regulatory Requirements:- Banking regulations emphasize **threat detection** over false positive reduction
 - **FFIEC guidelines** require banks to detect and respond to security threats
 - **Regulatory penalties** for missed threats far exceed costs of investigating false positives
 
-**Compliance Perspective:**
-- **High recall (99.8%)** demonstrates effective threat detection capability
+**Compliance Perspective:- **High recall (99.8%)** demonstrates effective threat detection capability
 - **66.6% precision** is acceptable when combined with high recall
 - **Documented triage processes** can justify false positive rates
 
@@ -164,9 +155,7 @@ The H1 hypothesis states: *"Static PE features enable reliable ransomware classi
 
 ### SOC Workflow Integration
 
-**Typical SOC Alert Triage Process:**
-
-1. **Automated Filtering**: Initial alerts can be filtered by:
+**Typical SOC Alert Triage Process:1. **Automated Filtering**: Initial alerts can be filtered by:
    - Risk score thresholds
    - Asset criticality
    - Time-based patterns
@@ -195,17 +184,10 @@ The H1 hypothesis states: *"Static PE features enable reliable ransomware classi
 
 **AICRA's performance aligns with industry standards** for high-recall security systems.
 
-### Academic References
+### Empirical Baseline Comparison
 
-**Anderson & Roth (2018) - EMBER Dataset:**
-- Typical recall: 50-60% for simple classifiers
-- AICRA achieves 99.8% recall (massive improvement)
-- Precision trade-off is justified by recall improvement
-
-**Raff et al. (2018) - Malware Detection:**
-- Precision: 35-45% for imbalanced malware classification
-- AICRA's 66.6% precision is **above** typical academic baselines
-- Combined with 99.8% recall, this is exceptional performance
+- Logistic regression baseline precision: 77.3% at threshold 0.5
+- AICRA at banking threshold: 66.6% precision, 99.8% recall (FN-prioritized trade-off)
 
 ## Alternative Threshold Analysis
 
@@ -226,9 +208,7 @@ If we increased the threshold to improve precision:
 
 ### When Asked: "Is 66.6% precision too low?"
 
-**Response Framework:**
-
-1. **Acknowledge the trade-off**: "Yes, precision is lower than baseline, but this is an intentional trade-off optimized for banking security."
+**Response Framework:1. **Acknowledge the trade-off**: "Yes, precision is lower than baseline, but this is an intentional trade-off optimized for banking security."
 
 2. **Explain the cost structure**: "In banking, missing ransomware (false negative) costs 100x more than investigating false positives. Our threshold minimizes expected loss under this cost structure."
 
@@ -242,9 +222,7 @@ If we increased the threshold to improve precision:
 
 ### When Asked: "Why not use a higher threshold?"
 
-**Response Framework:**
-
-1. **Cost analysis**: "Increasing the threshold would improve precision but dramatically reduce recall. For example, at threshold 0.1, we'd miss ~230 ransomware samples, with potential impact of $1.15B."
+**Response Framework:1. **Cost analysis**: "Increasing the threshold would improve precision but dramatically reduce recall. For example, at threshold 0.1, we'd miss ~230 ransomware samples, with potential impact of $1.15B."
 
 2. **Regulatory compliance**: "Banking regulations require high detection rates. Missing 5% of ransomware (at threshold 0.1) would violate regulatory requirements."
 
@@ -271,8 +249,6 @@ The lower precision is a **strategic choice** optimized for banking security, no
 - `docs/BASELINE_METHODOLOGY_TEMP.md` - Baseline comparison methodology
 - `results/EXPERIMENT_VALIDATION_RESULTS.md` - Full validation results
 
----
-
-**Last Updated**: 2025-12-17  
+--**Last Updated**: 2025-12-17  
 **Status**: Defense preparation document
 

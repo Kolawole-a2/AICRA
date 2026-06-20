@@ -129,18 +129,18 @@ class PEFeatureBuilder:
             features.update(
                 {
                     "pe_section_count": float(len(section_sizes)),
-                    "pe_section_size_mean": float(np.mean(section_sizes))
-                    if section_sizes
-                    else 0.0,
-                    "pe_section_size_std": float(np.std(section_sizes))
-                    if section_sizes
-                    else 0.0,
-                    "pe_section_size_max": float(np.max(section_sizes))
-                    if section_sizes
-                    else 0.0,
-                    "pe_section_flags_mean": float(np.mean(section_flags))
-                    if section_flags
-                    else 0.0,
+                    "pe_section_size_mean": (
+                        float(np.mean(section_sizes)) if section_sizes else 0.0
+                    ),
+                    "pe_section_size_std": (
+                        float(np.std(section_sizes)) if section_sizes else 0.0
+                    ),
+                    "pe_section_size_max": (
+                        float(np.max(section_sizes)) if section_sizes else 0.0
+                    ),
+                    "pe_section_flags_mean": (
+                        float(np.mean(section_flags)) if section_flags else 0.0
+                    ),
                 }
             )
 

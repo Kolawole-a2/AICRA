@@ -78,17 +78,3 @@ print("1. Close and reopen the plot files (they may be cached)")
 print("2. Check which specific plot file you're viewing")
 print("3. Tell me which plot and what values you're seeing")
 print("=" * 80)
-
-
-
-
-
-
-
-
-
-
-
-
-
-

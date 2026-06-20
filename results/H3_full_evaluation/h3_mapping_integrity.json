@@ -1,0 +1,14 @@
+{
+  "status": "PASSED",
+  "deterministic_pairs_count": 173,
+  "learned_pairs_count": 190,
+  "intersection_count": 0,
+  "overlap_percentage": 0.0,
+  "only_in_deterministic_count": 173,
+  "only_in_learned_count": 190,
+  "deterministic_file": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\data\\mappings\\deterministic_attack_defense_lookup.csv",
+  "learned_file": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\data\\mappings\\learned_mapping.csv",
+  "deterministic_hash": "a7780cfe106057cdb615df7a658e4781b61a5185eab13f6a70b4dfb8c963ed31",
+  "learned_hash": "34d6cdc4696521d6989a23dd1a24dd5442828a3c690d56620905e7634136e546",
+  "validation_message": "Learned mapping is distinct from deterministic mapping (as expected)"
+}

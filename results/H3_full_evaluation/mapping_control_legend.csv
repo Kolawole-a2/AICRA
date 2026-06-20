@@ -1,0 +1,279 @@
+control_id,control_name,used_in_comparison_table
+D3-AA,Access Authentication,False
+D3-ABPI,Application-based Process Isolation,False
+D3-ACA,Active Certificate Analysis,False
+D3-ACH,Application Configuration Hardening,False
+D3-AEM,Application Exception Monitoring,False
+D3-AH,Application Hardening,False
+D3-AI,Asset Inventory,True
+D3-AL,Application Allowlisting,False
+D3-ALLM,Active Logical Link Mapping,False
+D3-AM,Access Modeling,False
+D3-AMED,Access Mediation,True
+D3-ANAA,Administrative Network Activity Analysis,False
+D3-ANCI,Authentication Cache Invalidation,False
+D3-ANET,Authentication Event Thresholding,False
+D3-APA,Access Policy Administration,False
+D3-APCA,Application Protocol Command Analysis,False
+D3-APLM,Active Physical Link Mapping,False
+D3-APM,Application Performance Monitoring,False
+D3-AV,Antivirus,False
+D3-AVE,Asset Vulnerability Enumeration,False
+D3-AZET,Authorization Event Thresholding,False
+D3-BA,Bootloader Authentication,False
+D3-BAC,Backup Access Control,True
+D3-BAN,Biometric Authentication,False
+D3-BDI,Broadcast Domain Isolation,False
+D3-BDR,Backup Data Recovery,True
+D3-BMA,Bus Message Authentication,False
+D3-BSE,Byte Sequence Emulation,False
+D3-CA,Certificate Analysis,False
+D3-CAA,Connection Attempt Analysis,False
+D3-CBAN,Certificate-based Authentication,False
+D3-CCSA,Credential Compromise Scope Analysis,False
+D3-CDP,Change Default Password,False
+D3-CE,Credential Eviction,False
+D3-CERO,Certificate Rotation,True
+D3-CF,Content Filtering,False
+D3-CFC,Content Format Conversion,False
+D3-CFI,Control Flow Integrity,False
+D3-CH,Credential Hardening,False
+D3-CHN,Connected Honeynet,True
+D3-CI,Configuration Inventory,False
+D3-CIA,Container Image Analysis,True
+D3-CM,Content Modification,False
+D3-CNE,Content Excision,False
+D3-CNR,Content Rebuild,False
+D3-CNS,Content Substitution,False
+D3-CP,Certificate Pinning,False
+D3-CQ,Content Quarantine,False
+D3-CR,Command Restriction,True
+D3-CRO,Credential Rotation,False
+D3-CS,Credential Scrubbing,False
+D3-CSPP,Client-server Payload Profiling,False
+D3-CTS,Credential Transmission Scoping,False
+D3-CV,Content Validation,False
+D3-DA,Dynamic Analysis,True
+D3-DAM,Domain Account Monitoring,False
+D3-DCE,Dead Code Elimination,True
+D3-DE,Decoy Environment,True
+D3-DEM,Data Exchange Mapping,True
+D3-DENCR,Disk Encryption,True
+D3-DF,Decoy File,True
+D3-DI,Data Inventory,True
+D3-DKE,Disk Erasure,True
+D3-DKF,Disk Formatting,True
+D3-DKP,Disk Partitioning,True
+D3-DLIC,Driver Load Integrity Checking,False
+D3-DLV,Domain Logic Validation,False
+D3-DNL,Directional Network Link,False
+D3-DNR,Decoy Network Resource,False
+D3-DNRA,Domain Name Reputation Analysis,False
+D3-DNSAL,DNS Allowlisting,False
+D3-DNSCE,DNS Cache Eviction,False
+D3-DNSDL,DNS Denylisting,False
+D3-DNSTA,DNS Traffic Analysis,False
+D3-DO,Decoy Object,True
+D3-DP,Decoy Persona,False
+D3-DPLM,Direct Physical Link Mapping,False
+D3-DPR,Decoy Public Release,False
+D3-DQSA,Database Query String Analysis,True
+D3-DRA,Disable Remote Access,False
+D3-DRT,Domain Registration Takedown,False
+D3-DST,Decoy Session Token,True
+D3-DTP,Domain Trust Policy,False
+D3-DUC,Decoy User Credential,False
+D3-EAL,Executable Allowlisting,False
+D3-EBWSAM,Endpoint-based Web Server Access Mediation,False
+D3-EDL,Executable Denylisting,False
+D3-EDR,Endpoint Detection and Response,True
+D3-EF,Email Filtering,False
+D3-EFA,Emulated File Analysis,False
+D3-EHB,Endpoint Health Beacon,False
+D3-EHPV,Exception Handler Pointer Validation,False
+D3-EI,Execution Isolation,False
+D3-ELM,Electronic Lock Monitoring,False
+D3-EMH,Electromagnetic Radiation Hardening,False
+D3-EPL,Physical Locking,False
+D3-ER,Email Removal,True
+D3-ET,Encrypted Tunnels,False
+D3-FA,File Analysis,True
+D3-FAPA,File Access Pattern Analysis,False
+D3-FBA,Firmware Behavior Analysis,False
+D3-FC,File Carving,False
+D3-FCA,File Creation Analysis,False
+D3-FCDC,File Content Decompression Checking,False
+D3-FCOA,File Content Analysis,False
+D3-FCR,File Content Rules,False
+D3-FE,File Encryption,False
+D3-FEMC,Firmware Embedded Monitoring Code,True
+D3-FEV,File Eviction,False
+D3-FFV,File Format Verification,False
+D3-FH,File Hashing,False
+D3-FHRA,File Hash Reputation Analysis,False
+D3-FIM,File Integrity Monitoring,False
+D3-FISV,File Internal Structure Verification,False
+D3-FMBV,File Magic Byte Verification,False
+D3-FMCV,File Metadata Consistency Validation,False
+D3-FMVV,File Metadata Value Verification,True
+D3-FRDDL,Forward Resolution Domain Denylisting,False
+D3-FRIDL,Forward Resolution IP Denylisting,False
+D3-FV,Firmware Verification,False
+D3-HBPI,Hardware-based Process Isolation,True
+D3-HBWP,Hardware-based Write Protection,False
+D3-HCI,Hardware Component Inventory,False
+D3-HD,Homoglyph Detection,False
+D3-HDDL,Hierarchical Domain Denylisting,False
+D3-HDL,Homoglyph Denylisting,False
+D3-HR,Host Reboot,False
+D3-HS,Host Shutdown,False
+D3-IAA,Identifier Activity Analysis,False
+D3-IBCA,Indirect Branch Call Analysis,False
+D3-ID,Identifier Analysis,False
+D3-IDA,Input Device Analysis,False
+D3-IHN,Integrated Honeynet,False
+D3-IOPR,IO Port Restriction,False
+D3-IPCTA,IPC Traffic Analysis,True
+D3-IPRA,IP Reputation Analysis,False
+D3-IRA,Identifier Reputation Analysis,False
+D3-IRV,Integer Range Validation,False
+D3-ISVA,Inbound Session Volume Analysis,False
+D3-ITF,Inbound Traffic Filtering,False
+D3-JFAPA,Job Function Access Pattern Analysis,False
+D3-KBPI,Kernel-based Process Isolation,False
+D3-LAM,Local Account Monitoring,False
+D3-LAMED,LAN Access Mediation,False
+D3-LFAM,Local File Access Mediation,False
+D3-LFP,Local File Permissions,False
+D3-LLM,Logical Link Mapping,False
+D3-MA,Message Analysis,False
+D3-MAN,Message Authentication,False
+D3-MBSV,Memory Block Start Validation,False
+D3-MBT,Memory Boundary Tracking,False
+D3-MENCR,Message Encryption,False
+D3-MFA,Multi-factor Authentication,False
+D3-MH,Message Hardening,False
+D3-MSM,Motion Sensor Monitoring,False
+D3-NAM,Network Access Mediation,False
+D3-NFP,Network Filtering Policy,True
+D3-NI,Network Isolation,False
+D3-NM,Network Mapping,False
+D3-NNI,Network Node Inventory,False
+D3-NPC,Null Pointer Checking,False
+D3-NRAM,Network Resource Access Mediation,True
+D3-NTA,Network Traffic Analysis,False
+D3-NTCD,Network Traffic Community Deviation,False
+D3-NTF,Network Traffic Filtering,False
+D3-NTPM,Network Traffic Policy Mapping,False
+D3-NTSA,Network Traffic Signature Analysis,False
+D3-NVA,Network Vulnerability Assessment,False
+D3-OAM,Operational Activity Mapping,False
+D3-ODM,Operational Dependency Mapping,True
+D3-OE,Object Eviction,False
+D3-OLV,Operational Logic Validation,False
+D3-OM,Organization Mapping,False
+D3-OMM,Operating Mode Monitoring,True
+D3-OPM,Operational Process Monitoring,False
+D3-OPR,Operating Mode Restriction,False
+D3-ORA,Operational Risk Assessment,False
+D3-OSM,Operating System Monitoring,False
+D3-OTF,Outbound Traffic Filtering,False
+D3-OTP,One-time Password,False
+D3-OVAR,OT Variable Access Restriction,False
+D3-PA,Process Analysis,False
+D3-PAM,Physical Access Mediation,False
+D3-PAN,Pointer Authentication,False
+D3-PBWSAM,Proxy-based Web Server Access Mediation,False
+D3-PCA,Passive Certificate Analysis,False
+D3-PCSV,Process Code Segment Verification,True
+D3-PE,Process Eviction,True
+D3-PEH,Physical Enclosure Hardening,False
+D3-PFV,Peripheral Firmware Verification,False
+D3-PH,Platform Hardening,False
+D3-PHAM,Physical Access Monitoring,False
+D3-PHDURA,Per Host Download-Upload Ratio Analysis,False
+D3-PLA,Process Lineage Analysis,True
+D3-PLLM,Passive Logical Link Mapping,False
+D3-PLM,Physical Link Mapping,False
+D3-PM,Platform Monitoring,True
+D3-PMAD,Protocol Metadata Anomaly Detection,False
+D3-PR,Password Rotation,False
+D3-PS,Process Suspension,False
+D3-PSA,Process Spawn Analysis,True
+D3-PSEP,Process Segment Execution Prevention,True
+D3-PSM,Proximity Sensor Monitoring,False
+D3-PSMD,Process Self-Modification Detection,False
+D3-PT,Process Termination,False
+D3-PUM,Platform Uptime Monitoring,False
+D3-PV,Pointer Validation,False
+D3-PWA,Password Authentication,True
+D3-RA,Restore Access,True
+D3-RAM,Routing Access Mediation,False
+D3-RAPA,Resource Access Pattern Analysis,False
+D3-RC,Restore Configuration,False
+D3-RD,Restore Database,False
+D3-RDI,Restore Disk Image,False
+D3-RE,Restore Email,False
+D3-RF,Restore File,False
+D3-RFAM,Remote File Access Mediation,True
+D3-RFS,RF Shielding,False
+D3-RFUM,Remote Firmware Update Monitoring,False
+D3-RH,Radiation Hardening,False
+D3-RIC,Reissue Credential,False
+D3-RKD,Registry Key Deletion,False
+D3-RN,Reference Nullification,False
+D3-RNA,Restore Network Access,False
+D3-RO,Restore Object,False
+D3-RPA,Relay Pattern Analysis,False
+D3-RRID,Reverse Resolution IP Denylisting,False
+D3-RS,Restore Software,False
+D3-RTA,RPC Traffic Analysis,False
+D3-RTSD,Remote Terminal Session Detection,True
+D3-RUAA,Restore User Account Access,False
+D3-SAOR,Segment Address Offset Randomization,False
+D3-SAW,System Access Workflow,False
+D3-SBV,Service Binary Verification,False
+D3-SCA,System Call Analysis,False
+D3-SCF,System Call Filtering,False
+D3-SCH,Source Code Hardening,False
+D3-SCP,System Configuration Permissions,False
+D3-SDA,Session Duration Analysis,False
+D3-SDM,System Daemon Monitoring,False
+D3-SEA,Script Execution Analysis,False
+D3-SFA,System File Analysis,True
+D3-SFCV,Stack Frame Canary Validation,False
+D3-SFV,System Firmware Verification,False
+D3-SHN,Standalone Honeynet,False
+D3-SICA,System Init Config Analysis,False
+D3-SIEM,Security Information and Event Management,True
+D3-SJA,Scheduled Job Analysis,False
+D3-SMRA,Sender MTA Reputation Analysis,False
+D3-SPP,Strong Password Policy,False
+D3-SRA,Sender Reputation Analysis,False
+D3-SSC,Shadow Stack Comparisons,False
+D3-ST,Session Termination,False
+D3-SU,Software Update,False
+D3-SVCDM,Service Dependency Mapping,True
+D3-SWI,Software Inventory,False
+D3-SYSDM,System Dependency Mapping,False
+D3-SYSM,System Mapping,False
+D3-SYSVA,System Vulnerability Assessment,False
+D3-TAAN,Transfer Agent Authentication,False
+D3-TB,Token Binding,False
+D3-TBA,Token-based Authentication,True
+D3-TBI,TPM Boot Integrity,True
+D3-TL,Trusted Library,True
+D3-UA,URL Analysis,False
+D3-UAP,User Account Permissions,False
+D3-UBA,User Behavior Analysis,True
+D3-UDTA,User Data Transfer Analysis,False
+D3-UGLPA,User Geolocation Logon Pattern Analysis,False
+D3-ULA,Unlock Account,False
+D3-URA,URL Reputation Analysis,False
+D3-USICA,User Session Init Config Analysis,False
+D3-VI,Variable Initialization,False
+D3-VPM,Virtual Private Network,True
+D3-VS,Video Surveillance,False
+D3-VTV,Variable Type Validation,False
+D3-WSAA,Web Session Activity Analysis,False
+D3-WSAM,Web Session Access Mediation,False

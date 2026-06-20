@@ -80,12 +80,10 @@ The function logs the chosen file path when found, or a warning if nothing is fo
 
 All final outputs are saved under `data/mappings/`:
 
-1. **`deterministic_attack_defense_lookup.csv/.parquet`**
-   - Full deterministic ATT&CK→D3FEND mapping from MITRE sources
+1. **`deterministic_attack_defense_lookup.csv/.parquet`   - Full deterministic ATT&CK→D3FEND mapping from MITRE sources
    - Columns: `attack_id`, `attack_name`, `defense_id`, `defense_name`, `is_correct`, `source`
 
-2. **`ember_deterministic_sample_mapping.csv/.parquet`**
-   - Sample-level mapping of EMBER-2024 samples to ATT&CK→D3FEND
+2. **`ember_deterministic_sample_mapping.csv/.parquet`   - Sample-level mapping of EMBER-2024 samples to ATT&CK→D3FEND
    - Columns: `sha256` (or sample_id), `family`, `attack_id`, `attack_name`, `defense_id`, `defense_name`, `is_correct`, `ransomware_weight`
 
 ## Integration into AICRA
@@ -111,6 +109,4 @@ Install with:
 ```bash
 pip install requests pandas stix2 pyarrow
 ```
-
-
 

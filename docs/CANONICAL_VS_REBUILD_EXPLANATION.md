@@ -60,8 +60,7 @@ Your praxis has **two distinct but complementary components**:
 - Located in: `scripts/h1h2_rebuild/`
 - Results stored in: `results/h1h2_rebuild/<split>/` and `register/h1h2_rebuild/<split>/`
 - Produces: **Per-sample scores** and **risk registers** (operational artifacts)
-- Focus: **Operational demonstration** and **praxis exposition**
-- Output: Risk register CSV files, per-split metrics, plots
+- Focus: **Operational demonstration** and **praxis exposition- Output: Risk register CSV files, per-split metrics, plots
 
 **Why This is Optional**:
 - It does **NOT test hypotheses** - it generates operational artifacts
@@ -90,9 +89,7 @@ Your praxis has **two distinct but complementary components**:
 
 ## Why Both Are Listed in README
 
-### 1. **Clear Separation of Concerns**
-
-The README clearly distinguishes:
+### 1. **Clear Separation of ConcernsThe README clearly distinguishes:
 - **Primary experiments** (H1, H2, H3) - Required for praxis validation
 - **Optional pipeline** - For demonstration and operational artifacts
 
@@ -100,16 +97,12 @@ This separation helps readers understand:
 - What is **required** to validate your hypotheses
 - What is **optional** for demonstration purposes
 
-### 2. **Transparency and Reproducibility**
-
-By listing both, you demonstrate:
+### 2. **Transparency and ReproducibilityBy listing both, you demonstrate:
 - **Transparency**: You show all components of your system, not just the core experiments
 - **Reproducibility**: Others can reproduce both the research validation AND the operational artifacts
 - **Completeness**: You show the full end-to-end pipeline, not just hypothesis testing
 
-### 3. **Praxis Demonstration**
-
-The rebuild pipeline generates **concrete operational artifacts** (risk registers) that:
+### 3. **Praxis DemonstrationThe rebuild pipeline generates **concrete operational artifacts** (risk registers) that:
 - Demonstrate how your system works in practice
 - Show the integration of H1/H2/H3 components
 - Provide tangible outputs for praxis defense
@@ -160,8 +153,7 @@ For **operational demonstration** (optional):
 ### In Your Dissertation/Praxis Document:
 
 1. **Primary Results Section**: Use results from canonical H1/H2/H3 experiments
-   - These are your **primary research contributions**
-   - These validate your hypotheses
+   - These are your **primary research contributions   - These validate your hypotheses
 
 2. **Operational Demonstration Section** (Optional): Reference the rebuild pipeline outputs
    - Show example risk registers

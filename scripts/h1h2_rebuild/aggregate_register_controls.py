@@ -40,7 +40,6 @@ from pathlib import Path
 
 import pandas as pd
 
-
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -89,7 +88,9 @@ def aggregate_split(split_name: str, repo_root: Path) -> Path | None:
     }
     missing = required_cols - set(df.columns)
     if missing:
-        raise ValueError(f"{split_name}: missing required columns in register: {missing}")
+        raise ValueError(
+            f"{split_name}: missing required columns in register: {missing}"
+        )
 
     # Group by fingerprint (one row per fingerprint).
     def _agg_group(group: pd.DataFrame) -> pd.Series:
@@ -98,36 +99,27 @@ def aggregate_split(split_name: str, repo_root: Path) -> Path | None:
 
         # Unique sorted technique IDs (including those with no mapped controls).
         techs = sorted(
-            set(
+            {
                 str(t)
-                for t in group["attack_technique_id"]
-                .dropna()
-                .astype(str)
-                .tolist()
+                for t in group["attack_technique_id"].dropna().astype(str).tolist()
                 if t != ""
-            )
+            }
         )
 
         # Unique sorted non-empty control IDs / names.
         ctrl_ids = sorted(
-            set(
+            {
                 str(c)
-                for c in group["d3fend_control_id"]
-                .dropna()
-                .astype(str)
-                .tolist()
+                for c in group["d3fend_control_id"].dropna().astype(str).tolist()
                 if c not in ("", "nan", "None", "none", "null")
-            )
+            }
         )
         ctrl_names = sorted(
-            set(
+            {
                 str(n)
-                for n in group["d3fend_control_name"]
-                .dropna()
-                .astype(str)
-                .tolist()
+                for n in group["d3fend_control_name"].dropna().astype(str).tolist()
                 if n not in ("", "nan", "None", "none", "null")
-            )
+            }
         )
 
         return pd.Series(
@@ -188,5 +180,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-

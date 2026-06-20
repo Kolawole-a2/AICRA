@@ -174,18 +174,22 @@ def load_ember_2024(
             train = Dataset(
                 features=all_features[train_mask].reset_index(drop=True),
                 labels=all_labels[train_mask].reset_index(drop=True),
-                families=all_families[train_mask].reset_index(drop=True)
-                if all_families is not None
-                else None,
+                families=(
+                    all_families[train_mask].reset_index(drop=True)
+                    if all_families is not None
+                    else None
+                ),
                 timestamps=all_timestamps[train_mask].reset_index(drop=True),
             )
 
             test = Dataset(
                 features=all_features[test_mask].reset_index(drop=True),
                 labels=all_labels[test_mask].reset_index(drop=True),
-                families=all_families[test_mask].reset_index(drop=True)
-                if all_families is not None
-                else None,
+                families=(
+                    all_families[test_mask].reset_index(drop=True)
+                    if all_families is not None
+                    else None
+                ),
                 timestamps=all_timestamps[test_mask].reset_index(drop=True),
             )
 

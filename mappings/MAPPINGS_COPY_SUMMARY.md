@@ -8,37 +8,30 @@ All mapping experiment files have been successfully copied from the `mappings` p
 
 ### Mapping Data Files
 
-1. **`data/mappings/deterministic_lookup.csv`**
-   - Source: `../mappings/data/mappings/deterministic_attack_defense_lookup.csv`
+1. **`data/mappings/deterministic_lookup.csv`   - Source: `../mappings/data/mappings/deterministic_attack_defense_lookup.csv`
    - Purpose: Deterministic ATT&CK→D3FEND mapping (gold standard)
    - Statistics: 173 rows, 46 techniques, 9 defenses
 
-2. **`data/mappings/deterministic_lookup.parquet`**
-   - Source: `../mappings/data/mappings/deterministic_attack_defense_lookup.parquet`
+2. **`data/mappings/deterministic_lookup.parquet`   - Source: `../mappings/data/mappings/deterministic_attack_defense_lookup.parquet`
    - Purpose: Binary format of deterministic mapping
 
-3. **`data/mappings/learned_mapping.csv`**
-   - Source: `../mappings/data/mappings/heuristic/learned_mapping.csv`
+3. **`data/mappings/learned_mapping.csv`   - Source: `../mappings/data/mappings/heuristic/learned_mapping.csv`
    - Purpose: Learned/heuristic mapping for H3 comparison
    - Statistics: 183 rows, 46 techniques, 71 controls
    - Note: Ransomware-filtered version with 100% technique coverage
 
 ### Scripts
 
-1. **`scripts/check_mappings_sanity.py`**
-   - Validates both mappings exist and are different
+1. **`scripts/check_mappings_sanity.py`   - Validates both mappings exist and are different
    - Checks file hashes and schema
 
-2. **`scripts/compare_mappings_summary.py`**
-   - Comprehensive comparison summary
+2. **`scripts/compare_mappings_summary.py`   - Comprehensive comparison summary
    - Coverage, DAC, and mapping statistics
 
-3. **`scripts/compute_dac_metrics.py`**
-   - Computes DAC metrics for both mappings
+3. **`scripts/compute_dac_metrics.py`   - Computes DAC metrics for both mappings
    - Comparison with reference pairs
 
-4. **`scripts/validate_mappings.py`**
-   - Additional validation script
+4. **`scripts/validate_mappings.py`   - Additional validation script
 
 ## Verification
 

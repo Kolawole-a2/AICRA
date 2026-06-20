@@ -2,37 +2,22 @@
 
 ## ⚠️ IMPORTANT FINDING
 
-**The H1/H2 rebuild pipeline outputs are NOT the same as the canonical H1/H2 experiment outputs.**
-
-## Key Differences
+**The H1/H2 rebuild pipeline outputs are NOT the same as the canonical H1/H2 experiment outputs.## Key Differences
 
 ### Canonical H1 Experiment
 
-**Data Split:**
-- Uses time-ordered split: **Train (40,004 samples) / Test (10,001 samples)**
-- Evaluates on **test set only** (10,001 samples)
+**Data Split:- Uses time-ordered split: **Train (40,004 samples) / Test (10,001 samples)- Evaluates on **test set only** (10,001 samples)
 
-**Results:**
-- AUROC: **0.9866**
-- PR-AUC: **0.9869**
-- Precision: **0.9459**
-- Recall: **0.9363**
-- F1: **0.9411**
-- Brier: **0.0426**
-- ECE: **0.0066**
-
-**Location:** `results/H1_classification/H1_full_results.json`
+**Results:- AUROC: **0.9866- PR-AUC: **0.9869- Precision: **0.9459- Recall: **0.9363- F1: **0.9411- Brier: **0.0426- ECE: **0.0066**Location:** `results/H1_classification/H1_full_results.json`
 
 ---
 
 ### Rebuild Pipeline (full_ember)
 
-**Data Split:**
-- Loads time-ordered split, then **COMBINES train+test** for evaluation
+**Data Split:- Loads time-ordered split, then **COMBINES train+test** for evaluation
 - Evaluates on **combined dataset** (50,006 samples = train + test)
 
-**Results:**
-- AUROC: **0.9980** (different!)
+**Results:- AUROC: **0.9980** (different!)
 - PR-AUC: **0.9979** (different!)
 - Precision: **0.9847** (different!)
 - Recall: **0.9809** (different!)
@@ -46,21 +31,15 @@
 
 ## Why They're Different
 
-1. **Different Evaluation Datasets:**
-   - Canonical H1: Evaluates on **test set only** (10,001 samples)
+1. **Different Evaluation Datasets:   - Canonical H1: Evaluates on **test set only** (10,001 samples)
    - Rebuild Pipeline: Evaluates on **train+test combined** (50,006 samples)
 
-2. **Data Leakage in Rebuild Pipeline:**
-   - The rebuild pipeline combines train and test data, then evaluates on the combined set
+2. **Data Leakage in Rebuild Pipeline:   - The rebuild pipeline combines train and test data, then evaluates on the combined set
    - This includes training data in the evaluation, which inflates metrics
-   - This is **NOT appropriate for hypothesis validation**
-
-3. **Different Sample Sizes:**
-   - Canonical: 10,001 test samples
+   - This is **NOT appropriate for hypothesis validation3. **Different Sample Sizes:   - Canonical: 10,001 test samples
    - Rebuild: 50,006 samples (5x larger, includes training data)
 
-4. **Different Metrics:**
-   - All metrics are different because they're evaluated on different datasets
+4. **Different Metrics:   - All metrics are different because they're evaluated on different datasets
    - Rebuild metrics are higher because they include training data
 
 ---
@@ -78,20 +57,15 @@
 
 ### ✅ Correct Approach for Hypothesis Validation
 
-**For H1/H2 Hypothesis Validation:**
-
-1. **Use Canonical Results Only:**
-   - `results/H1_classification/H1_full_results.json`
+**For H1/H2 Hypothesis Validation:1. **Use Canonical Results Only:   - `results/H1_classification/H1_full_results.json`
    - `results/H1_classification/H1_summary.md`
    - `results/H2_calibration_thresholds/H2_full_results.json`
    - `results/H2_calibration_thresholds/H2_summary.md`
 
-2. **Generate Plots from Canonical Data (If Needed):**
-   - If you need plots, you should generate them from the canonical experiment's test set predictions
+2. **Generate Plots from Canonical Data (If Needed):   - If you need plots, you should generate them from the canonical experiment's test set predictions
    - OR clearly label rebuild plots as "demonstration only" and explain they use different data
 
-3. **If Using Rebuild Plots:**
-   - **MUST clearly label** them as "Optional Rebuild Pipeline - Different Dataset"
+3. **If Using Rebuild Plots:   - **MUST clearly label** them as "Optional Rebuild Pipeline - Different Dataset"
    - **MUST explain** that they evaluate on train+test combined (not just test)
    - **MUST state** that metrics are different and these are for demonstration only
    - **MUST NOT** use them to represent canonical H1/H2 validation results
@@ -126,8 +100,7 @@ The rebuild pipeline is designed for:
 
 ### When Asked: "Can I use rebuild pipeline plots for H1/H2 validation?"
 
-**Answer:**
-"No, I cannot use rebuild pipeline plots to represent canonical H1/H2 validation results because:
+**Answer:"No, I cannot use rebuild pipeline plots to represent canonical H1/H2 validation results because:
 
 1. **Different datasets**: Canonical H1 evaluates on test set only (10,001 samples), while rebuild pipeline evaluates on train+test combined (50,006 samples)
 
@@ -152,12 +125,7 @@ For hypothesis validation, I use only the canonical H1/H2 results. If I need plo
 
 ## Summary
 
-**The rebuild pipeline outputs are NOT equivalent to canonical H1/H2 experiments.**
-
-- Different evaluation datasets
+**The rebuild pipeline outputs are NOT equivalent to canonical H1/H2 experiments.- Different evaluation datasets
 - Different metrics
 - Different purposes
-- **Do NOT use rebuild plots to represent canonical validation results**
-
-**For hypothesis validation, use only canonical H1/H2 results.**
-
+- **Do NOT use rebuild plots to represent canonical validation results**For hypothesis validation, use only canonical H1/H2 results.

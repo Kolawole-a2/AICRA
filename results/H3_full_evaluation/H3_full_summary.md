@@ -6,17 +6,33 @@ This report compares deterministic and learned ATT&CK–D3FEND mappings across 4
 
 **H3 Research Design:**
 
-- **Deterministic Mapping:** The normative expert ontology (ground truth for H3). This is the authoritative, curated **ransomware-focused** mapping from `deterministic_lookup.csv`. It contains only D3FEND controls that are appropriate for ransomware ATT&CK techniques. This mapping is expected to have higher precision, higher correctness, and better risk-score stability.
+- **Deterministic Mapping:** The normative expert ontology (ground truth for H3). This is the authoritative, curated **ransomware-focused** mapping from `data/mappings/deterministic_attack_defense_lookup.csv`. It contains only D3FEND controls that are appropriate for ransomware ATT&CK techniques. This mapping is expected to have higher precision, higher correctness, and better risk-score stability.
 
 - **Learned Mapping:** A **generic, broad** heuristic mapping that uses ALL (or almost all) D3FEND controls. It is **NOT ransomware-specific** and is designed to be noisier and less aligned with ransomware defense. This mapping is expected to have lower precision, lower correctness (for ransomware), and less stable risk scores.
 
-- **DAC:** The primary H3 metric, measuring agreement with the deterministic mapping (ransomware-focused ground truth). Deterministic achieves DAC = 100% by definition.
+- **DAC_internal:** The primary H3 metric, measuring agreement with the deterministic mapping (ransomware-focused ground truth). Deterministic achieves DAC_internal = 100% by definition.
+
+- **DAC_external:** Secondary benchmark measuring agreement with external D3FEND reference pairs (`d3fend_reference_pairs.csv`). This is **not** primary ground truth; it provides a supplementary ontology sanity check.
 
 **Number of Splits:** 4
 
 **Total Samples:** 32004
 
 **Total Techniques:** 5
+
+### Mapping roles explained
+
+H3 compares three related but distinct ATT&CK→D3FEND artifacts:
+
+| Mapping | Source | Role in H3 | Size (this run) |
+|---------|--------|------------|-----------------|
+| **Deterministic** | `data/mappings/deterministic_attack_defense_lookup.csv` — ransomware-focused expert ontology (MITRE D3FEND, filtered) | **Primary ground truth** for DAC (DAC_internal) | 173 pairs, 46 techniques, 9 controls (e.g. D3-RA, D3-FA, D3-PM) |
+| **Learned (heuristic)** | `data/mappings/learned_mapping.csv` — broad embedding/similarity mapping | **Alternative** mapping compared against deterministic | 190 pairs, 47 techniques, 79 controls |
+| **External reference** | `d3fend_reference_pairs.csv` — exported from `data/lookups/attack_to_d3fend.yaml` | **Secondary benchmark only** (DAC_external); not primary ground truth | 15 pairs, 5 techniques, 11 controls (e.g. D3-BDR, D3-BAC, D3-SAW) |
+
+**Why overlap differs:** Deterministic and external use **different control vocabularies** for the same techniques (e.g. T1486 → D3-RA vs T1486 → D3-BDR/D3-BAC/D3-SAW), so deterministic–external overlap is **0/173**. Learned is broad enough to occasionally pick the same control IDs as external (**11/190 pairs**); that partial overlap does not mean learned was trained on the reference file.
+
+**Primary H3 conclusion** rests on deterministic vs learned (DAC_internal). External reference is a supplementary sanity check (DAC_external).
 
 ### Mapping Overlap
 
@@ -31,11 +47,13 @@ This report compares deterministic and learned ATT&CK–D3FEND mappings across 4
 #### Deterministic vs External Reference Pairs
 
 **Pair Overlap:** 0/173 pairs
+
 **Jaccard Similarity:** 0.00%
 
 #### Learned vs External Reference Pairs
 
 **Pair Overlap:** 11/190 pairs
+
 **Jaccard Similarity:** 5.67%
 
 #### Risk Score Coverage
@@ -69,17 +87,28 @@ This section validates that the learned mapping is broader and noisier than the 
 
 ## 3. Aggregated Findings
 
-### Mean DAC Across Splits (H3 Primary Metric)
+### Mean DAC_internal Across Splits (H3 Primary Metric)
 
-**Note:** DAC measures agreement with the deterministic mapping, which is the normative expert ontology (ransomware-focused ground truth) for H3. Deterministic mapping achieves DAC = 100% by definition.
+**Note:** DAC_internal measures agreement with the deterministic mapping, which is the normative expert ontology (ransomware-focused ground truth) for H3. Deterministic mapping achieves DAC_internal = 100% by definition.
 
 **Deterministic:** 100.00% (SD: 0.00%)
 
 **Learned:** 0.00% (SD: 0.00%)
 
-**Mean Δ DAC:** 100.00% (SD: 0.00%)
+**Mean Δ DAC_internal:** 100.00% (SD: 0.00%)
 
-**95% CI for Δ DAC:** [100.00%, 100.00%]
+**95% CI for Δ DAC_internal:** [100.00%, 100.00%]
+
+### External Reference Benchmark (DAC_external — Secondary)
+
+**Note:** DAC_external measures agreement with `d3fend_reference_pairs.csv` (secondary ontology benchmark). It is normalized by reference pairs: |P_mapping ∩ P_ref| / |P_ref|.
+
+| Mapping | DAC_external | Pair overlap vs reference |
+|---------|--------------|---------------------------|
+| **Deterministic** | 0.00% | 0/15 reference pairs |
+| **Learned** | 73.33% (11/15 ref pairs covered in mapping) | 11/190 learned pairs match reference |
+
+Deterministic–external overlap is zero because control IDs differ (ransomware-focused vs YAML-exported reference vocabulary). Learned mapping partially overlaps reference pairs by chance of broad control selection, not because reference pairs were used as training labels.
 
 ### Mean Actionable Precision Across Splits
 
@@ -103,10 +132,10 @@ This section validates that the learned mapping is broader and noisier than the 
 
 ### Statistical Tests
 
-#### DAC Comparison (H3 Primary Metric)
+#### DAC_internal Comparison (H3 Primary Metric)
 
 - **Paired t-test (learned vs 100% baseline):** t=inf, p=0.0000
-  - Tests learned DAC vs deterministic baseline (100%)
+  - Tests learned DAC_internal vs deterministic baseline (100%)
 - **Wilcoxon signed-rank:** W=0.0000, p=0.1250
 
 **Spearman Correlations (DAC vs Precision, Learned):**
@@ -146,14 +175,19 @@ Based on the computed metrics across all evaluation splits:
 
 - **Deterministic mapping:** Ransomware-focused, curated → higher precision, higher correctness.
 - **Learned mapping:** Includes all D3FEND controls → broader but noisier mapping, lower correctness.
+- **External reference:** Supplementary YAML-exported pairs for DAC_external only.
 
-**H3 Primary Metric (DAC):**
+**H3 Primary Metric (DAC_internal):**
 
-DAC measures agreement with the deterministic mapping (ransomware-focused ground truth). deterministic mappings achieve DAC of 100% by construction, while learned mappings achieve 0.00%. The mean ΔDAC is 100.00%.
+DAC_internal measures agreement with the deterministic mapping (ransomware-focused ground truth). Deterministic mappings achieve DAC_internal of 100% by construction, while learned mappings achieve 0.00%. The mean Δ DAC_internal is 100.00%.
+
+**Secondary Metric (DAC_external):**
+
+Deterministic achieves 0% overlap with external reference (different control vocabulary). Learned achieves partial overlap (11/190 pairs with reference), yielding higher DAC_external against the reference file — this does **not** override the primary deterministic-vs-learned conclusion.
 
 **Operational Metrics:**
 
-Variance reduction and precision metrics show: Δprecision = 0.7500, Δvariance_reduction = 0.000000.
+Variance reduction and precision metrics show: Δ precision = 0.7500, Δ variance reduction = 0.000000.
 
 **Interpretation:**
 
@@ -165,7 +199,7 @@ Statistical tests indicate **significant differences** in at least one metric (p
 
 ### Deterministic Mapping
 
-- **Path:** `C:\Users\KLAMOS\Desktop\My Cursor Projects\AICRA\data\mappings\deterministic_attack_defense_lookup.csv`
+- **Path:** `data/mappings/deterministic_attack_defense_lookup.csv`
 - **SHA256:** `a7780cfe106057cdb615df7a658e4781b61a5185eab13f6a70b4dfb8c963ed31`
 - **Total pairs:** 173
 - **Unique techniques:** 46
@@ -179,7 +213,7 @@ Statistical tests indicate **significant differences** in at least one metric (p
 
 ### Learned Mapping
 
-- **Path:** `C:\Users\KLAMOS\Desktop\My Cursor Projects\AICRA\data\mappings\learned_mapping.csv`
+- **Path:** `data/mappings/learned_mapping.csv`
 - **SHA256:** `34d6cdc4696521d6989a23dd1a24dd5442828a3c690d56620905e7634136e546`
 - **Total pairs:** 190
 - **Unique techniques:** 47
@@ -195,7 +229,7 @@ Statistical tests indicate **significant differences** in at least one metric (p
 
 **Note:** This is a secondary ontology benchmark (`d3fend_reference_pairs.csv`), not the primary ground truth for H3. For H3, the deterministic mapping is the normative expert ontology. DAC_external measures agreement with this external reference.
 
-- **Path:** `C:\Users\KLAMOS\Desktop\My Cursor Projects\AICRA\d3fend_reference_pairs.csv`
+- **Path:** `d3fend_reference_pairs.csv` (also `data/ontology/d3fend_reference_pairs.csv`)
 - **SHA256:** `46a0ac102ab150b8d2909b97190232f97b9e9583ae1d83b2a704ebf6408a9ee4`
 - **Total pairs:** 15
 - **Unique techniques:** 5
@@ -239,7 +273,6 @@ Statistical tests indicate **significant differences** in at least one metric (p
 - **Invalid Technique Rows:** 0
 - **Unique Valid Techniques:** 1
 
-
 ## 8. Reproducibility
 
 ### Mapping File Hashes (SHA256)
@@ -266,4 +299,3 @@ python -m aicra.experiments.h3_evaluation --config config/h3_splits.yaml
 # Or:
 python run_h3_evaluation.py
 ```
-

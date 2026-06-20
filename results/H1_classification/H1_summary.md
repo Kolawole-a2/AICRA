@@ -4,6 +4,21 @@
 
 Static PE features enable reliable ransomware classification with AUROC >= 0.95 and operational precision suitable for banking environments.
 
+## Evaluation hierarchy
+
+**Primary focus (H1 pass/fail):** **AUROC** under three complementary validation modes:
+
+| Mode | What it tests | AUROC | Supports H1 (≥ 0.95)? |
+|------|---------------|------:|------------------------|
+| **Time-ordered testing** | Held-out test set after temporal train/test split (40,005 / 10,001) | **0.9796** (`full_ember`) | Yes |
+| **Multi-split validation** | Robustness across nested test slices (200–10,001 samples) | **0.9605** mean (0.9177–0.9796) | Yes |
+| **Out-of-family (OOF) evaluation** | Malware from families unseen in training (+ benign negatives) | **0.9615** | Yes |
+
+**Supporting evidence (secondary):** PR-AUC, Brier score, ECE, and threshold-level operational measures (precision, recall, F1, banking-optimized threshold, false-negative rate). These inform deployment readiness and calibration but do not replace AUROC as the primary H1 metric.
+
+**Related artifacts:- Multi-split / time-ordered results: this file (`results/H1_classification/`)
+- Robust OOF evaluation: `results/H1_oof_robust_eval/oof_robust_summary.md`
+
 ## Evaluation Mode: Multi-Split
 
 Evaluated across 4 splits: full_ember, main, small_ember, smoke_test
@@ -68,16 +83,15 @@ Evaluated across 4 splits: full_ember, main, small_ember, smoke_test
 
 ## Alert Fatigue Reduction
 
-- **False Negative Rate Reduction**: 99.6% (Academic baseline: 45.0% vs AICRA: 0.20%)
-- **Estimated Analyst Alert Fatigue Reduction**: 99.6%
-  (Academic baseline FN rate: 45.0% vs AICRA FN rate: 0.20% (9 FNs out of 4592 ransomware samples))
+- **False Negative Rate Reduction**: 99.5% (Empirical baseline: 36.2% vs AICRA: 0.20%)
+- **Estimated Analyst Alert Fatigue Reduction**: 99.5%
+  (Empirical baseline FN rate: 36.2% [~1663 FNs] vs AICRA FN rate: 0.20% [9 FNs out of 4592 ransomware samples])
 
 ## Conclusion
 
 ✓ H1 is **supported**: AUROC >= 0.95 achieved.
 
-**Key Findings:**
-- AICRA improves AUC by **+25.9%** over baseline models.
-- AICRA reduces false-negative rate by **99.6%** (Academic baseline: 45.0% vs AICRA: 0.20%), reducing analyst alert fatigue by approximately **99.6%**.
+**Key Findings:- AICRA improves AUC by **+25.9%** over baseline models.
+- AICRA reduces false-negative rate by **99.5%** (empirical baseline: 36.2% vs AICRA: 0.20%), reducing analyst alert fatigue by approximately **99.5%**.
 
-**Canonical Statement:** AICRA improves ransomware-prediction AUC by +25.9% and reduces SOC alert fatigue by 99.6%.
+**Canonical Statement:** AICRA improves ransomware-prediction AUC by +25.9% and reduces SOC alert fatigue vs the empirical baseline on the same test split.

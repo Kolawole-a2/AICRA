@@ -1,8 +1,6 @@
 # Reviewer and Examiner Guide
 
-**AICRA: Artificial Intelligence–Powered Cyber Risk Advisor for Endpoint Security in U.S. Banking Organizations**
-
-This guide assists reviewers and examiners in navigating the AICRA repository, understanding experimental design, and reproducing results.
+**AICRA: Artificial Intelligence–Powered Cyber Risk Advisor for Endpoint Security in U.S. Banking OrganizationsThis guide assists reviewers and examiners in navigating the AICRA repository, understanding experimental design, and reproducing results.
 
 ---
 
@@ -66,7 +64,7 @@ This guide assists reviewers and examiners in navigating the AICRA repository, u
 - `docs/REVIEWER_GUIDE.md` — This document
 
 **Supporting Documentation**:
-- `HYPOTHESIS_EXPERIMENTS_GUIDE.md` — Detailed experiment guide
+- [praxis/EXPERIMENTS_GUIDE.md](praxis/EXPERIMENTS_GUIDE.md) — Detailed experiment guide
 - `docs/DATA.md` — Data management policy
 
 ---
@@ -93,8 +91,7 @@ This guide assists reviewers and examiners in navigating the AICRA repository, u
 
 ### Running Experiments
 
-**H1: Static PE Classification**
-```bash
+**H1: Static PE Classification```bash
 # Standardized entrypoint (recommended)
 python experiments/h1_train_eval.py
 
@@ -104,8 +101,7 @@ python experiments/h1_train_eval.py
 # - artifacts/models/h1_lgbm.joblib (trained model)
 ```
 
-**H2: Calibration and Thresholding**
-```bash
+**H2: Calibration and Thresholding```bash
 # Requires H1 to be run first (uses trained model)
 python experiments/h2_calibration_eval.py
 
@@ -114,8 +110,7 @@ python experiments/h2_calibration_eval.py
 # - artifacts/H2_calibration_thresholds/summary.md
 ```
 
-**H3: Mapping Comparison**
-```bash
+**H3: Mapping Comparison```bash
 # Requires H1/H2 risk scores (stored in results/*/risk_scores.csv)
 python experiments/h3_mapping_compare.py
 
@@ -125,8 +120,7 @@ python experiments/h3_mapping_compare.py
 # - artifacts/H3_full_evaluation/h3_mapping_integrity.json
 ```
 
-**Generate Benchmark Report**
-```bash
+**Generate Benchmark Report```bash
 # Automatically generated after each experiment, or manually:
 python -m aicra.utils.benchmark_reporter
 
@@ -280,5 +274,4 @@ For questions or clarifications:
 - Review repository documentation (`docs/`)
 - Check experiment outputs (`results/`, `artifacts/`)
 - See `README.md` for general information
-
 

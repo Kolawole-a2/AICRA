@@ -20,7 +20,6 @@ from pathlib import Path
 
 import yaml
 
-
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -35,7 +34,7 @@ def validate_attack_to_d3fend(path: Path) -> dict:
 
     logger.info("Validating deterministic lookup: %s", path)
 
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         data = yaml.safe_load(f)
 
     mappings = data.get("mappings", {})
@@ -58,7 +57,9 @@ def validate_attack_to_d3fend(path: Path) -> dict:
     for tech_id in ("T1055", "T1027"):
         ctrls = mappings.get(tech_id)
         if not ctrls or not [c for c in ctrls if str(c).strip()]:
-            raise ValueError(f"{tech_id} is missing or has no non-empty controls in lookup")
+            raise ValueError(
+                f"{tech_id} is missing or has no non-empty controls in lookup"
+            )
 
     summary = {
         "path": str(path),
@@ -91,5 +92,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-

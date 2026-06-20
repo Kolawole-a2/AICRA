@@ -68,16 +68,15 @@ Evaluated across 4 splits: full_ember, main, small_ember, smoke_test
 
 ## Alert Fatigue Reduction
 
-- **False Negative Rate Reduction**: 99.6% (Academic baseline: 45.0% vs AICRA: 0.20%)
+- **False Negative Rate Reduction**: 99.6% (Empirical baseline: 36.2% vs AICRA: 0.20%)
 - **Estimated Analyst Alert Fatigue Reduction**: 99.6%
-  (Academic baseline FN rate: 45.0% vs AICRA FN rate: 0.20% (9 FNs out of 4592 ransomware samples))
+  (Empirical baseline FN rate: 36.2% vs AICRA FN rate: 0.20% (9 FNs out of 4592 ransomware samples))
 
 ## Conclusion
 
 ✓ H1 is **supported**: AUROC >= 0.95 achieved.
 
-**Key Findings:**
-- AICRA improves AUC by **+25.9%** over baseline models.
-- AICRA reduces false-negative rate by **99.6%** (Academic baseline: 45.0% vs AICRA: 0.20%), reducing analyst alert fatigue by approximately **99.6%**.
+**Key Findings:- AICRA improves AUC by **+25.9%** over baseline models.
+- AICRA reduces false-negative rate by **99.6%** (Empirical baseline: 36.2% vs AICRA: 0.20%), reducing analyst alert fatigue by approximately **99.6%**.
 
 **Canonical Statement:** AICRA improves ransomware-prediction AUC by +25.9% and reduces SOC alert fatigue by 99.6%.

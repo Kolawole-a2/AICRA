@@ -295,9 +295,9 @@ class MappingPipeline:
         ]
 
         self.coverage_stats["family_to_attack"]["total"] += mapped_families
-        self.coverage_stats["family_to_attack"]["mapped"] += (
-            mapped_families_with_techniques
-        )
+        self.coverage_stats["family_to_attack"][
+            "mapped"
+        ] += mapped_families_with_techniques
         self.coverage_stats["family_to_attack"]["unmapped"].extend(unmapped_families)
 
         # Attack to D3FEND coverage

@@ -9,9 +9,7 @@ from aicra.metrics.dac import (
 from aicra.metrics.dac import (
     load_deterministic_mapping as load_dac_deterministic_mapping,
 )
-from aicra.metrics.dac import (
-    load_learned_mapping as load_dac_learned_mapping,
-)
+from aicra.metrics.dac import load_learned_mapping as load_dac_learned_mapping
 from aicra.metrics.dac_embedding_eval import (
     compute_dac_per_attack as compute_dac_per_attack_embedding,
 )
