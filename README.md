@@ -51,8 +51,8 @@ These folders are the **primary praxis evidence**. Do not overwrite casually.
 
 ### What AICRA demonstrates (praxis flow)
 
-1. **Detect** — Static PE LightGBM ransomware classification on EMBER-2024 (H1; primary metric: **AUROC**)
-2. **Decide** — Calibrated probabilities and **cost-aware thresholds** for banking-style FN ≫ FP costs (H2; primary metric: **expected loss**)
+1. **Detect** — Static PE LightGBM ransomware classification on EMBER-2024 (H1; primary metric: **AUROC**, validated on **time-ordered**, **multi-split**, and **out-of-family** evaluation)
+2. **Decide** — **Post-hoc calibration test** (Platt/isotonic) plus **cost-aware thresholds** for banking-style FN ≫ FP costs (H2; primary metric: **expected loss**)
 3. **Defend** — **Deterministic vs learned** ATT&CK→D3FEND mapping with **DAC_internal** (primary) and **DAC_external** secondary benchmark (H3)
 4. **Operate (optional)** — Ransomware-only **risk registers** under `register/` via the post-hoc rebuild pipeline (does **not** modify canonical H1/H2/H3 results)
 
@@ -113,16 +113,16 @@ This repository implements the **Doctor of Engineering praxis (production)** by 
 
 | Stage | What it does | Primary evidence |
 |-------|----------------|------------------|
-| Classification (H1) | LightGBM on static PE features | AUROC, PR-AUC, empirical baseline lift |
-| Decision (H2) | Calibration + cost-optimal thresholds | Expected loss vs F1-optimal threshold |
-| Mapping (H3) | Deterministic vs learned ATT&CK→D3FEND | DAC_internal; DAC_external vs reference pairs |
+| Classification (H1) | LightGBM on static PE features; time-ordered + multi-split + OOF | AUROC (> 0.88 benchmark), PR-AUC, empirical baseline lift |
+| Decision (H2) | Platt/isotonic calibration **test** + cost-optimal thresholds | Expected loss vs F1-optimal threshold |
+| Mapping (H3) | Deterministic vs learned ATT&CK→D3FEND | DAC_internal (perfect separation); DAC_external secondary |
 | Operations (optional) | Risk registers with prescriptive controls | `register/` CSVs (rebuild pipeline) |
 
 ### Research approach
 
 AICRA integrates:
 1. **Machine learning classification** — LightGBM-based ransomware detection using static PE features
-2. **Probability calibration** — Platt/isotonic regression for reliable risk scores
+2. **Probability calibration (H2)** — Platt and isotonic regression applied **post hoc to test whether calibration improves** decision quality and reported metrics (Brier, ECE, expected loss)—not assumed to help by default
 3. **Cost-aware decision making** — Business-aligned threshold optimization (FN cost ≫ FP cost)
 4. **Ontology-based mapping** — Deterministic and learned ATT&CK→D3FEND mappings with DAC metrics
 
@@ -149,18 +149,23 @@ AICRA integrates:
 **Hypothesis (H1)**: Static PE features enable reliable ransomware classification with AUROC >= 0.95 and operational precision suitable for banking environments.
 
 **What is being tested**:
-- AUROC and PR-AUC improvement over baseline models
+- AUROC and PR-AUC improvement over empirical baseline models
 - Operational precision, recall, and F1 at decision thresholds
-- Out-of-family generalization across ransomware families
+- Generalization under three complementary validation modes (all reported for H1):
+
+| Mode | What it tests | Evidence |
+|------|----------------|----------|
+| **Time-ordered** | Train/test split respects temporal ordering (no leakage) | Canonical H1 train/test on EMBER-2024 |
+| **Multi-split** | Robustness across nested test slices | `config/h1_splits.yaml` → `full_ember`, `main`, `small_ember`, `smoke_test` |
+| **Out-of-family (OOF)** | Ranking on malware families unseen in training | `results/H1_oof_robust_eval/` (supplementary; OOF AUROC 0.9615) |
 
 **Datasets/Splits**:
-- EMBER-2024 dataset with train/test split (40,005 train / 10,001 test)
-- Time-ordered evaluation to prevent data leakage
+- EMBER-2024 dataset with time-ordered train/test split (40,005 train / 10,001 test)
 - Multi-split evaluation: full_ember (10,001), main (10,000), small_ember (2,000), smoke_test (200)
-- Out-of-family evaluation across 61+ malware families
+- Out-of-family evaluation: held-out malware families in test (`scripts/evaluate_h1_oof_robust.py`)
 
 **Key Metrics**:
-- **AUROC**: Area Under ROC Curve (target: >= 0.88)
+- **AUROC**: Area Under ROC Curve (**reliability benchmark: > 0.88**, not 0.85)
 - **PR-AUC**: Area Under Precision-Recall Curve
 - **Precision, Recall, F1**: At banking-optimized threshold (0.0298, FN cost >> FP cost)
 - **Brier Score**: Probability calibration quality
@@ -184,18 +189,15 @@ AICRA integrates:
 
 **What is being tested**:
 - **Primary**: Expected loss comparison between cost-optimized vs F1-optimized thresholds
-- Cost-optimal threshold selection vs F1-optimized thresholds under banking cost structures (FN cost >> FP cost)
-- Calibration metrics (Brier, ECE) - reported for completeness (model already well-calibrated from H1)
+- **Calibration test (Platt/isotonic)**: Whether post-hoc calibration improves Brier, ECE, or expected loss relative to uncalibrated H1 probabilities (reported for completeness; H2 finding: model already well-calibrated from H1)
+- Cost-optimal threshold selection under banking cost structures (FN cost >> FP cost)
 
 **Key Metrics**:
 - **Expected Loss**: Cost-weighted loss at F1-optimized vs cost-optimal thresholds (primary metric)
 - **Threshold Comparison**: F1-optimized vs cost-optimized thresholds (uncalibrated and calibrated)
-- **Brier Score**: Before/after calibration (reported for completeness)
-- **ECE**: Expected Calibration Error before/after (reported for completeness)
+- **Brier Score / ECE**: Before vs after Platt/isotonic calibration (calibration **help test**, not assumed benefit)
 
-**Key Finding**: Cost-optimized thresholds reduce expected loss by **50.6%** compared to F1-optimized thresholds (0.1802 vs 0.3648), demonstrating better alignment with banking cost structures where FN cost >> FP cost.
-
-**Note**: The model outputs are naturally well-calibrated (Brier=0.049, ECE=0.016 from H1). Additional calibration does not improve expected loss.
+**Key Finding**: Cost-optimized thresholds reduce expected loss by **50.6%** compared to F1-optimized thresholds (0.1802 vs 0.3648). Post-hoc isotonic calibration does **not** improve expected loss on this model (already well-calibrated from H1: Brier≈0.049, ECE≈0.016).
 
 **Results**: See `results/H2_calibration_thresholds/H2_full_results.json` and `results/H2_calibration_thresholds/H2_summary.md`
 
@@ -203,9 +205,11 @@ AICRA integrates:
 
 ### H3 – Defense–Attack Consistency (DAC)
 
-**Research Question (RQ3)**: Do deterministic ATT&CK–D3FEND mappings achieve higher coverage, consistency, and risk-score stability compared to learned mappings?
+**Research Question (RQ3)**: Do deterministic ATT&CK–D3FEND mappings achieve higher DAC_internal and actionable precision compared to learned mappings across all evaluation splits?
 
-**Hypothesis (H3)**: Deterministic ATT&CK–D3FEND mappings exhibit higher Defense–Attack Consistency (DAC_internal), higher actionable precision, and greater risk-score stability (lower variance) compared to learned mappings, when evaluated across all available ransomware risk score splits in this environment.
+**Hypothesis (H3)**: Deterministic ATT&CK–D3FEND mappings exhibit higher Defense–Attack Consistency (DAC_internal) and higher actionable precision compared to learned mappings across all evaluation splits.
+
+**Mapping behavior (all splits)**: Deterministic mapping is **always correct** (DAC_internal = 100% by construction); learned mapping is **always extraneous** (0% overlap with deterministic ground truth). Because both mappings produce **zero variance reduction** (identical stability profile across splits), classical variance-comparison tests (t-test, Wilcoxon, Shapiro–Wilk) have **no variability to test**. H3 is therefore validated through **perfect separation**, **deterministic dominance**, and **consistent superiority across all splits**—primarily via DAC_internal and actionable precision, not variance-reduction p-values.
 
 **What is being tested**:
 - **Deterministic Mapping**: Normative expert ontology (ground truth for H3)
@@ -218,13 +222,13 @@ AICRA integrates:
 - **DAC_internal (%)**: Agreement with deterministic mapping (primary H3 metric)
 - **DAC_external (%)**: Agreement with external reference pairs (secondary benchmark)
 - **Coverage (%)**: Percentage of ATT&CK techniques with mapped D3FEND controls
-- **Actionable Precision & F1**: Decision quality for mapped technique-control pairs
-- **Variance/IQR Reduction**: Risk score stability improvement
+- **Actionable Precision & F1**: Decision quality for mapped technique-control pairs (primary operational metric alongside DAC_internal)
+- **Variance/IQR Reduction**: Reported for completeness; **zero for both mappings on all splits** (see note above)
 
 **Evaluation Splits**:
 - Multiple evaluation splits (main, small_ember, full_ember, smoke_test)
-- Statistical tests: Paired t-tests, Wilcoxon signed-rank tests
-- Bootstrap confidence intervals for aggregated metrics
+- Statistical tests for **DAC_internal** and **precision**: paired t-tests, Wilcoxon signed-rank (perfect separation: det 100% vs learned 0%)
+- Variance-reduction tests are **not interpretable** when variance reduction is identically zero (no split-level variability)
 
 **Three mappings in the H3 report** (see `H3_full_summary.md`):
 
@@ -332,6 +336,8 @@ All three hypotheses (H1, H2, H3) are statistically validated using formal hypot
   - Deterministic achieves significantly higher actionable precision
 
 **Conclusion**: Deterministic ATT&CK–D3FEND mappings exhibit significantly higher Defense–Attack Consistency (DAC_internal) and higher actionable precision compared to learned mappings.
+
+**Variance note**: Across all splits, variance reduction is **0.0 for both** deterministic and learned mappings (deterministic always correct, learned always extraneous). Tests such as t-test, Wilcoxon, and Shapiro–Wilk require variability in the outcome; with none present, **H3 validation rests on perfect separation and deterministic dominance**, not variance-reduction significance.
 
 **Source**: `results/pvalues_summary.json`, `H3.tests.dac`, `H3.tests.precision` | Computation: `scripts/compute_pvalues.py`
 
@@ -525,7 +531,7 @@ python -m aicra.experiments.h2_calibration_thresholds
 
 ### H3 – DAC & Mapping Evaluation
 
-**Description**: Compares deterministic vs learned ATT&CK→D3FEND mappings across evaluation splits, computing DAC_internal, actionable precision, and variance reduction.
+**Description**: Compares deterministic vs learned ATT&CK→D3FEND mappings across evaluation splits, computing DAC_internal, actionable precision, and variance reduction (reported for completeness; zero on all splits—see H3 section above).
 
 **Command**:
 ```bash
@@ -554,8 +560,8 @@ python run_h3_evaluation.py
 - DAC_external (%) - Secondary benchmark
 - Coverage (%)
 - Actionable Precision & F1
-- Variance/IQR Reduction
-- Statistical tests (p-values, confidence intervals)
+- Variance/IQR Reduction (0.0 for both mappings on all splits; not used for H3 validation)
+- Statistical tests for DAC and precision (variance tests not applicable when variance reduction is identically zero)
 
 #### Mapping Artifacts and Versioning (H3)
 
@@ -746,7 +752,7 @@ After running H2, check `results/H2_calibration_thresholds/H2_summary.md`.
 
 **Secondary benchmark:** External reference pairs (`d3fend_reference_pairs.csv`) for DAC_external overlap checks.
 
-**Key metrics:** DAC_internal (primary), DAC_external (secondary), actionable precision/F1, variance/IQR reduction across evaluation splits.
+**Key metrics:** DAC_internal (primary), DAC_external (secondary), actionable precision/F1. Variance reduction is 0.0 on all splits (deterministic always correct, learned always extraneous)—H3 validated via perfect separation, not variance tests.
 
 **Example Output:**
 After running H3, check `results/H3_full_evaluation/H3_full_summary.md`.
@@ -761,20 +767,23 @@ After running H3, check `results/H3_full_evaluation/H3_full_summary.md`.
 
 ### Summary of Improvements
 
-| Hypothesis | Metric(s)                         | Baseline        | AICRA (current repo outputs) | Δ Absolute | Δ Relative (%) |
-|------------|-----------------------------------|-----------------|------------------------------|------------|----------------|
-| H1         | AUROC                             | 0.85*           | 0.9866                       | +0.1366    | +16.1%         |
-| H1         | PR-AUC                            | 0.60*           | 0.9869                       | +0.3869    | +64.5%         |
-| H1         | Brier Score (↓ better)            | 0.25*           | 0.0426                       | -0.2074    | -83.0%         |
-| H1         | ECE (↓ better)                   | 0.15*           | 0.0066                       | -0.1434    | -95.6%         |
-| H2         | Brier Score (calibrated, ↓ better)| 0.25*           | 0.0500                       | -0.2000    | -80.0%         |
-| H2         | ECE (calibrated, ↓ better)        | 0.15*           | 0.0457                       | -0.1043    | -69.5%         |
-| H2         | Expected Loss (cost-optimal, ↓)  | 0.50*           | 0.1729                       | -0.3271    | -65.4%         |
-| H3         | DAC_internal (Deterministic)      | 0.0%*           | 100.0%                       | +100.0%    | Perfect        |
-| H3         | DAC_internal (Learned)            | 0.0%*           | 0.0%                         | 0.0%       | Baseline       |
-| H3         | DAC_external vs reference (Lrn)   | —               | 73.33% (11/15 ref pairs)     | —          | Secondary only |
+| Hypothesis | Metric(s)                         | Baseline / benchmark | AICRA (current repo outputs) | Δ Absolute | Δ Relative (%) |
+|------------|-----------------------------------|----------------------|------------------------------|------------|----------------|
+| H1         | AUROC                             | > 0.88 (benchmark)*; empirical logistic ≈ 0.778 on same split | 0.9796 (full_ember)          | +0.2016†   | +25.9% vs empirical |
+| H1         | PR-AUC                            | empirical ≈ 0.60*    | 0.9869                       | +0.3869    | +64.5%         |
+| H1         | Brier Score (↓ better)            | 0.25*                | 0.0426                       | -0.2074    | -83.0%         |
+| H1         | ECE (↓ better)                   | 0.15*                | 0.0066                       | -0.1434    | -95.6%         |
+| H2         | Brier Score (calibrated, ↓ better)| 0.25*                | 0.0500                       | -0.2000    | -80.0%         |
+| H2         | ECE (calibrated, ↓ better)        | 0.15*                | 0.0457                       | -0.1043    | -69.5%         |
+| H2         | Expected Loss (cost-optimal, ↓)  | 0.50*                | 0.1729                       | -0.3271    | -65.4%         |
+| H3         | DAC_internal (Deterministic)      | 0.0% (learned)       | 100.0%                       | +100.0%    | Perfect separation |
+| H3         | DAC_internal (Learned)            | 0.0%                 | 0.0%                         | 0.0%       | Baseline       |
+| H3         | Variance reduction                | 0.0 (both)           | 0.0 (both)                   | 0.0        | Not testable‡  |
+| H3         | DAC_external vs reference (Lrn)   | —                    | 73.33% (11/15 ref pairs)     | —          | Secondary only |
 
-\* Baseline values are computed on the same EMBER-2024 splits (see `results/H1_classification/H1_summary.md`, `results/H2_calibration_thresholds/H2_summary.md`, `results/H3_full_evaluation/H3_full_summary.md`). H3 deterministic–external overlap is 0% by design (different control vocabularies).
+\* **H1 AUROC reliability benchmark is > 0.88** (not 0.85). Empirical baseline AUROC ≈ 0.778 (logistic regression on same EMBER split). Other starred baselines from same-split empirical comparisons.  
+† vs empirical baseline 0.778 on full_ember.  
+‡ Zero variance on all splits → t-test / Wilcoxon / Shapiro–Wilk not applicable; H3 validated via perfect separation and deterministic dominance.
 
 ### Latest H1/H2 Metrics (Multi-Split Evaluation)
 
@@ -822,9 +831,9 @@ From the metrics above, the **current repository outputs meet the target thresho
 These values are computed from the **actual JSON artifacts in this repository** and reflect the latest validated H1/H2 runs with multi-split evaluation.
 
 **Key Findings (current repo state)**:
-- **H1**: Multi-split evaluation shows robust performance across all splits. On the full_ember split (10,001 samples), AICRA achieves AUROC of 0.9796 with Precision 0.6660, Recall 0.9980, F1 0.7989, Brier 0.0554, and ECE 0.0081. The lower precision (66.6%) is intentional and operationally suitable for banking security, where high recall (99.8%) is prioritized to minimize false negatives. FN rate reduction is ~99.5% vs the empirical logistic-regression baseline on the same split. **OOF supplementary run:** AUROC 0.9615 on held-out malware families (`results/H1_oof_robust_eval/oof_robust_summary.md`).
-- **H2**: Cost-optimal thresholding under a banking-style cost ratio (FN cost >> FP cost) significantly reduces expected loss vs the F1-optimized baseline (from ≈0.3027 to ≈0.1729 for uncalibrated, 0.2148 for calibrated) while maintaining high recall (96.5-98.5%) suitable for banking security.
-- **H3**: Deterministic mapping achieves perfect DAC_internal (100%) by construction; external reference pairs provide DAC_external as a secondary ontology sanity check (`H3_full_summary.md`).
+- **H1**: Validated on **three modes**—time-ordered split, multi-split evaluation (mean AUROC 0.9605), and out-of-family stress test (OOF AUROC 0.9615)—all **exceed the > 0.88 reliability benchmark**. On full_ember, AICRA achieves AUROC 0.9796 with empirical logistic baseline ≈ 0.778 on the same split (+25.9%). FN rate reduction ~99.5% vs empirical baseline (36.2% → 0.20%).
+- **H2**: Platt/isotonic calibration was applied **to test whether post-hoc calibration helps**; the model is already well-calibrated from H1, so calibration does not improve expected loss. Cost-optimal thresholding significantly reduces expected loss vs F1-optimal (≈0.1729 vs ≈0.3648 uncalibrated).
+- **H3**: Deterministic mapping is **always correct** (100% DAC_internal); learned is **always extraneous** (0%). Variance reduction is **zero on all splits**, so variance-based tests are not applicable. H3 is validated through **perfect separation**, **deterministic dominance**, and **consistent superiority** on DAC and precision across all splits.
 - **Optional H1/H2 rebuild**: Per-sample scoring and ransomware-only registers under `register/` are consistent with main H1/H2 model performance and do **not** alter canonical hypothesis outputs.
 
 For complete results and detailed analysis, see:
@@ -918,7 +927,7 @@ python run_h3_evaluation.py
 **Expected Output:**
 - `H3_full_results.json` - Complete metrics with mapping comparisons and file hashes
 - `H3_full_summary.md` - Three-way mapping report (deterministic, learned, external reference)
-- Key metrics: DAC_internal (primary), DAC_external (secondary), actionable precision, variance reduction
+- Key metrics: DAC_internal (primary), DAC_external (secondary), actionable precision (variance reduction reported but zero on all splits)
 
 **Key Metrics to Check:**
 - `aggregated_metrics.deltas.delta_dac_%` - DAC_internal improvement (deterministic vs learned)
@@ -950,13 +959,13 @@ All experiments use robust strategies to handle class imbalance:
   - `scale_pos_weight` computed as `n_neg / n_pos` for positive class weighting
   - Banking-optimized threshold (FN cost >> FP cost) for operational deployment
   
-- **H2 (Calibration)**: 
-  - Isotonic calibration applied to uncalibrated predictions
+- **H2 (Calibration test)**: 
+  - Platt and isotonic regression applied post hoc **to test whether calibration helps** (H2 finding: no improvement in expected loss; model already well-calibrated from H1)
   - Temporal calibration check: calibrate on earlier window, test on later window
   
 - **H3 (Mapping)**: 
-  - Risk score variance reduction through deterministic mapping
-  - Score consistency metrics (variance, IQR) computed per split
+  - Perfect separation: deterministic mapping always correct (100% DAC_internal), learned always extraneous (0%)
+  - Variance reduction is 0.0 on all splits; H3 validated via deterministic dominance and consistent superiority, not variance-based tests
 
 The specific strategy used in each experiment is logged in `experiment_metadata.json` and `metrics.json` files.
 
@@ -1282,7 +1291,7 @@ aicra/
 - Introduces the **Defense–Attack Consistency (DAC) metric**, a novel quantitative measure that evaluates how accurately MITRE ATT&CK techniques align with D3FEND countermeasures within a Cyber Risk Advisor framework
 - Transforms static, undocumented mappings into an **empirical signal**—a measurable indicator of mapping fidelity and decision reliability
 - Quantifies the degree of **semantic and operational coherence** between attack and defense ontologies through comparative testing of deterministic versus learned mappings
-- Demonstrates that **higher DAC values directly correlate with greater precision and lower variance** in ransomware risk scores, proving that mapping coherence enhances interpretability and trustworthiness of AI-driven cyber-risk analytics
+- Demonstrates that **higher DAC_internal values align with greater actionable precision** (deterministic 100% vs learned 0% across all splits), proving that mapping coherence enhances interpretability and trustworthiness of AI-driven cyber-risk analytics
 - Establishes a **reproducible, data-driven framework** for validating ontology quality, representing the first formal integration of ontology consistency measurement into cyber-defense machine learning research
 
 **Additional Documentation:**

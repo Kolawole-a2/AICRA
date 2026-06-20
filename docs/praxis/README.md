@@ -57,7 +57,7 @@ Central index for the Doctor of Engineering praxis (production) by **Kolawole Af
 # H1 — static PE classification (multi-split)
 python -m aicra.experiments.h1_classification --splits-config config/h1_splits.yaml
 
-# H2 — calibration & cost-aware thresholds (requires H1)
+# H2 — post-hoc calibration test (Platt/isotonic) & cost-aware thresholds (requires H1)
 python -m aicra.experiments.h2_calibration_thresholds --splits-config config/h2_splits.yaml
 
 # H3 — deterministic vs learned mapping
