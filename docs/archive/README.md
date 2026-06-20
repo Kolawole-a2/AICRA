@@ -3,6 +3,7 @@
 | Path | Contents |
 |------|----------|
 | [development/](development/) | Historical fix summaries, implementation reports, audit notes |
+| [README_FULL_PRE_2026.md](README_FULL_PRE_2026.md) | Superseded verbose root README (archived June 2026) |
 
 For active praxis documentation, use [../praxis/README.md](../praxis/README.md).
 

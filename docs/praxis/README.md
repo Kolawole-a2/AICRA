@@ -8,7 +8,7 @@ Central index for the Doctor of Engineering praxis (production) by **Kolawole Af
 
 | Document | Purpose |
 |----------|---------|
-| [../../README.md](../../README.md) | Repository overview and quick-start commands |
+| [../../README.md](../../README.md) | Public repository overview (concise); canonical results at a glance |
 | [EXPERIMENTS_GUIDE.md](EXPERIMENTS_GUIDE.md) | How to run H1, H2, H3 (canonical paths) |
 | [../EXPERIMENTS.md](../EXPERIMENTS.md) | Step-by-step reproduction |
 | [../BENCHMARK_NOTES.md](../BENCHMARK_NOTES.md) | Current metric snapshot from saved artifacts |
