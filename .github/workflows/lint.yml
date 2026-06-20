@@ -30,12 +30,7 @@
           fi
           pip install ruff black isort pylint
 
-      # If you use ruff formatting, keep this; otherwise remove it and rely on black.
-      - name: Ruff format (check)
-        run: |
-          echo "==> ruff format (check)"
-          ruff format --check ${{ env.LINT_PATHS }}
-
+      # Black is the canonical formatter; ruff check covers lint rules (ruff format omitted to avoid black conflicts).
       - name: Ruff lint (check)
         run: |
           echo "==> ruff check"

@@ -1147,7 +1147,7 @@ def run_h1_classification_experiment(
                 aicra_fn_rate = afr.get("aicra_fn_rate", 0.0)
                 f.write(
                     f"- **False Negative Rate Reduction**: {afr['fn_reduction_pct']:.1f}% "
-                    f"(Baseline: {baseline_fn_rate*100:.1f}% vs AICRA: {aicra_fn_rate*100:.2f}%)\n"
+                    f"(Baseline: {baseline_fn_rate * 100:.1f}% vs AICRA: {aicra_fn_rate * 100:.2f}%)\n"
                 )
                 f.write(
                     f"- **Estimated Analyst Alert Fatigue Reduction**: "
@@ -1160,8 +1160,8 @@ def run_h1_classification_experiment(
                     int(round(baseline_fn_rate * n_positives)) if n_positives else 0,
                 )
                 f.write(
-                    f"  (Baseline FN rate: {baseline_fn_rate*100:.1f}% [{baseline_fn} FNs] vs "
-                    f"AICRA FN rate: {aicra_fn_rate*100:.2f}% [{aicra_fn} FNs out of {n_positives} ransomware samples])\n\n"
+                    f"  (Baseline FN rate: {baseline_fn_rate * 100:.1f}% [{baseline_fn} FNs] vs "
+                    f"AICRA FN rate: {aicra_fn_rate * 100:.2f}% [{aicra_fn} FNs out of {n_positives} ransomware samples])\n\n"
                 )
 
         f.write("## Conclusion\n\n")
@@ -1180,7 +1180,7 @@ def run_h1_classification_experiment(
                 )
                 f.write(
                     f"- AICRA reduces false-negative rate by **{metrics['alert_fatigue_reduction']['fn_reduction_pct']:.1f}%** "
-                    f"(Baseline: {baseline_fn_rate*100:.1f}% vs AICRA: {aicra_fn_rate*100:.2f}%), "
+                    f"(Baseline: {baseline_fn_rate * 100:.1f}% vs AICRA: {aicra_fn_rate * 100:.2f}%), "
                 )
                 f.write(
                     f"reducing analyst alert fatigue by approximately **{metrics['alert_fatigue_reduction']['estimated_analyst_fatigue_reduction_pct']:.1f}%**.\n"

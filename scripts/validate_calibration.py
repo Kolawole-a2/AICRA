@@ -38,14 +38,14 @@ def main():
         f"Brier Score - Calibrated:   {np.mean(brier_cal):.6f} (std: {np.std(brier_cal):.6f})"
     )
     print(
-        f"Brier Improvement: {np.mean(brier_uncal) - np.mean(brier_cal):.6f} ({100*(np.mean(brier_uncal) - np.mean(brier_cal))/np.mean(brier_uncal):.2f}%)"
+        f"Brier Improvement: {np.mean(brier_uncal) - np.mean(brier_cal):.6f} ({100 * (np.mean(brier_uncal) - np.mean(brier_cal)) / np.mean(brier_uncal):.2f}%)"
     )
     print(
         f"\nECE - Uncalibrated: {np.mean(ece_uncal):.6f} (std: {np.std(ece_uncal):.6f})"
     )
     print(f"ECE - Calibrated:   {np.mean(ece_cal):.6f} (std: {np.std(ece_cal):.6f})")
     print(
-        f"ECE Improvement: {np.mean(ece_uncal) - np.mean(ece_cal):.6f} ({100*(np.mean(ece_uncal) - np.mean(ece_cal))/np.mean(ece_uncal):.2f}%)"
+        f"ECE Improvement: {np.mean(ece_uncal) - np.mean(ece_cal):.6f} ({100 * (np.mean(ece_uncal) - np.mean(ece_cal)) / np.mean(ece_uncal):.2f}%)"
     )
 
     # Extract classification metrics at cost-optimized thresholds

@@ -165,7 +165,6 @@ class TestPolicyPipeline:
             patch("aicra.pipelines.policy.mlflow.log_metrics"),
             patch("aicra.pipelines.policy.mlflow.log_artifact"),
         ):
-
             report = self.pipeline.generate_ops_report(df, policy)
 
         assert isinstance(report, dict)
@@ -185,7 +184,6 @@ class TestPolicyPipeline:
             patch("aicra.pipelines.policy.mlflow.log_metric"),
             patch("aicra.pipelines.policy.mlflow.log_artifact"),
         ):
-
             report = self.pipeline.compute_lift_at_k_report(df, k_values=[1, 5, 10])
 
         assert isinstance(report, dict)

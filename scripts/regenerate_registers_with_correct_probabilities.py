@@ -267,9 +267,9 @@ def main():
         phase: str, sample_size: int | None = None
     ) -> bool:
         """Regenerate a register file with correct model predictions."""
-        print(f"\n{'='*80}", file=sys.stdout)
+        print(f"\n{'=' * 80}", file=sys.stdout)
         print(f"REGENERATING: {phase.upper()}", file=sys.stdout)
-        print(f"{'='*80}", file=sys.stdout)
+        print(f"{'=' * 80}", file=sys.stdout)
 
         try:
             # Load test data
@@ -455,22 +455,22 @@ def main():
             ransomware_low = np.sum(ransomware_probs < 0.33)
 
             print(
-                f"      Benign with HIGH prob (>0.66): {benign_high}/{len(benign_probs)} ({benign_high/len(benign_probs)*100:.1f}%)",
+                f"      Benign with HIGH prob (>0.66): {benign_high}/{len(benign_probs)} ({benign_high / len(benign_probs) * 100:.1f}%)",
                 file=sys.stdout,
             )
             print(
-                f"      Ransomware with LOW prob (<0.33): {ransomware_low}/{len(ransomware_probs)} ({ransomware_low/len(ransomware_probs)*100:.1f}%)",
+                f"      Ransomware with LOW prob (<0.33): {ransomware_low}/{len(ransomware_probs)} ({ransomware_low / len(ransomware_probs) * 100:.1f}%)",
                 file=sys.stdout,
             )
 
             if benign_high > len(benign_probs) * 0.1:
                 print(
-                    f"      [WARNING] {benign_high/len(benign_probs)*100:.1f}% of benign samples have high probability!",
+                    f"      [WARNING] {benign_high / len(benign_probs) * 100:.1f}% of benign samples have high probability!",
                     file=sys.stderr,
                 )
             if ransomware_low > len(ransomware_probs) * 0.1:
                 print(
-                    f"      [WARNING] {ransomware_low/len(ransomware_probs)*100:.1f}% of ransomware samples have low probability!",
+                    f"      [WARNING] {ransomware_low / len(ransomware_probs) * 100:.1f}% of ransomware samples have low probability!",
                     file=sys.stderr,
                 )
 

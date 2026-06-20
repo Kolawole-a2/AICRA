@@ -337,7 +337,7 @@ If you use AICRA in your research, please cite:
 
 ---
 
-**Last Updated**: {Path(__file__).stat().st_mtime if Path(__file__).exists() else 'N/A'}
+**Last Updated**: {Path(__file__).stat().st_mtime if Path(__file__).exists() else "N/A"}
 """
 
     return readme_content
