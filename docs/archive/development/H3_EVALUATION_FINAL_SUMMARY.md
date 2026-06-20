@@ -1,3 +1,5 @@
+> **Archive alignment (2026):** Historical development note. Canonical narrative: H1 time-ordered + multi-split + OOF (AUROC **> 0.88**, empirical baseline ≈ 0.778); H2 calibration **help test** + cost-optimal thresholds; H3 **perfect separation** when variance is zero. See [../../../praxis/README.md](../../../praxis/README.md) and [../../../README.md](../../../README.md).
+
 # H3 Evaluation Pipeline - Final Summary
 
 ## Files Created or Modified
@@ -80,7 +82,7 @@ python run_h3_evaluation.py
 
 - Mean and standard deviation for all metrics (deterministic and learned)
 - Delta metrics with bootstrap 95% confidence intervals
-- Statistical tests: Paired t-test and Wilcoxon signed-rank for DAC, precision, and variance reduction
+- Statistical tests for DAC and precision; variance reduction identically 0.0 on all splits (t-test/Wilcoxon/Shapiro–Wilk not applicable)
 
 ## Output Locations
 

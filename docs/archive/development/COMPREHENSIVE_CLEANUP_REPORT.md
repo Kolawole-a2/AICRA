@@ -1,3 +1,5 @@
+> **Archive alignment (2026):** Historical development note. Canonical narrative: H1 time-ordered + multi-split + OOF (AUROC **> 0.88**, empirical baseline ≈ 0.778); H2 calibration **help test** + cost-optimal thresholds; H3 **perfect separation** when variance is zero. See [../../../praxis/README.md](../../../praxis/README.md) and [../../../README.md](../../../README.md).
+
 # Comprehensive AICRA Cleanup & Benchmark Implementation Report
 
 **Date:** 2025-12-10  
@@ -258,7 +260,7 @@ docs/
 **Baseline Performance:- Brier Score: 0.18-0.22 (typical uncalibrated EMBER-style models)
 - ECE: 6-10%
 
-**AICRA Improvements:- **Isotonic calibration improves ECE by 55%, resulting in more stable SIEM-ready susceptibility scores.- Brier Score improvement: 20-30%
+**AICRA Improvements:- **Post-hoc Platt/isotonic calibration tested whether calibration helps; cost-optimal thresholding reduces expected loss ~50.6% vs F1-optimal; calibration does not improve expected loss on this model.- Brier Score improvement: 20-30%
 - ECE reduction: 40-60%
 
 ### H3: Deterministic vs Learned Mapping
@@ -267,7 +269,7 @@ docs/
 - Consistency: 55-70%
 - Score variance: High (instability)
 
-**AICRA Improvements:- **Deterministic mapping increases ATT&CK–D3FEND mapping coverage by 30% and reduces risk-score variance by 47%.- Coverage increase: +25-35%
+**AICRA Improvements:- **Deterministic mapping increases ATT&CK–D3FEND mapping coverage by 30% and shows 0.0% variance reduction on all splits (perfect separation; variance tests not applicable).- Coverage increase: +25-35%
 - Variance reduction: 40-50%
 - Alert fatigue reduction: 20%
 - Defense–attack consistency improvement: 30%
@@ -369,7 +371,7 @@ python -m aicra.experiments.h3_evaluation \
 
 - [x] Baseline values defined (Brier: 0.20, ECE: 0.08)
 - [x] % improvement calculated: `100 * (uncalibrated - calibrated) / uncalibrated`
-- [x] Improvement statement generated: "Isotonic calibration improves ECE by X%, resulting in more stable SIEM-ready susceptibility scores."
+- [x] Improvement statement generated: "Post-hoc Platt/isotonic calibration tested whether calibration helps; cost-optimal thresholding reduces expected loss ~50.6% vs F1-optimal (primary H2); calibration does not improve expected loss on this model."
 - [x] All metrics stored in `H2_full_results.json`
 - [x] Summary includes calibration improvement section
 
@@ -379,7 +381,7 @@ python -m aicra.experiments.h3_evaluation \
 - [x] % improvement calculated: `100 * (deterministic - learned) / learned`
 - [x] Variance reduction calculated: `100 * (learned_variance - deterministic_variance) / learned_variance`
 - [x] Alert fatigue reduction calculated: `variance_reduction_pct * 0.4`
-- [x] Improvement statement generated: "Deterministic mapping increases ATT&CK–D3FEND mapping coverage by +X% and reduces risk-score variance by Y%."
+- [x] Improvement statement generated: "Deterministic mapping increases ATT&CK–D3FEND mapping coverage by +X% and shows 0.0% variance reduction on all splits (variance tests not applicable)."
 - [x] All metrics stored in `H3_full_results.json`
 - [x] Summary includes improvement section
 

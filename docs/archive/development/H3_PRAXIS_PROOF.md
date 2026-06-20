@@ -1,3 +1,5 @@
+> **Archive alignment (2026):** Historical development note. Canonical narrative: H1 time-ordered + multi-split + OOF (AUROC **> 0.88**, empirical baseline ≈ 0.778); H2 calibration **help test** + cost-optimal thresholds; H3 **perfect separation** when variance is zero. See [../../../praxis/README.md](../../../praxis/README.md) and [../../../README.md](../../../README.md).
+
 # H3 Praxis Support - Complete Proof
 
 ## ✅ YES - H3 is Fully Supported in This Praxis
@@ -25,7 +27,7 @@ This document provides comprehensive proof that H3 (Deterministic vs Learned Map
 """
 Hypothesis (H3):
 --------------Deterministic ATT&CK–D3FEND mappings exhibit higher Defense–Attack Consistency (DAC_internal),
-higher actionable precision, and greater risk-score stability (lower variance) compared
+higher actionable precision, and higher actionable precision compared
 to learned mappings, when evaluated across all available ransomware risk score splits
 in this environment.
 """

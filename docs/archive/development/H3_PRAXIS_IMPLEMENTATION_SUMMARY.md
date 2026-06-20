@@ -1,3 +1,5 @@
+> **Archive alignment (2026):** Historical development note. Canonical narrative: H1 time-ordered + multi-split + OOF (AUROC **> 0.88**, empirical baseline ≈ 0.778); H2 calibration **help test** + cost-optimal thresholds; H3 **perfect separation** when variance is zero. See [../../../praxis/README.md](../../../praxis/README.md) and [../../../README.md](../../../README.md).
+
 # H3 Praxis Experiment - Complete Implementation Summary
 
 ## Overview
@@ -40,7 +42,7 @@ This praxis introduces the Defense–Attack Consistency (DAC) metric, a novel qu
 The DAC metric is validated via a structured comparison between Deterministic Lookup Mapping and Learned/Heuristic Mapping over the ATT&CK–D3FEND ontology. DAC is defined as the proportion of correctly aligned pairs among all mapped relations. Statistical tests (e.g., paired t-test, Spearman correlation) assess whether higher DAC values align with improved precision and stability.
 
 ### Hypothesis (H3)
-**Deterministic ATT&CK–D3FEND mappings exhibit higher Defense–Attack Consistency (DAC), higher actionable precision, and greater risk-score stability (lower variance) compared to learned mappings, when evaluated across all available ransomware risk score splits in this environment.The code does not bias results—it only tests this hypothesis scientifically.
+**Deterministic ATT&CK–D3FEND mappings exhibit higher Defense–Attack Consistency (DAC), higher actionable precision, and higher actionable precision compared to learned mappings across all evaluation splits. Variance reduction is 0.0 on all splits (deterministic always correct, learned always extraneous); H3 validated via perfect separation, not variance-reduction tests.The code does not bias results—it only tests this hypothesis scientifically.
 
 ## How to Run
 
@@ -106,18 +108,18 @@ If found, they'll be added to the config automatically.
 - **Coverage (%)**: Percentage of techniques with mapped controls
 - **DAC (%)**: Defense–Attack Consistency (proportion of correctly aligned pairs)
 - **Actionable Precision & F1**: Precision/F1 for actionable positives
-- **Variance/IQR Reduction**: Score consistency after mapping
+- **Variance/IQR Reduction**: Reported for completeness; **0.0 on all splits** for both mappings (not used for H3 validation)
 - **Baseline Metrics**: AUROC, PR-AUC, Brier Score, ECE
 
 ### Aggregated Across Splits
 - **Mean and Standard Deviation** for all metrics
 - **Bootstrap 95% Confidence Intervals** for delta metrics
 - **Statistical Tests**:
-  - Paired t-tests (DAC, precision, variance reduction)
-  - Wilcoxon signed-rank tests (non-parametric alternative)
-  - **Spearman Correlations**:
+  - Paired t-tests (DAC, precision)
+  - Wilcoxon signed-rank tests for DAC/precision where applicable
+  - Variance-reduction tests **not applicable** when variance reduction is identically 0.0 on all splits
+  - **Spearman Correlations** (when ≥3 splits with variability):
     - DAC vs actionable precision (deterministic & learned)
-    - DAC vs variance reduction (deterministic & learned)
 
 **Note:** Spearman correlations require ≥3 splits. With only 1 split, they will be `null` (expected behavior).
 

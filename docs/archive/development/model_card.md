@@ -1,3 +1,5 @@
+> **Archive alignment (2026):** Historical development note. Canonical narrative: H1 time-ordered + multi-split + OOF (AUROC **> 0.88**, empirical baseline ≈ 0.778); H2 calibration **help test** + cost-optimal thresholds; H3 **perfect separation** when variance is zero. See [../../../praxis/README.md](../../../praxis/README.md) and [../../../README.md](../../../README.md).
+
 # AICRA Model Card
 
 ## Model Information
@@ -15,7 +17,7 @@ AI Cyber Risk Advisor (AICRA) - Ransomware Detection Model
 Binary Classification (Ransomware vs Benign)
 
 ### Architecture
-Bagged LightGBM/FFNN Classifier with Platt/Isotonic Calibration
+Bagged LightGBM/FFNN Classifier; H2 applies Platt/isotonic post hoc to test whether calibration helps
 
 ## Model Details
 
@@ -24,12 +26,12 @@ Bagged LightGBM/FFNN Classifier with Platt/Isotonic Calibration
 - **Size**: ~500,000 samples
 - **Features**: 2,351 static analysis features + PE static features (byte histogram, headers, entropy)
 - **Classes**: Ransomware (1) vs Benign (0)
-- **Split**: Time-ordered split with out-of-family validation
+- **Split**: Time-ordered split with multi-split evaluation and supplementary out-of-family validation
 
 ### Model Architecture
 - **Base Models**: LightGBM Classifier (Option 1) or Small FFNN (Option 2)
 - **Ensemble**: Bagged ensemble with N models (configurable seeds, default 5)
-- **Calibration**: Platt scaling or isotonic regression (auto-selected via CV Brier score)
+- **Calibration (H2)**: Platt/isotonic post hoc in H2 to test whether calibration helps (H1 outputs already well-calibrated)
 - **Hyperparameters**:
   - LightGBM: Learning rate 0.05, num_leaves 64, n_estimators 400, subsample 0.8, colsample_bytree 0.8
   - FFNN: 2-layer network with focal loss (α=0.75, γ=2.0)
@@ -45,7 +47,7 @@ Bagged LightGBM/FFNN Classifier with Platt/Isotonic Calibration
 - **Feature Engineering**: Robust feature extraction with fallback for invalid PE files
 
 ### Performance Metrics
-- **AUROC**: 0.95+
+- **AUROC**: > 0.88 reliability benchmark (full_ember 0.9796; multi-split mean 0.9605; OOF 0.9615)
 - **PR-AUC**: 0.85+
 - **Brier Score**: <0.15
 - **Expected Calibration Error**: <0.05

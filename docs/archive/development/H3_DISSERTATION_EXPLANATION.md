@@ -1,3 +1,5 @@
+> **Archive alignment (2026):** Historical development note predating H3 variance reconciliation. **Superseded finding:** canonical H3 results show variance reduction **0.0 on all splits** for both mappings (deterministic always correct, learned always extraneous). t-test, Wilcoxon, and Shapiro–Wilk on variance are **not applicable**. H3 validated via **perfect separation** on DAC_internal and actionable precision. The variance-increase narrative below is retained for traceability only. See [../../../README.md](../../../README.md).
+
 # H3 Results: Deterministic Mapping Impact on Risk Score Precision and Distribution
 
 ## Executive Summary

@@ -1,3 +1,5 @@
+> **Archive alignment (2026):** Historical development note. Canonical narrative: H1 time-ordered + multi-split + OOF (AUROC **> 0.88**, empirical baseline ≈ 0.778); H2 calibration **help test** + cost-optimal thresholds; H3 **perfect separation** when variance is zero. See [../../../praxis/README.md](../../../praxis/README.md) and [../../../README.md](../../../README.md).
+
 # AICRA Cleanup & Benchmark Implementation Summary
 
 **Date:** 2025-12-10  
@@ -146,12 +148,12 @@ All experiments now produce statements matching the required format:
 
 ### H2 Statement
 ```
-"Isotonic calibration improves ECE by X%, resulting in more stable SIEM-ready susceptibility scores."
+"Post-hoc Platt/isotonic calibration tested whether calibration helps; cost-optimal thresholding reduces expected loss ~50.6% vs F1-optimal (primary H2); calibration does not improve expected loss on this model."
 ```
 
 ### H3 Statement
 ```
-"Deterministic mapping increases ATT&CK–D3FEND mapping coverage by +X% and reduces risk-score variance by Y%."
+"Deterministic mapping increases ATT&CK–D3FEND mapping coverage by +X% and shows 0.0% variance reduction on all splits (variance tests not applicable)."
 ```
 
 ---

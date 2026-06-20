@@ -1,3 +1,5 @@
+> **Archive alignment (2026):** Historical development note. Canonical narrative: H1 time-ordered + multi-split + OOF (AUROC **> 0.88**, empirical baseline ≈ 0.778); H2 calibration **help test** + cost-optimal thresholds; H3 **perfect separation** when variance is zero. See [../../../praxis/README.md](../../../praxis/README.md) and [../../../README.md](../../../README.md).
+
 # Complete Implementation Report - All Proposals
 
 **Date:** 2025-12-10  
@@ -149,7 +151,7 @@ train_data, val_data, test_data = load_ember_2024(
       "baseline_brier": 0.20,
       "baseline_ece": 0.08
     },
-    "improvement_statement": "Isotonic calibration improves ECE by 50.0%..."
+    "improvement_statement": "Post-hoc calibration help test: does not improve expected loss; cost-optimal thresholding −50.6% vs F1-optimal..."
   }
 }
 ```

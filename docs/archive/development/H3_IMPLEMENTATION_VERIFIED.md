@@ -1,3 +1,5 @@
+> **Archive alignment (2026):** Historical verification note. Canonical H3: variance reduction **0.0 on all splits** (not 0.010792 vs 0.010250); learned actionable precision **0.0** on evaluated splits vs deterministic dominance. See [../../../README.md](../../../README.md).
+
 # H3 Implementation - Verified and Complete
 
 ## Summary
@@ -79,8 +81,8 @@ This means the learned mapping uses completely different D3FEND controls than th
 
 ### Operational Metrics
 
-- **Actionable Precision:** Learned shows higher precision (0.2485 vs 0.0000), but this is only on the `main` split
-- **Variance Reduction:** Deterministic shows slightly higher variance reduction (0.010792 vs 0.010250)
+- **Actionable Precision:** Deterministic achieves higher actionable precision than learned (learned **0.0** on canonical splits; perfect separation)
+- **Variance Reduction:** **0.0 on all splits** for both mappings (variance tests not applicable; see canonical `H3_full_summary.md`)
 - **Statistical tests:** Significant differences detected for DAC_internal
 
 ## Important Notes

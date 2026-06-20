@@ -1,3 +1,5 @@
+> **Archive alignment (2026):** Historical development note. Canonical narrative: H1 time-ordered + multi-split + OOF (AUROC **> 0.88**, empirical baseline ≈ 0.778); H2 calibration **help test** + cost-optimal thresholds; H3 **perfect separation** when variance is zero. See [../../../praxis/README.md](../../../praxis/README.md) and [../../../README.md](../../../README.md).
+
 # AICRA Praxis Cleanup and Validation Summary
 
 **Date:** 2025-01-XX  
@@ -20,9 +22,9 @@ This document summarizes the cleanup and validation work performed on the AICRA 
 
 **H1 Definition:- Static PE features enable reliable ransomware classification with AUROC ≥ 0.95 and operational precision suitable for banking environments.
 
-**H2 Definition:- Calibration and cost-aware thresholding produce more decision-aligned susceptibility scores than uncalibrated F1-optimized thresholds.
+**H2 Definition:- Cost-aware thresholding reduces expected loss vs F1-optimized thresholds under banking-style costs; Platt/isotonic post-hoc calibration tested whether calibration helps (does not improve expected loss on this model).
 
-**H3 Definition:- Deterministic ATT&CK–D3FEND mappings exhibit higher Defense–Attack Consistency (DAC_internal), higher actionable precision, and greater risk-score stability (lower variance) compared to learned mappings.
+**H3 Definition:- Deterministic ATT&CK–D3FEND mappings exhibit higher Defense–Attack Consistency (DAC_internal), higher actionable precision, and higher actionable precision compared to learned mappings across all evaluation splits (variance reduction 0.0 on all splits; perfect separation).
 
 ### 2. Code Clean-up and Structure ✅
 
@@ -43,7 +45,7 @@ This document summarizes the cleanup and validation work performed on the AICRA 
   - Created initial `results/praxis_validation_report.md` with H3 results
   - Defined baseline metrics for H1, H2, H3 comparisons
 
-**Baseline Definitions:- **H1:** AUROC=0.85, PR-AUC=0.60, Brier=0.25, ECE=0.15 (typical baselines for static PE analysis)
+**Baseline Definitions:- **H1:** AUROC reliability benchmark >0.88 (not 0.85); empirical logistic baseline AUROC ≈0.778 on same split; PR-AUC≈0.60, Brier=0.25, ECE=0.15 (same-split empirical references)
 - **H2:** Brier=0.25, ECE=0.15 (uncalibrated baselines)
 - **H3:** DAC_internal=0.0%, Actionable Precision=0.20 (naive/random mapping baselines)
 

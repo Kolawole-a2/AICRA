@@ -1,3 +1,5 @@
+> **Archive alignment (2026):** Historical development note. Canonical narrative: H1 time-ordered + multi-split + OOF (AUROC **> 0.88**, empirical baseline ≈ 0.778); H2 calibration **help test** + cost-optimal thresholds; H3 **perfect separation** when variance is zero. See [../../../praxis/README.md](../../../praxis/README.md) and [../../../README.md](../../../README.md).
+
 # Experiment Fixes Summary
 
 This document summarizes the fixes applied to ensure H1, H2, and H3 experiments are correct, non-duplicated, and scientifically meaningful.
@@ -83,7 +85,7 @@ python -m aicra.experiments.h1_classification
 python -m aicra.experiments.h1_classification --model-type lgbm --threshold 0.5
 ```
 
-**H2: Calibration and Thresholding```bash
+**H2: Calibration test and Thresholding```bash
 python -m aicra.experiments.h2_calibration_thresholds
 # Or with custom options:
 python -m aicra.experiments.h2_calibration_thresholds --cost-fn 10.0 --cost-fp 1.0
