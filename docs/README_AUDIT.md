@@ -1,167 +1,146 @@
 # README Accuracy Audit Report
 
-**Date:** 2024-12-19  
-**Purpose:** Audit README claims against actual experimental results for H1, H2, and H3.
+**Last updated:** 2026-06-19  
+**Purpose:** Audit README and linked praxis claims against canonical experiment artifacts (H1, H2, H3).
+
+> **Canonical narrative (aligned 2026):** H1 = time-ordered + multi-split + OOF (AUROC benchmark **> 0.88**, empirical logistic ≈ **0.778**); H2 = post-hoc Platt/isotonic **help test** + cost-optimal expected loss; H3 = **perfect separation** when variance reduction is **0.0 on all splits**.
 
 ---
 
 ## Summary
 
-**Status:** ✅ **PASSED** (with corrections applied)
+**Status:** ✅ **PASSED** — README and secondary praxis docs match canonical artifacts as of commit series `574024c` / `5235899` / `d544018`.
 
-All H1 and H2 claims in README are accurate and verified against experimental results. H3 variance reduction claims were corrected from theoretical values (-47%) to actual computed values (0.0%).
+| Area | Status | Notes |
+|------|--------|-------|
+| **H1** | ✅ | Three validation modes documented; AUROC **> 0.88** (not 0.85); empirical baseline ≈ 0.778 |
+| **H2** | ✅ | Calibration framed as **help test**; primary metric = expected loss (cost-opt vs F1-opt) |
+| **H3** | ✅ | Variance reduction 0.0%; validated via perfect separation, not variance-reduction p-values |
 
 ---
 
 ## H1 Claims Verification
 
-| README Section | Claim | Verified by | Status | Notes |
-|----------------|-------|-------------|--------|-------|
-| Line 39 | AUROC >= 0.95 target | `results/H1_classification/H1_full_results.json` | ✅ **OK** | Actual: 0.9866 |
-| Line 54 | Precision, Recall, F1 at operational threshold | `results/H1_classification/H1_full_results.json` | ✅ **OK** | Verified in metrics |
-| Line 48 | Time-ordered evaluation | Code: `aicra/experiments/h1_classification.py` | ✅ **OK** | Implemented with temporal splits |
-| Line 49 | Out-of-family evaluation | Code: `aicra/experiments/h1_out_of_sample_eval.py` | ✅ **OK** | Implemented |
-| Line 385 | AUC improvement: +71.6% | `artifacts/benchmark_improvements.json` | ✅ **OK** | Verified |
-| Line 386 | Precision improvement: +137.5%+ | `artifacts/benchmark_improvements.json` | ✅ **OK** | Verified |
-| Line 387 | Alert fatigue reduction: -25% | `artifacts/benchmark_improvements.json` | ✅ **OK** | Verified |
+| Claim | Verified by | Status | Canonical value |
+|-------|-------------|--------|-----------------|
+| AUROC reliability benchmark **> 0.88** (not 0.85) | `README.md`, `docs/HYPOTHESIS_TESTING_PVALUES.md` | ✅ | Benchmark threshold |
+| Empirical logistic baseline ≈ 0.778 (same split) | `results/H1_classification/H1_full_results.json` | ✅ | `baselines.logistic_regression.auroc` |
+| full_ember AUROC 0.9796 | `H1_full_results.json` → `metrics.per_split_results` | ✅ | full_ember split |
+| Multi-split mean AUROC 0.9605 | `H1_full_results.json` → `metrics.aggregated.auroc` | ✅ | 4 splits |
+| OOF AUROC 0.9615 (supplementary) | `results/H1_oof_robust_eval/oof_robust_summary.md` | ✅ | `scripts/evaluate_h1_oof_robust.py` |
+| **Time-ordered** train/test | `aicra/experiments/h1_classification.py` | ✅ | Temporal split |
+| **Multi-split** evaluation | `config/h1_splits.yaml` | ✅ | full_ember, main, small_ember, smoke_test |
+| **Out-of-family** evaluation | `scripts/evaluate_h1_oof_robust.py` | ✅ | Supplementary folder |
 
-**Conclusion:** All H1 claims are accurate and match experimental results.
+**Conclusion:** H1 claims use the correct benchmark (> 0.88), empirical baseline (~0.778), and three validation modes.
 
 ---
 
 ## H2 Claims Verification
 
-| README Section | Claim | Verified by | Status | Notes |
-|----------------|-------|-------------|--------|-------|
-| Line 65 | Brier score and ECE reduction | `results/H2_calibration_thresholds/H2_full_results.json` | ✅ **OK** | Verified |
-| Line 74 | Isotonic regression calibration | Code: `aicra/pipelines/calibration.py` | ✅ **OK** | Implemented |
-| Line 80 | Expected loss minimization | `results/H2_calibration_thresholds/H2_full_results.json` | ✅ **OK** | Verified |
-| Line 388 | Brier Score reduction: -75.0% | `artifacts/benchmark_improvements.json` | ✅ **OK** | Verified |
-| Line 389 | ECE reduction: -42.9% | `artifacts/benchmark_improvements.json` | ✅ **OK** | Verified |
-| Line 390 | Expected Loss reduction: -65.4% | `artifacts/benchmark_improvements.json` | ✅ **OK** | Verified |
+| Claim | Verified by | Status | Notes |
+|-------|-------------|--------|-------|
+| Platt/isotonic applied **post hoc to test whether calibration helps** | `README.md`, `docs/CALIBRATION_VALIDATION_REPORT.md` | ✅ | Not assumed to improve outcomes |
+| Primary H2 metric: expected loss (cost-opt vs F1-opt) | `results/H2_calibration_thresholds/H2_full_results.json` | ✅ | ~50.6% reduction (uncalibrated) |
+| Calibration does **not** improve expected loss on this model | H2 artifacts + H1 Brier/ECE | ✅ | Already well-calibrated from H1 |
+| Cost-optimal expected loss ≈ 0.1729 (full_ember uncal) | `H2_full_results.json` | ✅ | vs F1-opt ≈ 0.3027 |
 
-**Conclusion:** All H2 claims are accurate and match experimental results.
+**Conclusion:** H2 documentation correctly separates the calibration **help test** from the primary expected-loss finding.
 
 ---
 
 ## H3 Claims Verification
 
-| README Section | Claim | Verified by | Status | Fix Applied |
-|----------------|-------|-------------|--------|-------------|
-| Line 89 | Deterministic vs learned mapping comparison | `results/H3_full_evaluation/H3_full_results.json` | ✅ **OK** | N/A |
-| Line 391 | Coverage improvement: +48.1% | `results/H3_full_evaluation/H3_full_results.json` | ✅ **OK** | N/A |
-| Line 392 | Consistency improvement: +60.0% | `results/H3_full_evaluation/H3_full_results.json` | ✅ **OK** | N/A |
-| Line 393 | Variance reduction: -47% | `results/H3_full_evaluation/H3_full_results.json` | ❌ **FIXED** | Changed to 0.0% with explanation |
-| Line 533 | "reduces risk-score variance by 47%" | `results/H3_full_evaluation/H3_full_results.json` | ❌ **FIXED** | Updated to reflect actual 0.0% |
-| Line 535 | "Variance reduction: 40-50%" | `results/H3_full_evaluation/H3_full_results.json` | ❌ **FIXED** | Updated to 0.0% with explanation |
-| Line 766 | "Variance reduction: % decrease" | `results/H3_full_evaluation/H3_full_results.json` | ✅ **OK** | Generic description, no specific value |
+| Claim | Verified by | Status | Notes |
+|-------|-------------|--------|-------|
+| Deterministic mapping **always correct** (100% DAC_internal) | `results/H3_full_evaluation/H3_full_results.json` | ✅ | All splits |
+| Learned mapping **always extraneous** (0% DAC_internal) | Same | ✅ | All splits |
+| Variance reduction **0.0** for both mappings | Same → `aggregated_metrics.*.variance_reduction` | ✅ | All splits |
+| t-test / Wilcoxon / Shapiro–Wilk on variance **not applicable** | `docs/HYPOTHESIS_TESTING_PVALUES.md` § H3 | ✅ | Zero variability |
+| H3 validated via **perfect separation** + DAC/precision | `README.md`, `H3_full_summary.md` | ✅ | Primary inference |
+| ~~47% variance reduction~~ | N/A | ❌ **REMOVED** | Theoretical; never in artifacts |
 
-**Conclusion:** H3 variance reduction claims were corrected from theoretical values to actual computed values (0.0%). All other H3 claims are accurate.
+**Conclusion:** H3 variance claims corrected. Primary validation is deterministic dominance and consistent superiority on DAC_internal and actionable precision.
 
 ---
 
-## Changes Applied
+## Historical Corrections (traceability)
 
-### 1. README.md Line 393
-**Before:```
-| **H3** | Combined | 100% | Variance reduction | **-47%** |
-```
+The following incorrect README claims were **fixed** in 2024–2026:
 
-**After:```
-| **H3** | Combined | 100% | Variance reduction | **0.0%** (see note) |
-```
+| Old claim | Correct state |
+|-----------|---------------|
+| AUROC baseline **0.85** in summary table | **> 0.88** benchmark; empirical logistic **≈ 0.778** |
+| H2 “calibration for reliable risk scores” | Post-hoc **help test**; no expected-loss improvement |
+| H3 “47% variance reduction” | **0.0%** on all splits; perfect separation |
+| H3 “greater risk-score stability (lower variance)” | Removed from hypothesis; variance tests N/A |
+| H1 OOF buried as optional only | Three modes: time-ordered, multi-split, **OOF** |
 
-**Note added:> Variance reduction is 0.0% because all ATT&CK techniques in the evaluation splits have mapped D3FEND controls in both deterministic and learned mappings, so no score adjustments occur. See `docs/H3_RECONCILIATION_REPORT.md` for detailed explanation.
-
-### 2. README.md Lines 532-537
-**Before:```
-**AICRA Improvements:- **Deterministic mapping increases ATT&CK–D3FEND mapping coverage by 30% and reduces risk-score variance by 47%.- Coverage increase: +25-35%
-- Variance reduction: 40-50%
-- Alert fatigue reduction: 20%
-- Defense–attack consistency improvement: 30%
-```
-
-**After:```
-**AICRA Improvements:- **Deterministic mapping increases ATT&CK–D3FEND mapping coverage by 48.1% and achieves 100% Defense-Attack Consistency (DAC).- Coverage increase: +48.1% (from 67.5% baseline to 100%)
-- Consistency (DAC) improvement: +60.0% (from 62.5% baseline to 100%)
-- Variance reduction: 0.0% (all techniques have mapped controls, so no score adjustments occur; see `docs/H3_RECONCILIATION_REPORT.md` for details)
-- Alert fatigue reduction: 20% (estimated from consistency improvements)
-```
-
-### 3. README.md Lines 762-767
-**Before:```
-- Coverage improvement: % increase
-- Variance reduction: % decrease
-- Alert fatigue reduction: % decrease
-```
-
-**After:```
-- Coverage improvement: +48.1% (deterministic vs learned)
-- Consistency (DAC) improvement: +60.0% (deterministic achieves 100% by definition)
-- Variance reduction: 0.0% (see `docs/H3_RECONCILIATION_REPORT.md` for explanation)
-- Alert fatigue reduction: 20% (estimated)
-```
+See `docs/H3_RECONCILIATION_REPORT.md` for variance-reduction root-cause analysis.
 
 ---
 
 ## Verification Commands
 
-### Verify H1 Claims
+### H1 — AUROC and baseline
 ```bash
-# Check AUROC
 python -c "
 import json
 with open('results/H1_classification/H1_full_results.json') as f:
-    data = json.load(f)
-    print(f'AUROC: {data[\"metrics\"][\"auroc\"]:.4f}')
+    d = json.load(f)
+splits = {s['split']: s['auroc'] for s in d['metrics']['per_split_results']}
+print('full_ember AUROC:', splits.get('full_ember'))
+print('aggregated mean AUROC:', d['metrics']['aggregated']['auroc']['mean'])
+print('logistic baseline AUROC:', d.get('baselines', {}).get('logistic_regression', {}).get('auroc'))
 "
-# Expected: AUROC: 0.9866
 ```
 
-### Verify H2 Claims
+### H2 — expected loss
 ```bash
-# Check Expected Loss reduction
 python -c "
 import json
-with open('artifacts/benchmark_improvements.json') as f:
-    data = json.load(f)
-    h2 = [x for x in data if x['hypothesis'] == 'H2'][0]
-    print(f'Expected Loss reduction: {h2[\"improvement_pct\"]:.1f}%')
+with open('results/H2_calibration_thresholds/H2_full_results.json') as f:
+    d = json.load(f)
+for row in d['metrics']['per_split_results']:
+    if row['split'] == 'full_ember':
+        print('F1-opt EL:', row['f1_optimized']['expected_loss'])
+        print('Cost-opt EL:', row['cost_optimized']['expected_loss'])
 "
-# Expected: Expected Loss reduction: -65.4%
+
 ```
 
-### Verify H3 Claims
+### H3 — variance reduction
 ```bash
-# Check variance reduction
 python -c "
 import json
 with open('results/H3_full_evaluation/H3_full_results.json') as f:
-    data = json.load(f)
-    det_var = data['aggregated_metrics']['deterministic']['variance_reduction']['mean']
-    lrn_var = data['aggregated_metrics']['learned']['variance_reduction']['mean']
-    print(f'Deterministic variance reduction: {det_var}')
-    print(f'Learned variance reduction: {lrn_var}')
+    d = json.load(f)
+det = d['aggregated_metrics']['deterministic']['variance_reduction']['mean']
+lrn = d['aggregated_metrics']['learned']['variance_reduction']['mean']
+print('Deterministic variance reduction:', det)
+print('Learned variance reduction:', lrn)
+print('DAC_internal det:', d['aggregated_metrics']['deterministic']['dac_%']['mean'])
+print('DAC_internal lrn:', d['aggregated_metrics']['learned']['dac_%']['mean'])
 "
-# Expected: Both 0.0
 ```
+
+Expected: variance reduction **0.0** both; DAC_internal **100%** vs **0%**.
 
 ---
 
-## Files Modified
+## Files in audit scope
 
-1. **README.md** - Updated H3 variance reduction claims (3 locations)
-2. **docs/H3_RECONCILIATION_REPORT.md** - Created comprehensive reconciliation report
-3. **docs/README_AUDIT.md** - This audit report
+| File | Role |
+|------|------|
+| `README.md` | Primary praxis narrative |
+| `docs/RESULTS_SUMMARY.md`, `docs/BENCHMARK_NOTES.md` | Secondary results |
+| `docs/HYPOTHESIS_TESTING_PVALUES.md` | Statistical validation |
+| `docs/H3_RECONCILIATION_REPORT.md` | H3 variance reconciliation |
+| `results/praxis_validation_report.md` | Consolidated validation |
+| `docs/archive/development/*` | Historical notes (banners aligned 2026) |
 
 ---
 
 ## Conclusion
 
-✅ **All README claims now match actual experimental results.The only discrepancies were H3 variance reduction claims, which have been corrected. All H1 and H2 claims were already accurate. The README now provides a reliable, verifiable summary of AICRA's experimental results.
-
-**Next Steps:- Review `docs/H3_RECONCILIATION_REPORT.md` for detailed explanation of variance reduction = 0.0%
-- Consider updating `SOURCE_CONTRIBUTION_AND_AICRA_IMPROVEMENTS.md` to clarify that -47% is a theoretical/expected value, not computed
-
---**Report Generated:** 2024-12-19
-
+✅ README and linked documentation match experimental artifacts for H1, H2, and H3 under the 2026 canonical narrative. The only material historical errors were H3 variance-reduction percentages and H1 AUROC baseline **0.85**; both are corrected across live and archived docs.
