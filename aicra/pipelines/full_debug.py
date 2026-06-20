@@ -111,7 +111,9 @@ class FullDebugPipeline:
         # Log constant feature removal
         if constant_features or near_constant_features:
             removed_count = len(constant_features) + len(near_constant_features)
-            print(f"⚠️  DEBUG: Removing {removed_count} constant/near-constant features")
+            print(
+                f"⚠️  DEBUG: Removing {removed_count} constant/near-constant features"
+            )
 
             # Save removed features list
             removed_features = constant_features + near_constant_features

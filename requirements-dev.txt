@@ -8,6 +8,8 @@ pytest-mock>=3.10
 
 # Code quality
 ruff==0.12.8
+black>=24.10.0
+isort>=5.13.0
 mypy>=1.0
 pylint>=2.17
 pre-commit>=3.0

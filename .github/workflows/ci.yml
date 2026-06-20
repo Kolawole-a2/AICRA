@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [main, develop]
 
+env:
+  MPLBACKEND: Agg
+  AICRA_RUN_REAL_DATA_TESTS: "0"
+  AICRA_FORCE_TFIDF_MAPPING: "1"
+
 jobs:
   guardrails:
     name: Repo Hygiene & Guardrails
@@ -36,7 +41,10 @@ jobs:
       - name: Check for unsafe pickle patterns
         run: |
           echo "Checking for unsafe pickle patterns..."
-          if grep -R "allow_pickle=True" --include="*.py" aicra/ tests/ scripts/ 2>/dev/null; then
+          matches=$(grep -R "allow_pickle=True" --include="*.py" aicra/ tests/ scripts/ 2>/dev/null \
+            | grep -v "scripts/ci_guardrails.py" || true)
+          if [ -n "$matches" ]; then
+            echo "$matches"
             echo "❌ Found unsafe allow_pickle=True patterns"
             exit 1
           fi
@@ -160,7 +168,7 @@ jobs:
           elif [ -f "requirements.txt" ]; then
             pip install -r requirements.txt
           fi
-          pip install ruff black isort pylint
+          pip install "black>=24.10.0" isort pylint
 
       - name: Ruff
         run: ruff check aicra/ experiments/ scripts/ tests/
@@ -242,8 +250,6 @@ jobs:
           fi
 
       - name: Run tests (skip real-data tests by default)
-        env:
-          AICRA_RUN_REAL_DATA_TESTS: "0"
         run: |
           if [ -d "tests" ] && [ "$(ls -A tests 2>/dev/null)" ]; then
             pytest tests/ --cov=aicra --cov-report=xml --cov-report=html
@@ -307,7 +313,10 @@ jobs:
       - name: Check for unsafe pickle patterns (security)
         run: |
           echo "Security: Checking for unsafe pickle usage..."
-          if grep -R "allow_pickle=True" --include="*.py" aicra/ tests/ scripts/ 2>/dev/null; then
+          matches=$(grep -R "allow_pickle=True" --include="*.py" aicra/ tests/ scripts/ 2>/dev/null \
+            | grep -v "scripts/ci_guardrails.py" || true)
+          if [ -n "$matches" ]; then
+            echo "$matches"
             echo "❌ SECURITY: Unsafe allow_pickle=True found"
             exit 1
           fi

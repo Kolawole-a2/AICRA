@@ -3566,7 +3566,9 @@ def run_h3_evaluation(
     # Warn if learned is not broader
     if not mapping_behavior["learned_is_broader"]:
         logger.warning("=" * 80)
-        logger.warning("⚠️  WARNING: Learned mapping is NOT broader than deterministic!")
+        logger.warning(
+            "⚠️  WARNING: Learned mapping is NOT broader than deterministic!"
+        )
         logger.warning("=" * 80)
         logger.warning(f"  Learned pairs: {mapping_behavior['learned_pairs_count']}")
         logger.warning(

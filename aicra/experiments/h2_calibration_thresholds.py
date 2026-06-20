@@ -857,7 +857,9 @@ def run_h2_calibration_thresholds_experiment(
                     "warning": "Calibration and test windows may overlap temporally",
                 }
         else:
-            logger.warning("⚠️  Timestamps not available for temporal calibration check")
+            logger.warning(
+                "⚠️  Timestamps not available for temporal calibration check"
+            )
             temporal_calibration_check = {
                 "temporal_ordering_verified": False,
                 "warning": "Timestamps not available in dataset",

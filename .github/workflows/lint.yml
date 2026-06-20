@@ -1,3 +1,12 @@
+name: Python Lint
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
   lint:
     name: Lint (ruff/black/isort/pylint)
     runs-on: ubuntu-latest
@@ -28,7 +37,7 @@
           elif [ -f "requirements.txt" ]; then
             pip install -r requirements.txt
           fi
-          pip install ruff black isort pylint
+          pip install "black>=24.10.0" isort pylint
 
       # Black is the canonical formatter; ruff check covers lint rules (ruff format omitted to avoid black conflicts).
       - name: Ruff lint (check)
