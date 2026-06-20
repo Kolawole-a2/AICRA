@@ -69,7 +69,13 @@ External reference pairs (`d3fend_reference_pairs.csv`) provide a secondary **DA
 | H2 | `results/H2_calibration_thresholds/H2_full_results.json` | `results/H2_calibration_thresholds/H2_summary.md` |
 | H3 | `results/H3_full_evaluation/H3_full_results.json` | `results/H3_full_evaluation/H3_full_summary.md` |
 
-Do not overwrite these casually when re-running experiments.
+These paths hold the **validated praxis results** checked into this repository—the numbers cited in the summary above and in [docs/RESULTS_SUMMARY.md](docs/RESULTS_SUMMARY.md).
+
+- **Readers / examiners:** use these files as-is; no need to re-run anything to review the evidence.
+- **Reproducing experiments:** the default commands below write to the same folders. That is fine for verification, but it will replace the saved JSON/MD if you run them locally. To experiment without touching the canonical copies, pass a different output directory (e.g. `--output results/H1_classification_rerun/`).
+- **Updating the official results:** only re-run into these paths when you deliberately intend to refresh the praxis evidence and align the docs with the new outputs.
+
+Details: [docs/CANONICAL_VS_REBUILD_EXPLANATION.md](docs/CANONICAL_VS_REBUILD_EXPLANATION.md)
 
 ---
 
