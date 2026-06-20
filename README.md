@@ -114,8 +114,6 @@ Command details, layouts, and reviewer paths: **[docs/praxis/EXPERIMENTS_GUIDE.m
 | Baseline methodology | [docs/BASELINE_METHODOLOGY_TEMP.md](docs/BASELINE_METHODOLOGY_TEMP.md) |
 | Historical dev notes | [docs/archive/development/](docs/archive/development/) (traceability only) |
 
-The previous long README (~1,300 lines) is archived at [docs/archive/README_FULL_PRE_2026.md](docs/archive/README_FULL_PRE_2026.md).
-
 ---
 
 ## Citation
