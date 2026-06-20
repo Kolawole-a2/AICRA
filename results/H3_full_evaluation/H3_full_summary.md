@@ -34,6 +34,100 @@ H3 compares three related but distinct ATT&CK→D3FEND artifacts:
 
 **Primary H3 conclusion** rests on deterministic vs learned (DAC_internal). External reference is a supplementary sanity check (DAC_external).
 
+### Technique overlap (ATT&CK IDs)
+
+The **46 vs 47** technique counts are unique MITRE technique IDs in each mapping file (sub-techniques such as T1021.001 count separately). Learned is a **superset** at the technique level: all 46 deterministic IDs appear in learned, plus **one extra** — **T1059** (*Command and Scripting Interpreter*), which is excluded from the ransomware-focused deterministic allowlist by design.
+
+| Metric | Deterministic | Learned (heuristic) |
+|--------|---------------|---------------------|
+| Unique technique IDs | **46** | **47** |
+| Parent techniques (T####) | **11** | **12** |
+| In both mappings | **46** | **46** |
+| Only in this mapping | **0** | **1** (T1059) |
+| Total ATT&CK→D3FEND pairs | 173 | 190 |
+| Unique D3FEND controls | 9 | 79 |
+
+#### Parent technique comparison (11 vs 12)
+
+| Parent ID | Technique (MITRE) | In deterministic? | In learned? | Det. pairs | Lrn. pairs |
+|-----------|-------------------|:-----------------:|:-----------:|-----------:|-----------:|
+| **T1021** | Remote Services | Yes | Yes | 36 | 37 |
+| **T1041** | Exfiltration Over C2 Channel | Yes | Yes | 3 | 4 |
+| **T1055** | Process Injection | Yes | Yes | 52 | 52 |
+| **T1059** | Command and Scripting Interpreter | No | Yes | 0 | 3 |
+| **T1070** | Indicator Removal | Yes | Yes | 44 | 45 |
+| **T1485** | Data Destruction | Yes | Yes | 6 | 8 |
+| **T1486** | Data Encrypted for Impact | Yes | Yes | 7 | 5 |
+| **T1487** | Disk Structure Wipe | Yes | Yes | 2 | 4 |
+| **T1488** | Disk Content Wipe | Yes | Yes | 2 | 4 |
+| **T1489** | Service Stop | Yes | Yes | 3 | 4 |
+| **T1490** | Inhibit System Recovery | Yes | Yes | 3 | 5 |
+| **T1496** | Resource Hijacking | Yes | Yes | 15 | 19 |
+
+#### Full technique ID list
+
+All rows are present in **both** mappings except **T1059** (learned only).
+
+| Technique ID | Parent | Name | In det.? | In lrn.? | Det. pairs | Lrn. pairs |
+|--------------|--------|------|:--------:|:--------:|-----------:|-----------:|
+| T1021 | T1021 | Remote Services | Yes | Yes | 4 | 5 |
+| T1021.001 | T1021 | Remote Desktop Protocol | Yes | Yes | 4 | 4 |
+| T1021.002 | T1021 | SMB/Windows Admin Shares | Yes | Yes | 4 | 4 |
+| T1021.003 | T1021 | Distributed Component Object Model | Yes | Yes | 4 | 4 |
+| T1021.004 | T1021 | SSH | Yes | Yes | 4 | 4 |
+| T1021.005 | T1021 | VNC | Yes | Yes | 4 | 4 |
+| T1021.006 | T1021 | Windows Remote Management | Yes | Yes | 4 | 4 |
+| T1021.007 | T1021 | Cloud Services | Yes | Yes | 4 | 4 |
+| T1021.008 | T1021 | Direct Cloud VM Connections | Yes | Yes | 4 | 4 |
+| T1041 | T1041 | Exfiltration Over C2 Channel | Yes | Yes | 3 | 4 |
+| T1055 | T1055 | Process Injection | Yes | Yes | 4 | 4 |
+| T1055.001 | T1055 | Dynamic-link Library Injection | Yes | Yes | 4 | 4 |
+| T1055.002 | T1055 | Portable Executable Injection | Yes | Yes | 4 | 4 |
+| T1055.003 | T1055 | Thread Execution Hijacking | Yes | Yes | 4 | 4 |
+| T1055.004 | T1055 | Asynchronous Procedure Call | Yes | Yes | 4 | 4 |
+| T1055.005 | T1055 | Thread Local Storage | Yes | Yes | 4 | 4 |
+| T1055.008 | T1055 | Ptrace System Calls | Yes | Yes | 4 | 4 |
+| T1055.009 | T1055 | Proc Memory | Yes | Yes | 4 | 4 |
+| T1055.011 | T1055 | Extra Window Memory Injection | Yes | Yes | 4 | 4 |
+| T1055.012 | T1055 | Process Hollowing | Yes | Yes | 4 | 4 |
+| T1055.013 | T1055 | Process Doppelgänging | Yes | Yes | 4 | 4 |
+| T1055.014 | T1055 | VDSO Hijacking | Yes | Yes | 4 | 4 |
+| T1055.015 | T1055 | ListPlanting | Yes | Yes | 4 | 4 |
+| T1059 | T1059 | Command and Scripting Interpreter | No | Yes | — | 3 |
+| T1070 | T1070 | Indicator Removal | Yes | Yes | 4 | 5 |
+| T1070.001 | T1070 | Clear Windows Event Logs | Yes | Yes | 4 | 4 |
+| T1070.002 | T1070 | Clear Linux or Mac System Logs | Yes | Yes | 4 | 4 |
+| T1070.003 | T1070 | Clear Command History | Yes | Yes | 4 | 4 |
+| T1070.004 | T1070 | File Deletion | Yes | Yes | 4 | 4 |
+| T1070.005 | T1070 | Network Share Connection Removal | Yes | Yes | 4 | 4 |
+| T1070.006 | T1070 | Timestomp | Yes | Yes | 4 | 4 |
+| T1070.007 | T1070 | Clear Network Connection History and Configurations | Yes | Yes | 4 | 4 |
+| T1070.008 | T1070 | Clear Mailbox Data | Yes | Yes | 4 | 4 |
+| T1070.009 | T1070 | Clear Persistence | Yes | Yes | 4 | 4 |
+| T1070.010 | T1070 | Relocate Malware | Yes | Yes | 4 | 4 |
+| T1485 | T1485 | Data Destruction | Yes | Yes | 3 | 4 |
+| T1485.001 | T1485 | Lifecycle-Triggered Deletion | Yes | Yes | 3 | 4 |
+| T1486 | T1486 | Data Encrypted for Impact | Yes | Yes | 7 | 5 |
+| T1487 | T1487 | Disk Structure Wipe | Yes | Yes | 2 | 4 |
+| T1488 | T1488 | Disk Content Wipe | Yes | Yes | 2 | 4 |
+| T1489 | T1489 | Service Stop | Yes | Yes | 3 | 4 |
+| T1490 | T1490 | Inhibit System Recovery | Yes | Yes | 3 | 5 |
+| T1496 | T1496 | Resource Hijacking | Yes | Yes | 3 | 4 |
+| T1496.001 | T1496 | Compute Hijacking | Yes | Yes | 3 | 4 |
+| T1496.002 | T1496 | Bandwidth Hijacking | Yes | Yes | 3 | 4 |
+| T1496.003 | T1496 | SMS Pumping | Yes | Yes | 3 | 3 |
+| T1496.004 | T1496 | Cloud Service Hijacking | Yes | Yes | 3 | 4 |
+
+#### T1059 detail (learned only)
+
+| Technique | Learned control | Similarity |
+|-----------|-----------------|------------|
+| T1059 | D3-SAW | 0.90 |
+| T1059 | D3-CR | 0.88 |
+| T1059 | D3-AL | 0.86 |
+
+**Takeaway:** The 46 vs 47 gap is a single technique (T1059). H3 separation is driven primarily by **control choice** (9 vs 79 controls), not by a wholly different attack set.
+
 ### Mapping Overlap
 
 #### Deterministic vs Learned Mapping
