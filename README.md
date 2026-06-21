@@ -1,4 +1,4 @@
-# AI Cyber Risk Advisor (AICRA)
+# Machine Learning-Based Cyber Risk Advisor with Analytics for Endpoint Ransomware Defense in U.S. Banking Organizations (AICRA).
 
 [![CI](https://github.com/aicra/aicra/workflows/CI/badge.svg)](https://github.com/aicra/aicra/actions)
 [![codecov](https://codecov.io/gh/aicra/aicra/branch/main/graph/badge.svg)](https://codecov.io/gh/aicra/aicra)
@@ -10,7 +10,7 @@
 
 ## Overview
 
-AICRA (AI Cyber Risk Advisor) is a machine learning-based cyber risk assessment system focused on endpoint ransomware detection in banking environments. It provides reproducible, auditable risk assessments with cost-sensitive decision making.
+AICRA (ML Cyber Risk Advisor) is a machine learning-based cyber risk assessment system focused on endpoint ransomware detection in banking environments. It provides reproducible, auditable risk assessments with cost-sensitive decision making.
 
 ### Key Features
 
