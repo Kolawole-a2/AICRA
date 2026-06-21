@@ -449,7 +449,7 @@ def run_h2_calibration_thresholds_experiment(
         raise
 
     # Load trained model from H1
-    import joblib
+    from ..core.serialization import safe_joblib_load
 
     model_path = settings.models_dir / "h1_lgbm.joblib"
     if not model_path.exists():
@@ -462,7 +462,7 @@ def run_h2_calibration_thresholds_experiment(
             f"Expected at: {model_path}"
         )
 
-    model = joblib.load(model_path)
+    model = safe_joblib_load(model_path)
 
     # Generate predictions
     logger.info("Generating predictions...")

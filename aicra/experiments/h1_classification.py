@@ -304,9 +304,9 @@ def run_h1_classification_experiment(
     )
 
     # Load model and generate predictions
-    import joblib
+    from ..core.serialization import safe_joblib_load
 
-    model = joblib.load(model_path)
+    model = safe_joblib_load(model_path)
 
     # Prepare features
     if (

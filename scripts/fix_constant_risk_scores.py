@@ -10,7 +10,7 @@ import ast
 import sys
 from pathlib import Path
 
-import joblib
+from aicra.core.serialization import safe_joblib_load
 import numpy as np
 import pandas as pd
 
@@ -49,7 +49,7 @@ model_path = None
 for path in model_paths:
     if path.exists():
         try:
-            model = joblib.load(path)
+            model = safe_joblib_load(path)
             model_path = path
             print(f"  ✓ Loaded model: {path}")
             break

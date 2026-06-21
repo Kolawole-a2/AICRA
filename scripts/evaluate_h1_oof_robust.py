@@ -17,7 +17,7 @@ import argparse
 import json
 from pathlib import Path
 
-import joblib
+from aicra.core.serialization import safe_joblib_load
 import numpy as np
 import pandas as pd
 from sklearn.metrics import average_precision_score, brier_score_loss, roc_auc_score
@@ -37,7 +37,7 @@ def _to_prob_positive(model, features_df: pd.DataFrame) -> np.ndarray:
 def run_robust_oof_eval(model_path: Path, output_dir: Path) -> dict:
     train_data, test_data = load_ember_2024(time_ordered=True)
 
-    model = joblib.load(model_path)
+    model = safe_joblib_load(model_path)
     y_prob_test = _to_prob_positive(model, test_data.features)
     y_true_test = np.asarray(test_data.labels.values).astype(int)
 

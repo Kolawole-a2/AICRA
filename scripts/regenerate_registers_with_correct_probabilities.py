@@ -17,7 +17,7 @@ import sys
 import traceback
 from pathlib import Path
 
-import joblib
+from aicra.core.serialization import safe_joblib_load
 import numpy as np
 import pandas as pd
 
@@ -84,7 +84,7 @@ def main():
                 abs_path = os.path.abspath(path)
                 if debug:
                     print(f"[DEBUG] Loading model from: {abs_path}", file=sys.stdout)
-                model = joblib.load(path)
+                model = safe_joblib_load(path)
                 print(f"  [OK] Found model: {path}", file=sys.stdout)
                 break
             except Exception as e:
@@ -361,7 +361,7 @@ def main():
                     f"\n  [3] Applying calibration from {calibrator_path}...",
                     file=sys.stdout,
                 )
-                calibrator = joblib.load(calibrator_path)
+                calibrator = safe_joblib_load(calibrator_path)
                 probabilities = calibrator.transform(y_prob_raw)
                 print(
                     f"      Calibrated probabilities: min={probabilities.min():.6f}, max={probabilities.max():.6f}, mean={probabilities.mean():.6f}",

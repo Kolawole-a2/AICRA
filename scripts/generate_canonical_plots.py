@@ -19,7 +19,7 @@ import json
 import logging
 from pathlib import Path
 
-import joblib
+from aicra.core.serialization import safe_joblib_load
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -184,7 +184,7 @@ def generate_h1_plots(repo_root: Path) -> None:
         logger.error(f"Model not found: {model_path}")
         return
 
-    model = joblib.load(model_path)
+    model = safe_joblib_load(model_path)
 
     plots_dir = repo_root / "results" / "H1_classification" / "plots"
     plots_dir.mkdir(parents=True, exist_ok=True)
@@ -303,7 +303,7 @@ def generate_h2_plots(repo_root: Path) -> None:
         logger.error(f"Model not found: {model_path}")
         return
 
-    model = joblib.load(model_path)
+    model = safe_joblib_load(model_path)
 
     # Calibrate predictions (same as H2 experiment)
     logger.info("Calibrating predictions...")

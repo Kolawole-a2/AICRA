@@ -12,7 +12,7 @@ This script:
 import sys
 from pathlib import Path
 
-import joblib
+from aicra.core.serialization import safe_joblib_load
 import pandas as pd
 
 print("=" * 80)
@@ -113,7 +113,7 @@ working_model = None
 for name, path in model_paths.items():
     if path.exists():
         try:
-            model = joblib.load(path)
+            model = safe_joblib_load(path)
             print(f"  ✓ Found {name} model: {path}")
             if working_model is None:
                 working_model = (name, path, model)

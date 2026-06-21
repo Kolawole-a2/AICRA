@@ -12,7 +12,7 @@ This script:
 
 import pandas as pd
 import numpy as np
-import joblib
+from aicra.core.serialization import safe_joblib_load
 from pathlib import Path
 import sys
 import json
@@ -44,7 +44,7 @@ model_path = None
 for path in model_paths:
     if path.exists():
         try:
-            model = joblib.load(path)
+            model = safe_joblib_load(path)
             model_path = path
             print(f"  Found model: {path}")
             break

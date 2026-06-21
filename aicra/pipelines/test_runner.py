@@ -18,6 +18,7 @@ from ..pipelines.data_loader import EMBERDataLoader
 from ..pipelines.evaluation import EvaluationPipeline
 from ..pipelines.policy import PolicyPipeline
 from ..pipelines.smoke import SmokeTestPipeline
+from ..core.serialization import safe_joblib_load
 from ..register import compute_register, write_register
 
 
@@ -244,9 +245,7 @@ class TestRunnerPipeline:
                 else:
                     # Use standard training
                     model_path = self._train_lightgbm_model(train_data, "full")
-                    import joblib
-
-                    model = joblib.load(model_path)
+                    model = safe_joblib_load(model_path)
                     training_summary = {}
 
                 # Evaluate model
@@ -422,9 +421,7 @@ class TestRunnerPipeline:
 
     def _evaluate_model(self, model_path: str, test_data: Dataset, phase: str) -> Any:
         """Evaluate model and generate phase-specific artifacts."""
-        import joblib
-
-        model = joblib.load(model_path)
+        model = safe_joblib_load(model_path)
 
         # Generate predictions
         y_prob = model.predict_proba(test_data.features)
@@ -516,9 +513,7 @@ class TestRunnerPipeline:
         self, model_path: str, train_data: Dataset, test_data: Dataset, phase: str
     ) -> str:
         """Calibrate model for the given phase."""
-        import joblib
-
-        model = joblib.load(model_path)
+        model = safe_joblib_load(model_path)
 
         # Generate predictions
         y_prob_train = model.predict_proba(train_data.features)
@@ -554,10 +549,8 @@ class TestRunnerPipeline:
         self, model_path: str, calibrator_path: str, test_data: Dataset, phase: str
     ) -> str:
         """Generate policy for the given phase."""
-        import joblib
-
-        model = joblib.load(model_path)
-        calibrator = joblib.load(calibrator_path)
+        model = safe_joblib_load(model_path)
+        calibrator = safe_joblib_load(calibrator_path)
 
         # Generate calibrated predictions
         y_prob = model.predict_proba(test_data.features)
@@ -599,9 +592,7 @@ class TestRunnerPipeline:
         self, model_path: str, policy_path: str, test_data: Dataset, phase: str
     ) -> str:
         """Generate register for the given phase with calibrated susceptibility scores."""
-        import joblib
-
-        model = joblib.load(model_path)
+        model = safe_joblib_load(model_path)
 
         with open(policy_path, encoding="utf-8") as f:
             policy_data = json.load(f)
@@ -626,7 +617,7 @@ class TestRunnerPipeline:
         # Apply calibration to produce Susceptibility Score S∈[0,1]
         calibrator_path = self.models_dir / f"calibrator_{phase}.joblib"
         if calibrator_path.exists():
-            calibrator = joblib.load(calibrator_path)
+            calibrator = safe_joblib_load(calibrator_path)
             susceptibility_scores = calibrator.transform(
                 y_prob_raw
             )  # Calibrated S∈[0,1]

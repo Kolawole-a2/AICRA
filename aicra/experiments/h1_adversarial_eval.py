@@ -12,7 +12,7 @@ import json
 import logging
 from pathlib import Path
 
-import joblib
+from ..core.serialization import safe_joblib_load
 import numpy as np
 import pandas as pd
 from sklearn.metrics import confusion_matrix, roc_auc_score
@@ -301,7 +301,7 @@ def main():
     logging.basicConfig(level=logging.INFO)
 
     # Load model
-    model = joblib.load(args.model)
+    model = safe_joblib_load(args.model)
 
     # Load test data
     from ..core.data import load_ember_2024

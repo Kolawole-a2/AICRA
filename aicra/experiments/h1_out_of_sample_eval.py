@@ -13,7 +13,7 @@ import json
 import logging
 from pathlib import Path
 
-import joblib
+from ..core.serialization import safe_joblib_load
 import numpy as np
 import pandas as pd
 from sklearn.metrics import (
@@ -70,7 +70,7 @@ def evaluate_temporal_holdout(
         )
 
     # Load model
-    model = joblib.load(model_path)
+    model = safe_joblib_load(model_path)
 
     # Generate predictions
     X_test = test_data.features.values
@@ -190,7 +190,7 @@ def evaluate_out_of_family_temporal(
     )
 
     # Load model and evaluate
-    model = joblib.load(model_path)
+    model = safe_joblib_load(model_path)
     X_test = oof_test.features.values
     y_test = oof_test.labels.values
 

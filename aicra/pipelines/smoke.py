@@ -13,6 +13,7 @@ import yaml
 
 from ..config import Settings
 from ..core.data import Dataset, load_ember_2024
+from ..core.serialization import safe_joblib_load
 from ..register import write_register
 
 
@@ -383,9 +384,7 @@ class SmokeTestPipeline:
             )
 
         # Load model
-        import joblib
-
-        model = joblib.load(model_path)
+        model = safe_joblib_load(model_path)
 
         # Generate predictions
         y_prob = model.predict_proba(test_data.features)
@@ -533,9 +532,7 @@ class SmokeTestPipeline:
             )
 
         # Load model
-        import joblib
-
-        model = joblib.load(model_path)
+        model = safe_joblib_load(model_path)
 
         # Generate predictions
         y_prob_train = model.predict_proba(train_data.features)
@@ -584,10 +581,8 @@ class SmokeTestPipeline:
             )
 
         # Load model and calibrator
-        import joblib
-
-        model = joblib.load(model_path)
-        calibrator = joblib.load(calibrator_path)
+        model = safe_joblib_load(model_path)
+        calibrator = safe_joblib_load(calibrator_path)
 
         # Generate calibrated predictions
         y_prob = model.predict_proba(test_data.features)
@@ -645,10 +640,8 @@ class SmokeTestPipeline:
             )
 
         # Load model and calibrator
-        import joblib
-
-        model = joblib.load(model_path)
-        calibrator = joblib.load(calibrator_path)
+        model = safe_joblib_load(model_path)
+        calibrator = safe_joblib_load(calibrator_path)
 
         # Generate calibrated predictions
         y_prob = model.predict_proba(test_data.features)
@@ -699,9 +692,7 @@ class SmokeTestPipeline:
             )
 
         # Load model and policy
-        import joblib
-
-        model = joblib.load(model_path)
+        model = safe_joblib_load(model_path)
 
         with open(policy_path, encoding="utf-8") as f:
             policy_data = json.load(f)

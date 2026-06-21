@@ -6,6 +6,8 @@ from typing import Any
 
 import joblib
 import numpy as np
+
+from .serialization import safe_joblib_load
 from sklearn.isotonic import IsotonicRegression
 from sklearn.linear_model import LogisticRegression
 
@@ -38,7 +40,7 @@ class Calibrator:
 
     @staticmethod
     def load(path: Path) -> Calibrator:
-        return joblib.load(path)
+        return safe_joblib_load(path)
 
 
 def create_calibrator(method: str = "platt") -> Calibrator:

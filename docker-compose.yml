@@ -15,9 +15,8 @@ services:
     environment:
       - PYTHONPATH=/app
       - PYTHONUNBUFFERED=1
-      # Add authentication token (if API exists)
-      # For production, use secrets management (e.g., Docker secrets, env files)
-      - AICRA_API_TOKEN=${AICRA_API_TOKEN:-changeme_in_production}
+      # Local file-store tracking (no network server required)
+      - MLFLOW_TRACKING_URI=file:/app/mlruns
     command: ["python", "-m", "aicra", "--help"]
     healthcheck:
       test: ["CMD", "python", "-c", "import aicra; print('AICRA is healthy')"]
@@ -26,11 +25,13 @@ services:
       retries: 3
       start_period: 40s
 
+  # Optional: start only when needed — `docker compose --profile mlflow up mlflow`
   mlflow:
+    profiles: ["mlflow"]
     image: python:3.10-slim
     container_name: aicra-mlflow
-    # Security: Bind to localhost only to prevent external access
-    # For production, front with authenticated reverse proxy
+    # Security: localhost-only host bind; stock MLflow has no auth.
+    # Do not expose publicly without a reverse proxy (TLS + authentication).
     ports:
       - "127.0.0.1:5000:5000"
     volumes:
@@ -38,21 +39,15 @@ services:
     environment:
       - MLFLOW_BACKEND_STORE_URI=sqlite:///mlruns/mlflow.db
       - MLFLOW_DEFAULT_ARTIFACT_ROOT=/mlruns
-      # Add basic auth credentials (requires mlflow[extras] or custom auth middleware)
-      # For production, use secrets management
-      - MLFLOW_TRACKING_USERNAME=${MLFLOW_USERNAME:-admin}
-      - MLFLOW_TRACKING_PASSWORD=${MLFLOW_PASSWORD:-changeme_in_production}
-    command: 
+    command:
       - "mlflow"
       - "server"
       - "--host"
-      - "0.0.0.0"  # Internal to container (external access restricted by port binding)
+      - "127.0.0.1"
       - "--port"
       - "5000"
-      # Note: MLflow basic auth requires additional setup (see MLflow docs)
-      # For production, use reverse proxy with authentication (nginx/traefik)
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:5000/health"]
       interval: 30s
       timeout: 10s
       retries: 3

@@ -104,9 +104,9 @@ def train_and_score(output_root: Path | None = None) -> None:
         is_smoke_test=False,
     )
 
-    import joblib
+    from aicra.core.serialization import safe_joblib_load
 
-    model = joblib.load(model_path)
+    model = safe_joblib_load(model_path)
     logger.info(f"Loaded trained model from {model_path}")
 
     # -------------------------------------------------------------------------

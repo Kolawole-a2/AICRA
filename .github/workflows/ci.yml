@@ -56,6 +56,12 @@ jobs:
             echo "⚠️  Found pickle.load() usage - review for safety (warn only)"
           fi
 
+          if grep -R "joblib\.load(" --include="*.py" aicra/ scripts/ 2>/dev/null \
+            | grep -v "aicra/core/serialization.py"; then
+            echo "❌ Found bare joblib.load() in aicra/ or scripts/ — use safe_joblib_load()"
+            exit 1
+          fi
+
           echo "✅ Pickle pattern check passed"
 
       - name: Check Docker security
@@ -306,6 +312,11 @@ jobs:
           if [ -n "$matches" ]; then
             echo "$matches"
             echo "❌ SECURITY: Unsafe allow_pickle=True found"
+            exit 1
+          fi
+          if grep -R "joblib\.load(" --include="*.py" aicra/ scripts/ 2>/dev/null \
+            | grep -v "aicra/core/serialization.py"; then
+            echo "❌ SECURITY: bare joblib.load() in aicra/ or scripts/ — use safe_joblib_load()"
             exit 1
           fi
           echo "✅ No unsafe allow_pickle patterns detected"
