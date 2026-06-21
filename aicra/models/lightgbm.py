@@ -11,6 +11,7 @@ import pandas as pd
 from lightgbm import LGBMClassifier
 
 from ..config import get_settings
+from ..core.serialization import safe_joblib_load
 
 
 @dataclass
@@ -33,7 +34,7 @@ class BaggedLightGBM:
 
     @staticmethod
     def load(path: Path) -> BaggedLightGBM:
-        return joblib.load(path)
+        return safe_joblib_load(path)
 
 
 def train_bagged_lightgbm(X: pd.DataFrame, y: pd.Series) -> BaggedLightGBM:
