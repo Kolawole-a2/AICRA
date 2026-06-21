@@ -10,7 +10,7 @@
 
 ## Overview
 
-AICRA (ML Cyber Risk Advisor) is a machine learning-based cyber risk assessment system focused on endpoint ransomware detection in banking environments. It provides reproducible, auditable risk assessments with cost-sensitive decision making.
+AICRA (ML-Based Cyber Risk Advisor) is a machine learning-based cyber risk assessment system focused on endpoint ransomware detection in banking environments. It provides reproducible, auditable risk assessments with cost-sensitive decision making.
 
 ### Key Features
 
