@@ -13,12 +13,12 @@ import pandas as pd
 
 from ..config import Settings
 from ..core.data import Dataset
+from ..core.serialization import safe_joblib_load
 from ..pipelines.calibration import CalibrationPipeline
 from ..pipelines.data_loader import EMBERDataLoader
 from ..pipelines.evaluation import EvaluationPipeline
 from ..pipelines.policy import PolicyPipeline
 from ..pipelines.smoke import SmokeTestPipeline
-from ..core.serialization import safe_joblib_load
 from ..register import compute_register, write_register
 
 

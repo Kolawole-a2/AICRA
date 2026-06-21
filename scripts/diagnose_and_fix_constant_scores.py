@@ -12,8 +12,9 @@ This script:
 import sys
 from pathlib import Path
 
-from aicra.core.serialization import safe_joblib_load
 import pandas as pd
+
+from aicra.core.serialization import safe_joblib_load
 
 print("=" * 80)
 print("DIAGNOSE AND FIX CONSTANT RISK SCORES")

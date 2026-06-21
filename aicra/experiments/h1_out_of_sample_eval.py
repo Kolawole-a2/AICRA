@@ -13,7 +13,6 @@ import json
 import logging
 from pathlib import Path
 
-from ..core.serialization import safe_joblib_load
 import numpy as np
 import pandas as pd
 from sklearn.metrics import (
@@ -25,6 +24,7 @@ from sklearn.metrics import (
 
 from ..core.data import Dataset, load_ember_2024
 from ..core.evaluation import expected_calibration_error
+from ..core.serialization import safe_joblib_load
 
 logger = logging.getLogger(__name__)
 

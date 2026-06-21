@@ -17,9 +17,10 @@ import sys
 import traceback
 from pathlib import Path
 
-from aicra.core.serialization import safe_joblib_load
 import numpy as np
 import pandas as pd
+
+from aicra.core.serialization import safe_joblib_load
 
 # Add parent directory to path (scripts/ -> repo root)
 sys.path.insert(0, str(Path(__file__).parent.parent))

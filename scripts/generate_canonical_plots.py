@@ -19,7 +19,6 @@ import json
 import logging
 from pathlib import Path
 
-from aicra.core.serialization import safe_joblib_load
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -33,6 +32,7 @@ from sklearn.metrics import (
 )
 
 from aicra.core.data import Dataset, load_ember_2024
+from aicra.core.serialization import safe_joblib_load
 from aicra.pipelines.calibration import CalibrationPipeline
 
 logging.basicConfig(

@@ -6,10 +6,10 @@ from typing import Any
 
 import joblib
 import numpy as np
-
-from .serialization import safe_joblib_load
 from sklearn.isotonic import IsotonicRegression
 from sklearn.linear_model import LogisticRegression
+
+from .serialization import safe_joblib_load
 
 
 @dataclass
