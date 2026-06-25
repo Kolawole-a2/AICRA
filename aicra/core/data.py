@@ -152,45 +152,79 @@ def load_ember_2024(
             )
             all_timestamps = all_timestamps.iloc[sort_idx].reset_index(drop=True)
 
-            # Determine split point
-            if train_time_end is None:
-                # Default: 80% for training, 20% for testing
-                split_idx = int(len(all_features) * 0.8)
-                train_time_end = all_timestamps.iloc[split_idx]
-            else:
-                split_idx = (all_timestamps <= train_time_end).sum()
+            n_rows = len(all_features)
+            split_idx = int(n_rows * 0.8)
 
-            if test_time_start is None:
-                test_time_start = (
-                    all_timestamps.iloc[split_idx]
-                    if split_idx < len(all_timestamps)
-                    else all_timestamps.iloc[-1]
+            if train_time_end is None and test_time_start is None:
+                # Default H1 path: index-based 80/20 after sort (no boundary duplicates).
+                train_features = all_features.iloc[:split_idx]
+                train_labels = all_labels.iloc[:split_idx]
+                train_families = (
+                    all_families.iloc[:split_idx] if all_families is not None else None
                 )
+                train_timestamps = all_timestamps.iloc[:split_idx]
 
-            # Split
-            train_mask = all_timestamps <= train_time_end
-            test_mask = all_timestamps >= test_time_start
+                test_features = all_features.iloc[split_idx:]
+                test_labels = all_labels.iloc[split_idx:]
+                test_families = (
+                    all_families.iloc[split_idx:] if all_families is not None else None
+                )
+                test_timestamps = all_timestamps.iloc[split_idx:]
+            else:
+                if train_time_end is None:
+                    train_time_end = all_timestamps.iloc[split_idx - 1]
+                if test_time_start is None:
+                    after_train = all_timestamps > train_time_end
+                    if not after_train.any():
+                        raise ValueError(
+                            "No test samples after train_time_end="
+                            f"{train_time_end}. Choose an earlier cutoff."
+                        )
+                    test_time_start = all_timestamps.loc[after_train].min()
+
+                if train_time_end >= test_time_start:
+                    raise ValueError(
+                        "Invalid temporal split: train_time_end must be strictly "
+                        f"before test_time_start ({train_time_end} >= {test_time_start})."
+                    )
+
+                train_mask = all_timestamps <= train_time_end
+                test_mask = all_timestamps >= test_time_start
+
+                train_features = all_features[train_mask]
+                train_labels = all_labels[train_mask]
+                train_families = (
+                    all_families[train_mask] if all_families is not None else None
+                )
+                train_timestamps = all_timestamps[train_mask]
+
+                test_features = all_features[test_mask]
+                test_labels = all_labels[test_mask]
+                test_families = (
+                    all_families[test_mask] if all_families is not None else None
+                )
+                test_timestamps = all_timestamps[test_mask]
 
             train = Dataset(
-                features=all_features[train_mask].reset_index(drop=True),
-                labels=all_labels[train_mask].reset_index(drop=True),
+                features=train_features.reset_index(drop=True),
+                labels=train_labels.reset_index(drop=True),
                 families=(
-                    all_families[train_mask].reset_index(drop=True)
-                    if all_families is not None
+                    train_families.reset_index(drop=True)
+                    if train_families is not None
                     else None
                 ),
-                timestamps=all_timestamps[train_mask].reset_index(drop=True),
+                timestamps=train_timestamps.reset_index(drop=True),
             )
 
             test = Dataset(
-                features=all_features[test_mask].reset_index(drop=True),
-                labels=all_labels[test_mask].reset_index(drop=True),
+                features=test_features.reset_index(drop=True),
+                labels=test_labels.reset_index(drop=True),
                 families=(
-                    all_families[test_mask].reset_index(drop=True)
-                    if all_families is not None
+                    test_families.reset_index(drop=True)
+                    if test_families is not None
                     else None
                 ),
-                timestamps=all_timestamps[test_mask].reset_index(drop=True),
+                timestamps=test_timestamps.reset_index(drop=True),
             )
 
             logger.info(

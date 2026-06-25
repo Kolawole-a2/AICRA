@@ -1,0 +1,21 @@
+{
+  "generated_at_utc": "2026-06-25T22:32:40.970775+00:00",
+  "data_source": "C:\\Users\\KLAMOS\\Desktop\\My Cursor Projects\\AICRA\\data\\ember2024",
+  "loader": "aicra.core.data.load_ember_2024(time_ordered=True)",
+  "pool_n_rows": 50005,
+  "train_n_samples": 40004,
+  "test_n_samples": 10001,
+  "train_timestamp_earliest": "2023-09-24T00:00:10",
+  "train_timestamp_latest": "2023-10-06T23:59:41",
+  "test_timestamp_earliest": "2023-10-08T00:00:51",
+  "test_timestamp_latest": "2023-10-14T12:57:02",
+  "max_train_lt_min_test": true,
+  "max_train_lte_min_test": true,
+  "any_train_timestamp_gt_min_test": false,
+  "any_test_timestamp_lt_max_train": false,
+  "boundary_timestamp": "2023-10-06T23:59:41",
+  "train_rows_at_boundary_timestamp": 1,
+  "test_rows_at_boundary_timestamp": 0,
+  "duplicate_sample_at_boundary": false,
+  "interpretation": "Strict temporal gap holds (max(train) < min(test))."
+}
