@@ -117,7 +117,9 @@ def run_robust_oof_eval(model_path: Path, output_dir: Path) -> dict:
             "Cost-sensitive threshold (FN cost=100, FP cost=1) tuned on the full "
             "time-ordered test set, then applied to the OOF slice."
         ),
-        "oof_precision": float(precision_score(y_true_oof, y_pred_oof, zero_division=0)),
+        "oof_precision": float(
+            precision_score(y_true_oof, y_pred_oof, zero_division=0)
+        ),
         "oof_recall": float(recall_score(y_true_oof, y_pred_oof, zero_division=0)),
         "oof_f1": float(f1_score(y_true_oof, y_pred_oof, zero_division=0)),
         "oof_confusion_matrix": {

@@ -7,7 +7,6 @@ import argparse
 import json
 from pathlib import Path
 
-
 METRIC_KEYS = [
     "auroc",
     "pr_auc",
@@ -70,8 +69,8 @@ def write_markdown(report: dict, path: Path) -> None:
         "",
         "## Sample counts",
         "",
-        f"| | Baseline (canonical) | After fix (rerun) |",
-        f"|---|---------------------:|------------------:|",
+        "| | Baseline (canonical) | After fix (rerun) |",
+        "|---|---------------------:|------------------:|",
         f"| Train | {report['baseline_n_train']:,} | {report['rerun_n_train']:,} |",
         f"| Test | {report['baseline_n_test']:,} | {report['rerun_n_test']:,} |",
         "",
