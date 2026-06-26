@@ -1,7 +1,7 @@
 {
   "evaluation_name": "H1 robust OOF (held-out malware families + benign negatives)",
   "model_path": "models\\h1_lgbm.joblib",
-  "n_train_samples": 40005,
+  "n_train_samples": 40004,
   "n_test_samples": 10001,
   "n_oof_samples": 5587,
   "n_oof_positive_samples": 178,
@@ -149,14 +149,26 @@
     "yandex",
     "zeuspanda"
   ],
-  "oof_auroc": 0.9615279153969352,
-  "oof_pr_auc": 0.5818625060889457,
-  "oof_brier": 0.051266650497037144,
-  "oof_ece": 0.09327238077716166,
+  "oof_auroc": 0.9615746539786997,
+  "oof_pr_auc": 0.5839559032428958,
+  "oof_brier": 0.05131871821376421,
+  "oof_ece": 0.09343546334999538,
+  "operational_threshold": 0.02484848484848485,
+  "operational_threshold_note": "Cost-sensitive threshold (FN cost=100, FP cost=1) tuned on the full time-ordered test set, then applied to the OOF slice.",
+  "oof_precision": 0.06629213483146068,
+  "oof_recall": 0.9943820224719101,
+  "oof_f1": 0.12429775280898876,
+  "oof_confusion_matrix": {
+    "tn": 2916,
+    "fp": 2493,
+    "fn": 1,
+    "tp": 177
+  },
   "notes": [
     "This robust OOF variant avoids AUROC=NaN by ensuring both classes in OOF.",
     "Positives are from malware families unseen in training.",
     "Negatives are all benign samples from the same test window.",
+    "Precision/recall/F1 use the full-test banking threshold; OOF prevalence is ~3.2% positive vs ~46% on full test, so operational metrics are supporting reference only \u2014 AUROC remains the primary OOF metric.",
     "Existing results folders are untouched."
   ]
 }
