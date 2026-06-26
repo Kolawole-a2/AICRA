@@ -20,7 +20,7 @@ H1 baseline metrics are **empirically computed** by training simple models on th
 
 | Metric | Baseline | AICRA (aggregated) |
 |--------|----------|-------------------|
-| AUROC | 0.7781 | 0.9605 |
+| AUROC | 0.7811 | 0.9610 |
 | Precision | 0.7726 | 0.6398* |
 | Recall | 0.6378 | 0.9985 |
 | F1 | 0.6988 | 0.7794 |

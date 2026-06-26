@@ -35,7 +35,7 @@
 
 **Interpretation**:
 - H1 exceeds the **> 0.88 AUROC reliability benchmark** (not 0.85) and the ≥ 0.95 design target on full_ember.
-- Validated across **time-ordered** train/test, **multi-split** evaluation (mean AUROC 0.9605), and supplementary **out-of-family** test (OOF AUROC 0.9615; `results/H1_oof_robust_eval/`).
+- Validated across **time-ordered** train/test (40,004 / 10,001; `temporal_split_verification.json`), **multi-split** evaluation (mean AUROC 0.9610), and supplementary **out-of-family** test (OOF AUROC 0.9616; `results/H1_oof_robust_eval/`).
 - Empirical logistic baseline AUROC ≈ 0.778 on the same split (+25.9% lift).
 - Probability outputs are naturally well-calibrated (very low Brier and ECE from H1).
 

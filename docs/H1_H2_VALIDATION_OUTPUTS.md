@@ -108,7 +108,16 @@
 - `smoke_test/` - Small test set (200 samples)
 - `small_ember/` - Small EMBER subset (2,000 samples)
 - `main/` - Main split (10,000 samples)
-- `full_ember/` - Full EMBER dataset (50,006 samples) ⚠️ **Includes training data### Metrics Files:
+### Canonical H1 splits (test-only evaluation):
+- `full_ember/` - Full temporal test holdout (**10,001 samples**)
+- `main/` - Main split (10,000 samples)
+- `small_ember/` - Small EMBER subset (2,000 samples)
+- `smoke_test/` - Smoke test (200 samples)
+
+### Rebuild pipeline splits (different dataset — use with caution):
+- `full_ember/` - Train+test combined (**50,005+ samples**) ⚠️ **Not canonical H1 test holdout**
+
+### Metrics Files:
 - `results/h1h2_rebuild/<split>/metrics.json` - Per-split metrics (different from canonical)
 - `results/h1h2_rebuild/metrics_summary.json` - Aggregated metrics (different from canonical)
 

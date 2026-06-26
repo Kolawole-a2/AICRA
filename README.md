@@ -34,12 +34,12 @@ Values below come from canonical JSON/MD in this repo — see [docs/BENCHMARK_NO
 
 ### H1 — Classification
 
-Validated on **three modes:** time-ordered train/test, **multi-split** (`config/h1_splits.yaml`), and supplementary **out-of-family** ([`results/H1_oof_robust_eval/`](results/H1_oof_robust_eval/)).
+Validated on **three modes:** time-ordered train/test (40,004 / 10,001; see `temporal_split_verification.json`), **multi-split** (`config/h1_splits.yaml`), and supplementary **out-of-family** ([`results/H1_oof_robust_eval/`](results/H1_oof_robust_eval/)).
 
 | Metric | Benchmark / baseline | AICRA (canonical) |
 |--------|----------------------|-------------------|
-| AUROC | Reliability **> 0.88**; empirical logistic ≈ **0.778** (same split) | **0.9796** (full_ember); mean **0.9605** multi-split; **0.9615** OOF |
-| Lift vs logistic | — | **+25.9%** AUROC on full_ember |
+| AUROC | Reliability **> 0.88**; empirical logistic ≈ **0.781** (same split) | **0.9796** (full_ember); mean **0.9610** multi-split; **0.9616** OOF |
+| Lift vs logistic | — | **+25.4%** AUROC on full_ember |
 
 ### H2 — Thresholds & calibration test
 
@@ -65,6 +65,7 @@ External reference pairs (`d3fend_reference_pairs.csv`) provide a secondary **DA
 | Hypothesis | Results | Summary |
 |------------|---------|---------|
 | H1 | `results/H1_classification/H1_full_results.json` | `results/H1_classification/H1_summary.md` |
+| H1 temporal split | `results/H1_classification/temporal_split_verification.json` | `results/H1_classification/temporal_split_verification.md` |
 | H1 OOF | `results/H1_oof_robust_eval/oof_robust_metrics.json` | `results/H1_oof_robust_eval/oof_robust_summary.md` |
 | H2 | `results/H2_calibration_thresholds/H2_full_results.json` | `results/H2_calibration_thresholds/H2_summary.md` |
 | H3 | `results/H3_full_evaluation/H3_full_results.json` | `results/H3_full_evaluation/H3_full_summary.md` |
@@ -116,6 +117,7 @@ Command details, layouts, and reviewer paths: **[docs/praxis/EXPERIMENTS_GUIDE.m
 | Defense / examiner review | [docs/praxis/README.md](docs/praxis/README.md) |
 | Step-by-step reproduction | [docs/EXPERIMENTS.md](docs/EXPERIMENTS.md) |
 | Results tables & interpretation | [docs/RESULTS_SUMMARY.md](docs/RESULTS_SUMMARY.md) |
+| H1/H2/H3 split definitions | [docs/EVALUATION_SPLITS_H1_H2_H3.md](docs/EVALUATION_SPLITS_H1_H2_H3.md) |
 | P-values & H3 variance note | [docs/HYPOTHESIS_TESTING_PVALUES.md](docs/HYPOTHESIS_TESTING_PVALUES.md) |
 | Baseline methodology | [docs/BASELINE_METHODOLOGY_TEMP.md](docs/BASELINE_METHODOLOGY_TEMP.md) |
 | Historical dev notes | [docs/archive/development/](docs/archive/development/) (traceability only) |

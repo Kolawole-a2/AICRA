@@ -26,8 +26,8 @@
 | AUROC reliability benchmark **> 0.88** (not 0.85) | `README.md`, `docs/HYPOTHESIS_TESTING_PVALUES.md` | ✅ | Benchmark threshold |
 | Empirical logistic baseline ≈ 0.778 (same split) | `results/H1_classification/H1_full_results.json` | ✅ | `baselines.logistic_regression.auroc` |
 | full_ember AUROC 0.9796 | `H1_full_results.json` → `metrics.per_split_results` | ✅ | full_ember split |
-| Multi-split mean AUROC 0.9605 | `H1_full_results.json` → `metrics.aggregated.auroc` | ✅ | 4 splits |
-| OOF AUROC 0.9615 (supplementary) | `results/H1_oof_robust_eval/oof_robust_summary.md` | ✅ | `scripts/evaluate_h1_oof_robust.py` |
+| Multi-split mean AUROC 0.9610 | `H1_full_results.json` → `metrics.aggregated_metrics.auroc.mean` | ✅ | 4 splits |
+| OOF AUROC 0.9616 (supplementary) | `results/H1_oof_robust_eval/oof_robust_summary.md` | ✅ | `scripts/evaluate_h1_oof_robust.py` |
 | **Time-ordered** train/test | `aicra/experiments/h1_classification.py` | ✅ | Temporal split |
 | **Multi-split** evaluation | `config/h1_splits.yaml` | ✅ | full_ember, main, small_ember, smoke_test |
 | **Out-of-family** evaluation | `scripts/evaluate_h1_oof_robust.py` | ✅ | Supplementary folder |

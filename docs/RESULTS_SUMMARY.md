@@ -12,36 +12,37 @@
 
 | Mode | Purpose | Evidence |
 |------|---------|----------|
-| **Time-ordered** | Train/test respects temporal ordering (no leakage) | Canonical H1 train/test on EMBER-2024 |
+| **Time-ordered** | Train/test respects temporal ordering (no leakage) | Canonical H1: 40,004 train / 10,001 test; verified in `results/H1_classification/temporal_split_verification.json` (`max(train) < min(test)`) |
 | **Multi-split** | Robustness across nested test slices | `config/h1_splits.yaml` → full_ember, main, small_ember, smoke_test |
-| **Out-of-family (OOF)** | Ranking on malware families unseen in training | `results/H1_oof_robust_eval/` (OOF AUROC 0.9615) |
+| **Out-of-family (OOF)** | Ranking on malware families unseen in training | `results/H1_oof_robust_eval/` (OOF AUROC 0.9616; operational P/R/F1 at banking threshold in `oof_robust_metrics.json`) |
 
 ### H1 Results Table
 
 | Model | Dataset Split | AUROC | Precision | Recall | F1 | % Improvement vs Baseline |
 |-------|---------------|-------|-----------|--------|-----|---------------------------|
-| LightGBM (AICRA) | Full EMBER Temporal (full_ember) | 0.9796 | 0.666 | 0.998 | 0.799 | +25.9% vs empirical logistic |
-| LightGBM (AICRA) | Out-of-Family (supplementary) | 0.9615 | — | — | — | Exceeds > 0.88 benchmark |
+| LightGBM (AICRA) | Full EMBER Temporal (full_ember) | 0.9796 | 0.648 | 0.998 | 0.786 | +25.4% vs empirical logistic |
+| LightGBM (AICRA) | Out-of-Family (supplementary) | 0.9616 | 0.066* | 0.994* | 0.124* | Exceeds > 0.88 benchmark |
 | Logistic Regression (Baseline) | Full EMBER Temporal | 0.778† | 0.70† | 0.75† | 0.72† | Empirical baseline (same split) |
 | Majority Classifier (Baseline) | Full EMBER Temporal | 0.50 | 0.50 | 0.50 | 0.50 | Baseline |
 
 *OOF metrics: `results/H1_oof_robust_eval/oof_robust_summary.md`  
+*OOF precision/recall/F1 use the full-test banking threshold on the OOF slice (~3.2% positive rate); AUROC remains the primary OOF metric.  
 †Empirical baseline values from the same EMBER-2024 splits (`H1_full_results.json`). **Reliability benchmark for AUROC is > 0.88** (not 0.85).
 
 **Additional Metrics**:
-- PR-AUC: 0.987 (baseline: 0.60, improvement: +64.5%)
-- Brier Score: 0.043 (baseline: 0.25, improvement: -83.0%)
-- ECE: 0.007 (baseline: 0.15, improvement: -95.6%)
-- Operational Threshold: 0.104 (banking-optimized, FN cost >> FP cost)
-- Lift@1%: 2.08 (2.08× baseline precision at top 1% of predictions)
+- PR-AUC: 0.977 (full_ember; aggregated mean 0.955)
+- Brier Score: 0.055 (full_ember)
+- ECE: 0.008 (full_ember)
+- Operational Threshold: 0.0248 (banking-optimized, FN cost >> FP cost)
+- Lift@1%: 2.18 (2.18× baseline precision at top 1% of predictions)
 
 ### H1 Interpretation
 
-**Predictive Strength**: AICRA achieves AUROC of 0.9796 on the full_ember temporal split and mean AUROC 0.9605 across multi-split evaluation, exceeding the **> 0.88 reliability benchmark** and the stricter ≥ 0.95 design target. Out-of-family evaluation (OOF AUROC 0.9615) provides an additional generalization stress test. Improvement over the empirical logistic baseline on the same split is **+25.9%** (0.778 → 0.9796), not +16.1% vs an incorrect 0.85 reference.
+**Predictive Strength**: AICRA achieves AUROC of 0.9796 on the full_ember temporal split and mean AUROC 0.9610 across multi-split evaluation, exceeding the **> 0.88 reliability benchmark** and the stricter ≥ 0.95 design target. Out-of-family evaluation (OOF AUROC 0.9616) provides an additional generalization stress test. Improvement over the empirical logistic baseline on the same split is **+25.4%** (0.781 → 0.9796).
 
-**Calibration Relevance**: The low Brier score (0.043) and ECE (0.007) indicate that AICRA's probability estimates are well-calibrated, meaning predicted probabilities closely match observed frequencies. This calibration is critical for banking SOCs, where risk scores must be interpretable and actionable for security analysts making triage decisions.
+**Calibration Relevance**: The Brier score (0.055) and ECE (0.008) on full_ember indicate well-calibrated probability estimates on the temporal holdout, supporting interpretable risk scores for banking SOCs.
 
-**Alert-Fatigue Reduction Implication**: The ~25.9% AUROC improvement over the empirical logistic baseline on the same split, combined with the banking-optimized threshold that prioritizes recall (~99.8% on full_ember), suggests a meaningful reduction in false negatives. Given that false negatives in ransomware detection directly contribute to alert fatigue (analysts must investigate missed threats retroactively), this improvement translates to reduced operational burden.
+**Alert-Fatigue Reduction Implication**: The ~25.4% AUROC improvement over the empirical logistic baseline on the same split, combined with the banking-optimized threshold that prioritizes recall (~99.8% on full_ember; 7 false negatives out of 4,592 positives), suggests a meaningful reduction in false negatives relative to the logistic baseline (~99.6% FN-rate reduction).
 
 ---
 
@@ -122,7 +123,7 @@
 
 ### H1: Predictive Performance and Operational Deployment
 
-H1 tested whether static PE features enable reliable ransomware classification suitable for banking SOC deployment across **time-ordered**, **multi-split**, and **out-of-family** evaluation. Results demonstrate AUROC 0.9796 on full_ember (mean 0.9605 multi-split; OOF 0.9615)—all exceeding the **> 0.88 reliability benchmark**—with **+25.9%** improvement over the empirical logistic baseline (0.778) on the same split.
+H1 tested whether static PE features enable reliable ransomware classification suitable for banking SOC deployment across **time-ordered**, **multi-split**, and **out-of-family** evaluation. Results demonstrate AUROC 0.9796 on full_ember (mean 0.9610 multi-split; OOF 0.9616)—all exceeding the **> 0.88 reliability benchmark**—with **+25.4%** improvement over the empirical logistic baseline (0.781) on the same split.
 
 The banking-optimized threshold (0.104) prioritizes recall (0.936) over precision (0.946), reflecting the cost structure where false negatives are 10× more expensive than false positives. This threshold configuration produces expected operational loss of 0.173, representing a 65.4% reduction compared to baseline. The well-calibrated probability estimates (Brier: 0.043, ECE: 0.007) ensure that risk scores are interpretable and actionable for security analysts making triage decisions.
 

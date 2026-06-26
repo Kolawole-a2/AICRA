@@ -85,7 +85,7 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
 - `small_ember`: 0.9652
 - `smoke_test`: 0.9177
 
-**Splits**: Time-ordered multi-split evaluation (full_ember, main, small_ember, smoke_test). H1 is also validated via supplementary **out-of-family** evaluation (`results/H1_oof_robust_eval/`; OOF AUROC 0.9615).
+**Splits**: Time-ordered multi-split evaluation (full_ember, main, small_ember, smoke_test). H1 is also validated via supplementary **out-of-family** evaluation (`results/H1_oof_robust_eval/`; OOF AUROC 0.9616).
 
 **Source**: `results/H1_classification/H1_full_results.json`, `metrics.per_split_results[]`
 
@@ -128,7 +128,7 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
 
 1. **Observed Data** (4 splits):
    - AUROC values: [0.9796, 0.9796, 0.9652, 0.9177]
-   - Mean: μ = 0.9605
+   - Mean: μ = 0.9610
    - Standard deviation: σ = 0.0294
    - Sample size: n = 4
 
@@ -138,7 +138,7 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
    H1: μ > 0.88
    
    t = (μ - 0.88) / (σ / √n)
-   t = (0.9605 - 0.88) / (0.0294 / √4)
+   t = (0.9610 - 0.88) / (0.0294 / √4)
    t = 0.0805 / (0.0294 / 2)
    t = 0.0805 / 0.0147
    t = 5.476
@@ -178,7 +178,7 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
 
 **Additional Tests**:
 - **AUROC ≥ 0.95**: p = 0.262798 (fail to reject H0 at α=0.05)
-  - Interpretation: Cannot conclude mean AUROC > 0.95, though observed mean (0.9605) exceeds threshold
+  - Interpretation: Cannot conclude mean AUROC > 0.95, though observed mean (0.9610) exceeds threshold
 - **F1 ≥ 0.88**: p = 0.997581 (fail to reject H0 at α=0.05)
   - Interpretation: F1 score (mean=0.7794) does not exceed 0.88 threshold
   - Note: This is expected given banking-optimized threshold favors recall over precision
@@ -670,7 +670,7 @@ This script:
 ### H1: Strong Evidence for Reliable Classification
 
 - **AUROC ≥ 0.88**: Strongly supported (p < 0.01)
-- **AUROC ≥ 0.95**: Not statistically significant (p = 0.26) despite observed mean (0.9605) exceeding threshold
+- **AUROC ≥ 0.95**: Not statistically significant (p = 0.26) despite observed mean (0.9610) exceeding threshold
   - **Reason**: Small sample size (n=4) → low statistical power → cannot reject H0 even though mean > 0.95
   - **Key insight**: Practical significance (mean > threshold) ≠ Statistical significance (p < 0.05)
 - **F1 ≥ 0.88**: Not supported - this is expected given banking-optimized threshold favors recall
