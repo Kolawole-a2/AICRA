@@ -164,7 +164,14 @@ Deterministic mapping achieves **100.00%** DAC_internal (100% by definition) com
 
 Based on `results/H3_full_evaluation/H3_full_results.json`:
 
-- **Number of Splits Evaluated:** 4 (main, small_ember, full_ember, smoke_test)
+| Split | Samples |
+|-------|--------:|
+| **main** | 10,000 |
+| **full_ember** | 20,002 |
+| **small_ember** | 2,000 |
+| **smoke_test** | 2 |
+
+- **Number of Splits Evaluated:** 4 (main, full_ember, small_ember, smoke_test)
 - **Total Samples:** 32,004
 - **Deterministic DAC_internal:** 100.00% (SD: 0.00%) — by definition
 - **Learned DAC_internal:** 0.00% (SD: 0.00%)

@@ -209,12 +209,21 @@ Cost-aware thresholding significantly reduces expected loss compared to F1-optim
 
 #### H3 Results Summary
 
-- **Number of Splits Evaluated:** 3 (small_ember, full_ember, smoke_test)
-- **Total Samples:** 22,004
-- **Total Techniques:** 4
+| Split | Samples (H3 scored cohort) |
+|-------|---------------------------:|
+| **main** | 10,000 |
+| **full_ember** | 20,002 |
+| **small_ember** | 2,000 |
+| **smoke_test** | 2 |
+
+- **Number of Splits Evaluated:** 4 (main, full_ember, small_ember, smoke_test)
+- **Total Samples:** 32,004
 - **Deterministic DAC_internal:** 100.00% (SD: 0.00%) - by definition
 - **Learned DAC_internal:** 0.00% (SD: 0.00%)
+- **Deterministic actionable precision:** 0.75 (SD: 0.50)
+- **Learned actionable precision:** 0.00 (SD: 0.00)
 - **Mean Δ DAC_internal:** 100.00% (SD: 0.00%)
+- **Mean Δ actionable precision:** +0.75 (95% CI: [0.25, 1.0]; p = 0.058)
 - **95% CI for Δ DAC_internal:** [100.00%, 100.00%]
 
 #### Statistical Validation
@@ -256,7 +265,7 @@ Cost-aware thresholding significantly reduces expected loss compared to F1-optim
 #### Multi-Split Evaluation
 - **H1:** Evaluated across 4 splits (full_ember, main, small_ember, smoke_test)
 - **H2:** Evaluated across 4 splits (full_ember, main, small_ember, smoke_test)
-- **H3:** Evaluated across 3 splits (small_ember, full_ember, smoke_test)
+- **H3:** Evaluated across 4 splits (main, full_ember, small_ember, smoke_test)
 
 #### Statistical Validation
 - **Bootstrap Confidence Intervals:** 95% CI computed for all aggregated metrics
@@ -327,7 +336,7 @@ Cost-aware thresholding significantly reduces expected loss compared to F1-optim
 - ✅ H2: Plots generated for all splits
 - ✅ H3: DAC_internal = 100% achieved (deterministic mapping)
 - ✅ H3: Baseline comparison completed (naive and learned mappings)
-- ✅ H3: Multi-split evaluation completed (3 splits)
+- ✅ H3: Multi-split evaluation completed (4 splits)
 - ✅ All results files generated and validated
 - ✅ All plots generated and validated
 - ✅ Statistical validation completed (bootstrap CIs, t-tests)

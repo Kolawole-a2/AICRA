@@ -532,13 +532,13 @@ mean(diff) = 0.0066 - 0.0457 = -0.0378 (negative = worse after calibration)
 **Precision Test**:
 
 **Observation**:
-- Deterministic precision = [1.0, 1.0, 1.0, 0.0] (3 splits with precision=1.0)
+- Deterministic precision = [1.0, 1.0, 1.0, 0.0] (main, small_ember, full_ember, smoke_test; 1.0 on the three larger splits)
 - Learned precision = [0.0, 0.0, 0.0, 0.0] (all splits with precision=0.0)
 
 **Step-by-Step Calculation**:
 
 1. **Observed Data** (4 splits, 3 valid):
-   - Deterministic precision: [1.0, 1.0, 1.0, 0.0] (3 splits with precision > 0)
+   - Deterministic precision: [1.0, 1.0, 1.0, 0.0] (main, small_ember, full_ember, smoke_test)
    - Learned precision: [0.0, 0.0, 0.0, 0.0] (all splits with precision = 0)
    - Using 3 valid splits: [1.0, 1.0, 1.0] vs [0.0, 0.0, 0.0]
 
