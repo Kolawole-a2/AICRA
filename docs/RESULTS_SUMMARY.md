@@ -33,7 +33,7 @@
 - PR-AUC: 0.977 (full_ember; aggregated mean 0.955)
 - Brier Score: 0.055 (full_ember)
 - ECE: 0.008 (full_ember)
-- Operational Threshold: 0.0248 (banking-optimized, FN cost >> FP cost)
+- Operational Threshold: 0.0248 (banking-optimized at **FN cost = 100, FP cost = 1**)
 - Lift@1%: 2.18 (2.18× baseline precision at top 1% of predictions)
 
 ### H1 Interpretation

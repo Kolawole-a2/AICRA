@@ -80,7 +80,7 @@ Ransomware        7       4585
 - **False Negatives (FN):** 7 - Ransomware missed (critical metric, very low)
 - **True Positives (TP):** 4,585 - Correctly identified ransomware
 
-**Key Insight:** The model achieves 99.85% recall (only 7 ransomware samples missed out of 4,592), which is critical for banking security. The higher false positive rate (2,493) is an acceptable trade-off given the banking cost structure (FN cost >> FP cost).
+**Key Insight:** The model achieves 99.85% recall (only 7 ransomware samples missed out of 4,592), which is critical for banking security. The higher false positive rate (2,493) is an acceptable trade-off given the banking cost structure used for H1's operational threshold (**FN cost = 100, FP cost = 1**).
 
 #### Baseline Comparison
 
@@ -133,7 +133,9 @@ Ransomware        7       4585
 | **Cost-Optimized (Uncalibrated)** | 0.1802 | **-50.6%** ✅ |
 | **Cost-Optimized (Calibrated)** | 0.2579 | **-29.3%** ✅ |
 
-**Key Finding:** Cost-aware thresholding reduces expected loss by **50.6%** compared to F1-optimized thresholding, demonstrating better alignment with banking cost structures (FN cost = 100.0, FP cost = 1.0).
+**Key Finding:** Cost-aware thresholding reduces expected loss by **50.6%** compared to F1-optimized thresholding under the **H2 cost structure (FN cost = 10.0, FP cost = 1.0)**.
+
+> **Cost structure note:** H1 uses a **100:1** ratio (FN = 100, FP = 1) for its banking-optimized operational threshold. H2 uses **10:1** (FN = 10, FP = 1) to evaluate cost-optimal vs F1-optimal thresholding on the same H1 model probabilities.
 
 #### Per-Split Expected Loss Results
 
@@ -166,7 +168,7 @@ Ransomware        7       4585
 
 #### Baseline Comparison
 
-**Primary comparison:** F1-optimized vs cost-optimized threshold on the same H1 model (FN cost = 100, FP cost = 1).
+**Primary comparison:** F1-optimized vs cost-optimized threshold on the same H1 model probabilities (**H2 cost structure: FN cost = 10, FP cost = 1**).
 
 **Calibration:** Uncalibrated vs isotonic-calibrated probabilities from the same model.
 
@@ -181,7 +183,7 @@ Ransomware        7       4585
 
 Cost-aware thresholding significantly reduces expected loss compared to F1-optimized thresholding, demonstrating better alignment with banking cost structures (FN cost >> FP cost).
 
-**Canonical Statement:** Cost-optimal thresholding reduces expected loss by 50.6% vs F1-optimal under banking-style costs. Post-hoc isotonic calibration does not improve expected loss (calibration help test).
+**Canonical Statement:** Cost-optimal thresholding reduces expected loss by 50.6% vs F1-optimal under H2 banking-style costs (FN = 10, FP = 1). Post-hoc isotonic calibration does not improve expected loss (calibration help test).
 
 ---
 

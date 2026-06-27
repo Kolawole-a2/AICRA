@@ -118,7 +118,7 @@
 
 ### Baseline Methodology
 
-**H2 primary comparison:** F1-optimized vs cost-optimized threshold on the same H1 model probabilities (FN cost = 10, FP cost = 1).
+**H2 primary comparison:** F1-optimized vs cost-optimized threshold on the same H1 model probabilities (**FN cost = 10, FP cost = 1**). H1 operational thresholding uses **FN cost = 100, FP cost = 1** separately.
 
 **Calibration reporting:** Uncalibrated vs isotonic-calibrated probabilities from the same model, evaluated as a **help test**. Finding: calibration does not improve expected loss on this already well-calibrated model.
 

@@ -871,7 +871,7 @@ def rolling_calibration(
 #### **Threshold Optimization Locations| File | Function/Method | Objective | Cost Assumptions |
 |------|----------------|-----------|------------------|
 | `aicra/pipelines/cost_optimization.py` | `CostOptimizer.optimize_threshold()` | Minimize: `FN_cost * FN_rate + FP_cost * FP_rate` | Banking-specific (FN=1000, FP=100 default) |
-| `aicra/experiments/h2_calibration_thresholds.py` | `compute_expected_loss()` | Minimize: `cost_fn * FN + cost_fp * FP` | Banking-specific (FN=100, FP=1 default) |
+| `aicra/experiments/h2_calibration_thresholds.py` | `compute_expected_loss()` | Minimize: `cost_fn * FN + cost_fp * FP` | H2 default (FN=10, FP=1) |
 | `aicra/core/evaluation.py` | `cost_sensitive_threshold()` | Minimize: `fn * cost_fn + fp * cost_fp` | Generic (parameters) |
 | `aicra/pipelines/policy.py` | `optimize_cost_sensitive_threshold()` | Minimize expected loss | Banking-specific |
 
