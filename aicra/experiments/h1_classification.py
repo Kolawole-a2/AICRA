@@ -166,6 +166,24 @@ def evaluate_h1_split(
     }
 
 
+def _h1_baseline_comparison_metrics(metrics: dict) -> dict[str, float]:
+    """Metrics used for baseline % improvement (full temporal test, not split mean)."""
+    full = metrics.get("full_test_set_metrics")
+    if full:
+        return {
+            "auroc": float(full["auroc"]),
+            "precision": float(full["precision"]),
+            "recall": float(full["recall"]),
+            "f1": float(full["f1"]),
+        }
+    return {
+        "auroc": float(metrics["auroc"]),
+        "precision": float(metrics["precision"]),
+        "recall": float(metrics["recall"]),
+        "f1": float(metrics["f1"]),
+    }
+
+
 def aggregate_h1_metrics(all_results: list[dict]) -> dict:
     """
     Aggregate H1 metrics across all splits with bootstrap confidence intervals.
@@ -978,10 +996,10 @@ def run_h1_classification_experiment(
         json.dump(full_results, f, indent=2)
     logger.info(f"Saved full results to {full_results_path}")
 
-    # Generate summary (keep original name for backward compatibility, also generate H1_summary.md)
-    summary_path = output_dir / "summary.md"
+    # Generate canonical human-readable summary (H1_summary.md only)
     h1_summary_path = output_dir / "H1_summary.md"
-    with open(summary_path, "w", encoding="utf-8") as f:
+    comparison = _h1_baseline_comparison_metrics(metrics)
+    with open(h1_summary_path, "w", encoding="utf-8") as f:
         f.write("# H1 Classification Experiment Results\n\n")
         f.write("## Hypothesis\n\n")
         f.write("Static PE features enable reliable ransomware classification with ")
@@ -1125,19 +1143,19 @@ def run_h1_classification_experiment(
             if "improvement" in metrics:
                 f.write(
                     f"- **AUROC Improvement**: +{metrics['improvement']['auroc_pct']:.1f}% "
-                    f"({metrics['auroc']:.4f} vs {metrics['baseline']['best_baseline']['auroc']:.4f})\n"
+                    f"({comparison['auroc']:.4f} vs {metrics['baseline']['best_baseline']['auroc']:.4f})\n"
                 )
                 f.write(
                     f"- **Precision Improvement**: +{metrics['improvement']['precision_pct']:.1f}% "
-                    f"({metrics['precision']:.4f} vs {metrics['baseline']['best_baseline']['precision']:.4f})\n"
+                    f"({comparison['precision']:.4f} vs {metrics['baseline']['best_baseline']['precision']:.4f})\n"
                 )
                 f.write(
                     f"- **Recall Improvement**: +{metrics['improvement']['recall_pct']:.1f}% "
-                    f"({metrics['recall']:.4f} vs {metrics['baseline']['best_baseline']['recall']:.4f})\n"
+                    f"({comparison['recall']:.4f} vs {metrics['baseline']['best_baseline']['recall']:.4f})\n"
                 )
                 f.write(
                     f"- **F1 Improvement**: +{metrics['improvement']['f1_pct']:.1f}% "
-                    f"({metrics['f1']:.4f} vs {metrics['baseline']['best_baseline']['f1']:.4f})\n\n"
+                    f"({comparison['f1']:.4f} vs {metrics['baseline']['best_baseline']['f1']:.4f})\n\n"
                 )
 
             if "alert_fatigue_reduction" in metrics:
@@ -1192,14 +1210,7 @@ def run_h1_classification_experiment(
         else:
             f.write("✗ H1 is **not supported**: AUROC < 0.95.\n")
 
-    logger.info(f"Saved summary to {summary_path}")
-
-    # Also save as H1_summary.md for praxis validation
-    with open(summary_path, encoding="utf-8") as f:
-        summary_content = f.read()
-    with open(h1_summary_path, "w", encoding="utf-8") as f:
-        f.write(summary_content)
-    logger.info(f"Saved H1 summary to {h1_summary_path}")
+    logger.info(f"Saved summary to {h1_summary_path}")
 
     logger.info("=" * 80)
     logger.info("H1 Experiment Complete")

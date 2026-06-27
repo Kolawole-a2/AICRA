@@ -178,7 +178,7 @@ def main():
             results["H1"] = {
                 "output_dir": str(h1_output),
                 "metrics": str(h1_output / "metrics.json"),
-                "summary": str(h1_output / "summary.md"),
+                "summary": str(h1_output / "H1_summary.md"),
             }
         else:
             logger.info("Skipping H1 experiment")

@@ -30,7 +30,7 @@
 
 **H1 Results**:
 - `results/H1_classification/metrics.json` — Complete metrics (AUROC, Precision, Recall, F1, baselines, improvements)
-- `results/H1_classification/summary.md` — Human-readable summary
+- `results/H1_classification/H1_summary.md` — Human-readable summary
 - `artifacts/H1_classification/` — Alternative output location (if using standardized entrypoints)
 
 **H2 Results**:
@@ -97,7 +97,7 @@ python experiments/h1_train_eval.py
 
 # Expected outputs:
 # - artifacts/H1_classification/metrics.json
-# - artifacts/H1_classification/summary.md
+# - artifacts/H1_classification/H1_summary.md
 # - artifacts/models/h1_lgbm.joblib (trained model)
 ```
 
