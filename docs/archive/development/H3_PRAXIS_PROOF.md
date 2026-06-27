@@ -81,13 +81,18 @@ in this environment.
 - ✅ **`diagnostics/`** - Distribution plots for all splits
 
 ### 4.2 Current Evaluation Status
-**Last Run Results:- **Splits Evaluated:** 3 (small_ember, full_ember, smoke_test)
-- **Total Samples:** 22,004
-- **Total Techniques:** 4
+
+> **Updated 2026:** Canonical results in `results/H3_full_evaluation/H3_full_results.json` (4 splits, 32,004 samples).
+
+**Last Run Results:**
+- **Splits Evaluated:** 4 (main, full_ember, small_ember, smoke_test)
+- **Per-split samples:** main 10,000; full_ember 20,002; small_ember 2,000; smoke_test 2
+- **Total Samples:** 32,004
 - **Deterministic DAC_internal:** 100.0% (by definition)
 - **Learned DAC_internal:** 0.0%
-- **Deterministic DAC_external:** 0.0%
-- **Learned DAC_external:** 73.33%
+- **Deterministic actionable precision:** 0.75 (mean; 1.0 on main/small_ember/full_ember; 0.0 on smoke_test)
+- **Learned actionable precision:** 0.00
+- **Mean Δ actionable precision:** +0.75
 
 ---
 

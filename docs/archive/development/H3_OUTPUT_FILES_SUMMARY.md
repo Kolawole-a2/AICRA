@@ -15,7 +15,7 @@ This document provides a complete list of all H3 evaluation output files and the
 ### 1. H3 Full Results (JSON)
 - **File:** `results/H3_full_evaluation/H3_full_results.json`
 - **Description:** Complete H3 evaluation results in JSON format
-- **Contains:  - Per-split results (small_ember, full_ember, smoke_test)
+- **Contains:** Per-split results (main, small_ember, full_ember, smoke_test)
   - Aggregated metrics across all splits
   - Mapping behavior validation
   - Deterministic vs Learned mapping comparison

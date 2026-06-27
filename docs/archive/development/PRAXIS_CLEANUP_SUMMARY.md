@@ -47,7 +47,7 @@ This document summarizes the cleanup and validation work performed on the AICRA 
 
 **Baseline Definitions:- **H1:** AUROC reliability benchmark >0.88 (not 0.85); empirical logistic baseline AUROC ≈0.778 on same split; PR-AUC≈0.60, Brier=0.25, ECE=0.15 (same-split empirical references)
 - **H2:** Brier=0.25, ECE=0.15 (uncalibrated baselines)
-- **H3:** DAC_internal=0.0%, Actionable Precision=0.20 (naive/random mapping baselines)
+- **H3:** DAC_internal=0.0% (naive/learned vs deterministic ground truth); actionable precision deterministic **0.75** vs learned **0.00** (4 splits, 32,004 samples)
 
 ---
 
@@ -89,10 +89,12 @@ This document summarizes the cleanup and validation work performed on the AICRA 
   - ✅ Learned DAC_internal = 0.00% (validates mapping difference)
   - ✅ Statistical tests computed
 
-**Results Summary:- 3 splits evaluated (small_ember, full_ember, smoke_test)
-- 22,004 total samples
+**Results Summary:**
+- 4 splits evaluated (main, full_ember, small_ember, smoke_test)
+- 32,004 total samples (main 10,000; full_ember 20,002; small_ember 2,000; smoke_test 2)
 - Deterministic DAC_internal: 100.00% (SD: 0.00%)
 - Learned DAC_internal: 0.00% (SD: 0.00%)
+- Deterministic actionable precision: 0.75 (mean); Learned: 0.00
 - Mean Δ DAC_internal: 100.00%
 
 ### 7. Add/Update Tests ⏳

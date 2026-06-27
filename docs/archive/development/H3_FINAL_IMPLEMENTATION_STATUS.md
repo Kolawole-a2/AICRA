@@ -37,37 +37,32 @@ The H3 experiment pipeline has been comprehensively audited, validated, and upda
 - ✅ **smoke_test**: 2 samples, 1 unique technique
 - ⚠️ **main**: Skipped (likely file not found or no valid techniques after validation)
 
-### Key Metrics (from last run)
+### Key Metrics (canonical — `H3_full_results.json`)
 
-**DAC_internal (H3 Primary Metric):- Deterministic: 100.00% (by definition)
-- Learned: 0.00% (no overlap with deterministic pairs)
+> **Note:** Earlier drafts skipped `main` and reported 22,004 samples; canonical run evaluates **4 splits / 32,004 samples**.
+
+**DAC_internal (H3 Primary Metric):**
+- Deterministic: 100.00% (by definition)
+- Learned: 0.00%
 - Mean Δ: 100.00%
 
-**DAC_external (Secondary Benchmark):- Deterministic: 0.00%
-- Learned: 73.33%
-- Mean Δ: -73.33%
+**Actionable Precision:**
+- Deterministic: 0.75 (mean; SD: 0.50)
+- Learned: 0.00 (SD: 0.00)
+- Mean Δ: +0.75
 
-**Actionable Precision:- Deterministic: 0.0000
-- Learned: 0.3227 (SD: 0.2795)
-- Mean Δ: -0.3227
-
-**Variance Reduction:- Deterministic: 0.000000
+**Variance Reduction:**
+- Deterministic: 0.000000
 - Learned: 0.000000
 - Mean Δ: 0.000000
 
-## Issues Identified
+## Issues Identified (historical — resolved)
 
-1. **Low Technique Diversity:   - Splits have very few unique techniques (1-2 per split)
-   - Most samples use default technique T1486
-   - Limits ability to demonstrate mapping differences
+1. **Low Technique Diversity:** Splits have few unique techniques in scored cohorts (often T1486-heavy); limits per-technique mapping contrast.
 
-2. **Main Split Skipped:   - Main split (10,000 samples) is not being evaluated
-   - Likely due to file not existing at evaluation time or validation failure
-   - Needs investigation and fix
+2. **Main Split (resolved):** `main` (10,000 samples) is now included in canonical evaluation (`config/h3_splits.yaml` → `results/main/risk_scores.csv`).
 
-3. **Zero DAC_internal for Learned:   - Learned mapping has 0% DAC_internal (no overlap with deterministic)
-   - This suggests learned mapping uses different techniques than those in risk scores
-   - Or learned mapping pairs don't match deterministic pairs even for same techniques
+3. **Zero DAC_internal for Learned:** Learned mapping has 0% DAC_internal (no overlap with deterministic pairs) — expected for broad non-ransomware-focused mapping.
 
 ## Files Created/Modified
 
