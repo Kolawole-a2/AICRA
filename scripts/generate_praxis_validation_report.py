@@ -460,7 +460,7 @@ def main():
 
     # Generate report
     report = "# AICRA Praxis Validation Report\n\n"
-    report += "**Artificial Intelligence–Powered Cyber Risk Advisor with Analytics for Endpoint Security in U.S. Banking Organizations (AICRA)**\n\n"
+    report += "**Machine Learning-Based Cyber Risk Advisor with Analytics for Endpoint Security in U.S. Banking Organizations (AICRA)**\n\n"
     report += "This report validates AICRA's performance against baseline methods for all three hypotheses (H1, H2, H3).\n\n"
     report += "---\n\n"
 
