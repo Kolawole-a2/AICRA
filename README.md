@@ -38,7 +38,7 @@ Validated on **three modes:** time-ordered train/test (40,004 / 10,001; see `tem
 
 | Metric | Benchmark / baseline | AICRA (canonical) |
 |--------|----------------------|-------------------|
-| AUROC | Reliability **> 0.88**; empirical logistic ≈ **0.781** (same split) | **0.9796** (full_ember); mean **0.9610** multi-split; **0.9616** OOF |
+| AUROC | Reliability **> 0.88**; empirical logistic **0.7811** (same split) | **0.9796** (full_ember); mean **0.9610** multi-split; **0.9616** OOF |
 | Lift vs logistic | — | **+25.4%** AUROC on full_ember |
 
 ### H2 — Thresholds & calibration test

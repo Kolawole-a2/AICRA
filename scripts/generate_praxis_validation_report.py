@@ -39,9 +39,8 @@ BASELINES = {
         "expected_loss_f1_optimized": 0.50,  # Baseline expected loss with F1-optimized threshold
     },
     "H3": {
-        "description": "Naive/random mapping baseline",
+        "description": "Naive/random mapping baseline (DAC only)",
         "dac_internal": 0.0,  # Random mapping has 0% agreement
-        "actionable_precision": 0.20,  # Baseline precision for naive mapping
         "variance_reduction": 0.0,  # No variance reduction for naive mapping
     },
 }
@@ -314,8 +313,10 @@ def generate_h3_section(h3_results: dict[str, Any], baselines: dict[str, float])
     learned = agg.get("learned", {})
 
     # DAC_internal (primary H3 metric)
-    det_dac_int = det.get("dac_internal_%", {}).get("mean", 100.0)
-    learned_dac_int = learned.get("dac_internal_%", {}).get("mean", 0.0)
+    det_dac_int = det.get("dac_%", det.get("dac_internal_%", {})).get("mean", 100.0)
+    learned_dac_int = learned.get("dac_%", learned.get("dac_internal_%", {})).get(
+        "mean", 0.0
+    )
 
     # Actionable precision
     det_precision = det.get("actionable_precision", {}).get("mean", 0.0)
@@ -338,8 +339,13 @@ def generate_h3_section(h3_results: dict[str, Any], baselines: dict[str, float])
         "|--------|------------------|--------------|---------|-------------------|\n"
     )
     section += f"| DAC_internal (%) | {format_metric(baselines['dac_internal'], 'dac')} | {format_metric(det_dac_int, 'dac')} | {format_metric(learned_dac_int, 'dac')} | {dac_det_vs_learned:+.2f}% |\n"
-    section += f"| Actionable Precision | {format_metric(baselines['actionable_precision'], 'precision')} | {format_metric(det_precision, 'precision')} | {format_metric(learned_precision, 'precision')} | {precision_det_vs_learned:+.4f} |\n"
+    section += f"| Actionable Precision | — | {format_metric(det_precision, 'precision')} | {format_metric(learned_precision, 'precision')} | {precision_det_vs_learned:+.4f} |\n"
     section += f"| Variance Reduction | {format_metric(baselines['variance_reduction'], 'var')} | {format_metric(det_var_red, 'var')} | {format_metric(learned_var_red, 'var')} | {var_red_det_vs_learned:+.6f} |\n\n"
+
+    section += (
+        "‡Naive actionable precision is not measured in `H3_full_results.json`; "
+        "primary comparison is deterministic vs learned.\n\n"
+    )
 
     section += "### Primary Metric: DAC_internal\n\n"
     section += f"Deterministic mapping achieves **{format_metric(det_dac_int, 'dac')}** DAC_internal "

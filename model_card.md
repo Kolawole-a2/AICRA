@@ -45,7 +45,7 @@ Bagged LightGBM/FFNN Classifier; H2 applies Platt/isotonic **post hoc to test wh
 - **Feature Engineering**: Robust feature extraction with fallback for invalid PE files
 
 ### Performance Metrics
-- **AUROC**: > 0.88 reliability benchmark (full_ember 0.9796; multi-split mean 0.9605; OOF 0.9615)
+- **AUROC**: > 0.88 reliability benchmark (full_ember 0.9796; multi-split mean 0.9610; OOF 0.9616)
 - **PR-AUC**: 0.85+ (full_ember ~0.977)
 - **Brier Score**: <0.15
 - **Expected Calibration Error**: <0.05

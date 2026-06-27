@@ -5,45 +5,45 @@
       "auroc_vs_088": {
         "null_hypothesis": "mean(AUROC) <= 0.88",
         "alternative_hypothesis": "mean(AUROC) > 0.88",
-        "observed_mean": 0.9605117862853629,
-        "observed_std": 0.02935525632297681,
+        "observed_mean": 0.9610389469151404,
+        "observed_std": 0.028673890275403974,
         "threshold": 0.88,
         "n_splits": 4,
-        "ttest_pvalue": 0.005958872701996557,
+        "ttest_pvalue": 0.005480723262882645,
         "bootstrap_pvalue": 0.0,
         "bootstrap_ci_95": [
-          0.9331425681685901,
-          0.9795828072736095
+          0.934280307922176,
+          0.9796323123917108
         ],
         "decision_alpha_005": "reject"
       },
       "auroc_vs_095": {
         "null_hypothesis": "mean(AUROC) <= 0.95",
         "alternative_hypothesis": "mean(AUROC) > 0.95",
-        "observed_mean": 0.9605117862853629,
+        "observed_mean": 0.9610389469151404,
         "threshold": 0.95,
-        "ttest_pvalue": 0.26279843750650644,
-        "bootstrap_pvalue": 0.26392639263926393,
+        "ttest_pvalue": 0.24869722208592496,
+        "bootstrap_pvalue": 0.25722572257225723,
         "decision_alpha_005": "fail_to_reject"
       },
       "f1_vs_088": {
         "null_hypothesis": "mean(F1) <= 0.88",
         "alternative_hypothesis": "mean(F1) > 0.88",
-        "observed_mean": 0.7793968809269454,
+        "observed_mean": 0.764067592841738,
         "threshold": 0.88,
-        "ttest_pvalue": 0.9975814467694063,
+        "ttest_pvalue": 0.9975831499033516,
         "bootstrap_pvalue": 1.0,
         "bootstrap_ci_95": [
-          0.7565479822191232,
-          0.7989540220013249
+          0.7368850496496799,
+          0.78580916207504
         ],
         "decision_alpha_005": "fail_to_reject"
       },
       "auroc_vs_random": {
         "null_hypothesis": "mean(AUROC) <= 0.5",
         "alternative_hypothesis": "mean(AUROC) > 0.5",
-        "observed_mean": 0.9605117862853629,
-        "ttest_pvalue": 3.557133609295184e-05,
+        "observed_mean": 0.9610389469151404,
+        "ttest_pvalue": 3.3043643986396614e-05,
         "decision_alpha_005": "reject"
       }
     },

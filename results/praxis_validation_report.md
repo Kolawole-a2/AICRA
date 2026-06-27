@@ -8,69 +8,80 @@
 
 | Hypothesis | Metric(s) | Baseline | AICRA | Δ Absolute | Δ Relative (%) | Status |
 |------------|-----------|----------|-------|------------|----------------|--------|
-| **H1** | AUROC | 0.7781 | 0.9605 | +0.1824 | +25.9% | ✅ **PASSED** |
-| **H1** | False Negative Rate | 36.2% (empirical baseline) | 0.20% | -36.0% | ~99.5% | ✅ **PASSED** |
-| **H1** | Alert Fatigue Reduction | 36.2% FN rate | 0.20% FN rate | N/A | ~99.5% | ✅ **PASSED** |
+| **H1** | AUROC (full_ember vs empirical logistic) | 0.7811 | 0.9796 | +0.1985 | +25.4% | ✅ **PASSED** |
+| **H1** | AUROC reliability benchmark | >0.88 (pass/fail only†) | 0.9796 | — | Exceeds | ✅ **PASSED** |
+| **H1** | False Negative Rate | 36.4% (empirical baseline) | 0.15% | -36.3 pp | ~99.6% | ✅ **PASSED** |
+| **H1** | Alert Fatigue Reduction | 36.4% FN rate | 0.15% FN rate | N/A | ~99.6% | ✅ **PASSED** |
 | **H2** | Expected Loss (F1-opt) | 0.3648 | 0.1802 (cost-opt) | -0.1846 | -50.6% | ✅ **PASSED** |
 | **H2** | Brier Score (vs baseline) | 0.200 | 0.0490 | -0.1510 | -75.5% | ✅ **PASSED** |
 | **H2** | ECE (vs baseline) | 0.080 | 0.0162 | -0.0638 | -79.8% | ✅ **PASSED** |
 | **H3** | DAC_internal (%) | 0.00% | 100.00% | +100.00% | +∞% (perfect) | ✅ **PASSED** |
 
-**Overall Status:** ✅ **ALL HYPOTHESES SUPPORTED--## H1: Static PE Classification Reliability
+**Overall Status:** ✅ **ALL HYPOTHESES SUPPORTED**
+
+†The **>0.88 AUROC reliability benchmark** is a pass/fail threshold only. **% improvement** uses the empirical logistic baseline (**0.7811**) on the same time-ordered split—not 0.88. Multi-split mean AUROC: **0.9610**; supplementary OOF AUROC: **0.9616** (`results/H1_oof_robust_eval/`).
+
+---
+
+## H1: Static PE Classification Reliability
 
 **Hypothesis:** Static PE features enable reliable ransomware classification with AUROC >= 0.95 and operational precision suitable for banking environments.
 
-**Validation modes:** Time-ordered train/test, multi-split evaluation (4 splits), and supplementary out-of-family test (`results/H1_oof_robust_eval/`; OOF AUROC 0.9615). All exceed the **> 0.88 reliability benchmark** (not 0.85).
+**Validation modes:** Time-ordered train/test (40,004 / 10,001), multi-split evaluation (4 splits), and supplementary out-of-family test (`results/H1_oof_robust_eval/`; OOF AUROC 0.9616). All exceed the **> 0.88 reliability benchmark**.
 
-**Status:** ✅ **SUPPORTED** - AUROC >= 0.95 achieved across primary splits; OOF AUROC 0.9615.
+**Status:** ✅ **SUPPORTED** — AUROC ≥ 0.95 on full_ember (0.9796); multi-split mean 0.9610; OOF 0.9616.
 
 ### Key Metrics
 
 | Metric | Baseline (Logistic Regression) | AICRA (Aggregated) | Improvement |
 |--------|-------------------------------|-------------------|-------------|
-| **AUROC** | 0.7781 | 0.9605 (std: 0.0294) | **+25.9%** |
-| **PR-AUC** | N/A | 0.9541 (std: 0.0331) | N/A |
-| **Precision** | 0.7726 | 0.6398 (std: 0.0358) | -13.8%* |
-| **Recall** | 0.6378 | 0.9985 (std: 0.0010) | **+56.5%** |
-| **F1** | 0.6988 | 0.7794 (std: 0.0267) | **+14.3%** |
-| **Brier Score** | 0.2149 | 0.0758 (std: 0.0304) | **-64.7%** |
-| **ECE** | N/A | 0.0261 (std: 0.0285) | N/A |
-| **False Negative Rate** | 36.2% (empirical baseline) | 0.20% | **-99.6%** |
+| **AUROC** | 0.7811 | 0.9610 (std: 0.0287) | **+25.4%**‡ |
+| **PR-AUC** | N/A | 0.9550 (std: 0.0317) | N/A |
+| **Precision** | 0.7734 | 0.6194 (std: 0.0399) | -16.2%* |
+| **Recall** | 0.6363 | 0.9990 (std: 0.0007) | **+56.9%** |
+| **F1** | 0.6982 | 0.7641 (std: 0.0307) | **+12.5%** |
+| **Brier Score** | 0.2149 | 0.0753 (std: 0.0300) | **-65.0%** |
+| **ECE** | N/A | 0.0249 (std: 0.0243) | N/A |
+| **False Negative Rate** | 36.4% (empirical baseline) | 0.15% | **~99.6%** |
 
-*Note: Precision is lower because AICRA uses a banking-optimized threshold (0.0298) that prioritizes recall over precision to minimize false negatives, which is appropriate for banking security.
+‡AUROC **+25.4%** is computed from **full_ember** AICRA (0.9796) vs empirical logistic baseline (0.7811), not from the multi-split mean or the >0.88 benchmark.
+
+*Note: Precision is lower because AICRA uses a banking-optimized threshold (0.0248) that prioritizes recall over precision to minimize false negatives, which is appropriate for banking security.
 
 ### Per-Split Results
 
 | Split | Samples | AUROC | PR-AUC | Precision | Recall | F1 |
 |-------|---------|-------|--------|----------|--------|-----|
-| **full_ember** | 10,001 | 0.9796 | 0.9768 | 0.6660 | 0.9980 | 0.7989 |
-| **main** | 10,000 | 0.9796 | 0.9768 | 0.6661 | 0.9980 | 0.7990 |
-| **small_ember** | 2,000 | 0.9652 | 0.9562 | 0.6366 | 0.9978 | 0.7773 |
-| **smoke_test** | 200 | 0.9177 | 0.9065 | 0.5904 | 1.0000 | 0.7424 |
+| **full_ember** | 10,001 | 0.9796 | 0.9767 | 0.6478 | 0.9985 | 0.7858 |
+| **main** | 10,000 | 0.9796 | 0.9768 | 0.6479 | 0.9985 | 0.7858 |
+| **small_ember** | 2,000 | 0.9657 | 0.9569 | 0.6186 | 0.9989 | 0.7641 |
+| **smoke_test** | 200 | 0.9192 | 0.9096 | 0.5632 | 1.0000 | 0.7206 |
 
 ### Alert Fatigue Reduction
 
-- **Empirical Baseline FN Rate:** 36.2% (logistic regression recall 63.78% on the same test split)
-- **AICRA FN Rate:** 0.20% (9 FNs out of 4,592 ransomware samples)
-- **FN Rate Reduction:** ~99.5% vs empirical baseline
+- **Empirical Baseline FN Rate:** 36.4% (1,670 FNs; logistic regression recall 63.63% on the same test split)
+- **AICRA FN Rate:** 0.15% (7 FNs out of 4,592 ransomware samples)
+- **FN Rate Reduction:** ~99.6% vs empirical baseline
 - **Methodology:** FN rate reduction on the same held-out test partition
 
 ### Baseline Methodology
 
-**Baseline Models (same EMBER-2024 split):1. **Logistic Regression** — scikit-learn, threshold 0.5
+**Baseline Models (same EMBER-2024 split):**
+1. **Logistic Regression** — scikit-learn, threshold 0.5
 2. **Majority Classifier** — scikit-learn `DummyClassifier`
 
-**Best Baseline Used:** Logistic Regression (AUROC = 0.7781, recall = 0.6378)
+**Best Baseline Used:** Logistic Regression (AUROC = 0.7811, recall = 0.6363)
 
 ### Conclusion
 
-✅ **H1 is SUPPORTED:** AUROC >= 0.95 achieved (0.9605 aggregated, 0.9796 on full_ember split).
+✅ **H1 is SUPPORTED:** AUROC ≥ 0.95 achieved (0.9796 on full_ember; 0.9610 multi-split mean).
 
-**Key Findings:- AICRA improves AUC by **+25.9%** over baseline models
-- AICRA reduces false-negative rate by **~99.5%** compared to the empirical baseline (36.2% → 0.20%)
-- Banking-optimized threshold (0.0298) prioritizes recall (99.8%) to minimize missed ransomware
+**Key Findings:**
+- AICRA improves AUC by **+25.4%** over the empirical logistic baseline (0.9796 vs 0.7811)
+- AICRA reduces false-negative rate by **~99.6%** compared to the empirical baseline (36.4% → 0.15%)
+- Banking-optimized threshold (0.0248) prioritizes recall (99.85%) to minimize missed ransomware
 
-**Canonical Statement:** AICRA improves ransomware-prediction AUC by +25.9% and reduces SOC alert fatigue by 99.6%.
+**Canonical Statement:** AICRA improves ransomware-prediction AUC by +25.4% and reduces SOC alert fatigue by 99.6%.
 
 ---
 
@@ -138,26 +149,29 @@ Cost-aware thresholding significantly reduces expected loss compared to F1-optim
 | Metric | Baseline (Naive) | Deterministic | Learned | Δ (Det - Learned) |
 |--------|----------------|--------------|---------|-------------------|
 | **DAC_internal (%)** | 0.00% | 100.00% | 0.00% | **+100.00%** |
-| **Actionable Precision** | 0.20 | 0.0000 | 0.3227 | -0.3227 |
+| **Actionable Precision** | —‡ | **0.75** | **0.00** | **+0.75** |
 | **Variance Reduction** | 0.00 | 0.000000 | 0.000000 | 0.000000 |
 
 ### Primary Metric: DAC_internal
 
 Deterministic mapping achieves **100.00%** DAC_internal (100% by definition) compared to learned mapping **0.00%** and baseline naive mapping **0.00%**.
 
-**Deterministic vs Learned:** +100.00% absolute difference.
+**Deterministic vs Learned:** +100.00% absolute difference (DAC_internal); actionable precision **+0.75** (deterministic mean 0.75 vs learned 0.00).
+
+‡Baseline (Naive) actionable precision is **not measured** in `H3_full_results.json`. The primary H3 comparison is **deterministic vs learned**; the old **0.20** entry was a report placeholder, not an experiment output.
 
 ### H3 Results Summary
 
 Based on `results/H3_full_evaluation/H3_full_results.json`:
 
-- **Number of Splits Evaluated:** 3 (small_ember, full_ember, smoke_test)
-- **Total Samples:** 22,004
-- **Total Techniques:** 4
-- **Deterministic DAC_internal:** 100.00% (SD: 0.00%) - by definition
+- **Number of Splits Evaluated:** 4 (main, small_ember, full_ember, smoke_test)
+- **Total Samples:** 32,004
+- **Deterministic DAC_internal:** 100.00% (SD: 0.00%) — by definition
 - **Learned DAC_internal:** 0.00% (SD: 0.00%)
-- **Mean Δ DAC_internal:** 100.00% (SD: 0.00%)
-- **95% CI for Δ DAC_internal:** [100.00%, 100.00%]
+- **Mean Δ DAC_internal:** 100.00% (95% CI: [100.00%, 100.00%])
+- **Deterministic actionable precision:** 0.75 (SD: 0.50) — 1.0 on main/small_ember/full_ember; 0.0 on smoke_test (2 samples, no positives with mapping)
+- **Learned actionable precision:** 0.00 (SD: 0.00) — all splits
+- **Mean Δ actionable precision:** +0.75 (95% CI: [0.25, 1.0]; paired t-test p = 0.058)
 
 **Statistical Tests:- Paired t-test (learned vs 100% baseline): p=0.0000 (highly significant)
 - Deterministic mapping achieves perfect DAC_internal as expected
@@ -183,13 +197,13 @@ Based on `results/H3_full_evaluation/H3_full_results.json`:
 
 | Hypothesis | Status | Key Achievement |
 |-----------|--------|----------------|
-| **H1** | ✅ **SUPPORTED** | AUROC = 0.9605 (+25.9% vs baseline), ~99.5% FN reduction vs empirical baseline |
+| **H1** | ✅ **SUPPORTED** | AUROC = 0.9796 full_ember (+25.4% vs empirical baseline 0.7811), ~99.6% FN reduction |
 | **H2** | ✅ **SUPPORTED** | 50.6% expected loss reduction with cost-aware thresholding |
 | **H3** | ✅ **SUPPORTED** | 100% DAC_internal with deterministic mapping |
 
 ### Key Contributions
 
-1. **H1:** LightGBM significantly outperforms logistic regression on the same EMBER-2024 split (AUROC ≥ 0.95; FN rate 0.20% vs baseline 36.2%).
+1. **H1:** LightGBM significantly outperforms logistic regression on the same EMBER-2024 split (AUROC ≥ 0.95; FN rate 0.15% vs baseline 36.4%).
 
 2. **H2:** Cost-aware thresholding reduces expected loss by 50.6% vs F1-optimal. Platt/isotonic post-hoc calibration was tested and does not improve expected loss (model already well-calibrated from H1).
 
@@ -209,7 +223,7 @@ Based on `results/H3_full_evaluation/H3_full_results.json`:
 The following baseline metrics are used for comparison:
 
 ### H1 Baselines
-- **Logistic Regression:** AUROC = 0.7781, Precision = 0.7726, Recall = 0.6378, F1 = 0.6988
+- **Logistic Regression:** AUROC = 0.7811, Precision = 0.7734, Recall = 0.6363, F1 = 0.6982
 - **Majority Classifier:** AUROC = 0.5, False Negatives = 4,592
 - **Best Baseline:** Logistic Regression (used for comparison)
 
@@ -231,10 +245,13 @@ The following baseline metrics are used for comparison:
 - **H2 Results:** `results/H2_calibration_thresholds/H2_full_results.json` and `H2_summary.md`
 - **H3 Results:** `results/H3_full_evaluation/H3_full_results.json`
 
-**Plots:- **H1 Plots:** `results/H1_classification/plots/` (per-split: full_ember, main, small_ember, smoke_test)
+**Plots:**
+- **H1 Plots:** `results/H1_classification/plots/` (per-split: full_ember, main, small_ember, smoke_test)
 - **H2 Plots:** `results/H2_calibration_thresholds/plots/` (per-split: full_ember, main, small_ember, smoke_test)
 
---**Report Generated:** 2025-12-17  
+---
+
+**Report Generated:** 2026-06-19 (synced to `H1_full_results.json`)  
 **AICRA Version:** Current  
 **Evaluation Mode:** Multi-Split (all hypotheses)  
 **Status:** ✅ **ALL HYPOTHESES SUPPORTED

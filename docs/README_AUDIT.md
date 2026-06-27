@@ -3,7 +3,7 @@
 **Last updated:** 2026-06-19  
 **Purpose:** Audit README and linked praxis claims against canonical experiment artifacts (H1, H2, H3).
 
-> **Canonical narrative (aligned 2026):** H1 = time-ordered + multi-split + OOF (AUROC benchmark **> 0.88**, empirical logistic ≈ **0.778**); H2 = post-hoc Platt/isotonic **help test** + cost-optimal expected loss; H3 = **perfect separation** when variance reduction is **0.0 on all splits**.
+> **Canonical narrative (aligned 2026):** H1 = time-ordered + multi-split + OOF (AUROC benchmark **> 0.88**, empirical logistic **0.7811**); H2 = post-hoc Platt/isotonic **help test** + cost-optimal expected loss; H3 = **perfect separation** when variance reduction is **0.0 on all splits**.
 
 ---
 
@@ -13,7 +13,7 @@
 
 | Area | Status | Notes |
 |------|--------|-------|
-| **H1** | ✅ | Three validation modes documented; AUROC **> 0.88** (not 0.85); empirical baseline ≈ 0.778 |
+| **H1** | ✅ | Three validation modes documented; AUROC **> 0.88**; empirical baseline **0.7811** |
 | **H2** | ✅ | Calibration framed as **help test**; primary metric = expected loss (cost-opt vs F1-opt) |
 | **H3** | ✅ | Variance reduction 0.0%; validated via perfect separation, not variance-reduction p-values |
 
@@ -23,8 +23,8 @@
 
 | Claim | Verified by | Status | Canonical value |
 |-------|-------------|--------|-----------------|
-| AUROC reliability benchmark **> 0.88** (not 0.85) | `README.md`, `docs/HYPOTHESIS_TESTING_PVALUES.md` | ✅ | Benchmark threshold |
-| Empirical logistic baseline ≈ 0.778 (same split) | `results/H1_classification/H1_full_results.json` | ✅ | `baselines.logistic_regression.auroc` |
+| AUROC reliability benchmark **> 0.88** | `README.md`, `docs/HYPOTHESIS_TESTING_PVALUES.md` | ✅ | Benchmark threshold |
+| Empirical logistic baseline **0.7811** (same split) | `results/H1_classification/H1_full_results.json` | ✅ | `baseline.best_baseline.auroc` |
 | full_ember AUROC 0.9796 | `H1_full_results.json` → `metrics.per_split_results` | ✅ | full_ember split |
 | Multi-split mean AUROC 0.9610 | `H1_full_results.json` → `metrics.aggregated_metrics.auroc.mean` | ✅ | 4 splits |
 | OOF AUROC 0.9616 (supplementary) | `results/H1_oof_robust_eval/oof_robust_summary.md` | ✅ | `scripts/evaluate_h1_oof_robust.py` |
@@ -32,7 +32,7 @@
 | **Multi-split** evaluation | `config/h1_splits.yaml` | ✅ | full_ember, main, small_ember, smoke_test |
 | **Out-of-family** evaluation | `scripts/evaluate_h1_oof_robust.py` | ✅ | Supplementary folder |
 
-**Conclusion:** H1 claims use the correct benchmark (> 0.88), empirical baseline (~0.778), and three validation modes.
+**Conclusion:** H1 claims use the correct benchmark (> 0.88), empirical baseline (0.7811), and three validation modes.
 
 ---
 
@@ -70,7 +70,7 @@ The following incorrect README claims were **fixed** in 2024–2026:
 
 | Old claim | Correct state |
 |-----------|---------------|
-| AUROC baseline **0.85** in summary table | **> 0.88** benchmark; empirical logistic **≈ 0.778** |
+| AUROC baseline **0.85** in summary table | **> 0.88** benchmark; empirical logistic **0.7811** |
 | H2 “calibration for reliable risk scores” | Post-hoc **help test**; no expected-loss improvement |
 | H3 “47% variance reduction” | **0.0%** on all splits; perfect separation |
 | H3 “greater risk-score stability (lower variance)” | Removed from hypothesis; variance tests N/A |

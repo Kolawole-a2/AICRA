@@ -150,7 +150,7 @@ Reconciliation scope also covers these README corrections (see `docs/README_AUDI
 
 | Hypothesis | Correction |
 |------------|------------|
-| **H1** | AUROC benchmark **> 0.88** (not 0.85); three modes (time-ordered, multi-split, OOF) |
+| **H1** | AUROC benchmark **> 0.88**; three modes (time-ordered, multi-split, OOF) |
 | **H2** | Platt/isotonic = **help test**; primary = cost-opt vs F1-opt expected loss |
 
 ---

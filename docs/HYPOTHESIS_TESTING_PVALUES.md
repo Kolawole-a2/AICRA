@@ -12,7 +12,7 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
 
 | Hypothesis | Primary Test | p-Value | Decision (α=0.05) | Status |
 |------------|--------------|---------|-------------------|--------|
-| **H1** | AUROC > 0.88 | **0.005959** | **✓ REJECT H0** | **SUPPORTED** |
+| **H1** | AUROC > 0.88 | **0.005481** | **✓ REJECT H0** | **SUPPORTED** |
 | **H2** | Expected Loss (cost < F1) | **0.012536** | **✓ REJECT H0** | **SUPPORTED** |
 | **H3** | DAC (deterministic > learned) | **< 0.0001** | **✓ REJECT H0** | **SUPPORTED** |
 | **H3** | Precision (deterministic > learned) | **< 0.0001** | **✓ REJECT H0** | **SUPPORTED** |
@@ -82,8 +82,8 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
 **Data**: Per-split AUROC values from multi-split evaluation:
 - `full_ember`: 0.9796
 - `main`: 0.9796
-- `small_ember`: 0.9652
-- `smoke_test`: 0.9177
+- `small_ember`: 0.9657
+- `smoke_test`: 0.9192
 
 **Splits**: Time-ordered multi-split evaluation (full_ember, main, small_ember, smoke_test). H1 is also validated via supplementary **out-of-family** evaluation (`results/H1_oof_robust_eval/`; OOF AUROC 0.9616).
 
@@ -93,7 +93,7 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
 
 **Primary Metric**: AUROC (Area Under ROC Curve)
 
-**Benchmark Threshold**: > 0.88 (reliability benchmark; not 0.85)
+**Benchmark Threshold**: > 0.88 (reliability benchmark)
 
 **Additional Metrics Tested**:
 - AUROC ≥ 0.95 (stricter threshold)
@@ -118,8 +118,8 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
 - Bootstrap test relaxes normality assumption
 
 **Normality Check (Post-hoc)**:
-- To empirically check the t-test normality assumption, we applied a Shapiro–Wilk normality test externally to the four per-split AUROC values [0.9796, 0.9796, 0.9652, 0.9177]. This diagnostic uses only the stored split-level metrics and does not modify any experiment outputs or p-values.
-- Shapiro–Wilk returned W = 0.7816, p = 0.0731 (n = 4), so we fail to reject normality at α = 0.05. Given the small sample size, this result should be interpreted cautiously, but it is consistent with the one-sample t-test’s normality assumption for H1.
+- To empirically check the t-test normality assumption, we applied a Shapiro–Wilk normality test externally to the four per-split AUROC values [0.9796, 0.9796, 0.9657, 0.9192]. This diagnostic uses only the stored split-level metrics and does not modify any experiment outputs or p-values.
+- Shapiro–Wilk returned W = 0.7805, p = 0.0716 (n = 4), so we fail to reject normality at α = 0.05. Given the small sample size, this result should be interpreted cautiously, but it is consistent with the one-sample t-test’s normality assumption for H1.
 - **Note**: Shapiro–Wilk is **not required** for the validity of H1. Normality concerns are already addressed by the **bootstrap** test (non-parametric, no normality assumption), which gives p < 0.0001 and a 95% CI excluding 0.88; the conclusion therefore does not depend on the normality assumption.
 
 ### F) p-Value Calculation
@@ -127,9 +127,9 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
 **Step-by-Step Calculation**:
 
 1. **Observed Data** (4 splits):
-   - AUROC values: [0.9796, 0.9796, 0.9652, 0.9177]
+   - AUROC values: [0.9796, 0.9796, 0.9657, 0.9192]
    - Mean: μ = 0.9610
-   - Standard deviation: σ = 0.0294
+   - Standard deviation: σ = 0.0287
    - Sample size: n = 4
 
 2. **Test Statistic Calculation**:
@@ -138,22 +138,23 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
    H1: μ > 0.88
    
    t = (μ - 0.88) / (σ / √n)
-   t = (0.9610 - 0.88) / (0.0294 / √4)
-   t = 0.0805 / (0.0294 / 2)
-   t = 0.0805 / 0.0147
-   t = 5.476
+   t = (0.9610 - 0.88) / (0.0287 / √4)
+   t = 0.0810 / (0.0287 / 2)
+   t = 0.0810 / 0.0143
+   t = 5.653
    ```
 
 3. **Degrees of Freedom**: df = n - 1 = 4 - 1 = 3
 
 4. **p-Value Calculation**:
-   - **One-sided t-test**: p = P(T₃ > 5.476) = **0.005959   - **Bootstrap method** (9,999 resamples): p < 0.0001
-     - Resample with replacement from [0.9796, 0.9796, 0.9652, 0.9177]
+   - **One-sided t-test**: p = P(T₃ > 5.653) = **0.005481**
+   - **Bootstrap method** (9,999 resamples): p < 0.0001
+     - Resample with replacement from [0.9796, 0.9796, 0.9657, 0.9192]
      - Compute mean for each bootstrap sample
      - Count proportion of bootstrap means ≤ 0.88
      - This proportion = p-value
 
-5. **95% Bootstrap Confidence Interval**: [0.9331, 0.9796]
+5. **95% Bootstrap Confidence Interval**: [0.9343, 0.9796]
    - This interval does NOT include 0.88, confirming rejection of H0
 
 **Bootstrap Method**:
@@ -162,22 +163,22 @@ This document formalizes the Null and Alternative hypotheses for RQ1–RQ3 / H1�
 3. Count proportion of bootstrap means ≤ 0.88
 4. This proportion is the p-value
 
-**95% Bootstrap CI**: [0.9331, 0.9796]
+**95% Bootstrap CI**: [0.9343, 0.9796]
 
 **Source Code**: `scripts/compute_pvalues.py`, function `compute_h1_pvalues()`
 
 ### G) Outcome Statement
 
-**Decision at α = 0.05**: **Reject H0** (p = 0.005959 < 0.05)
+**Decision at α = 0.05**: **Reject H0** (p = 0.005481 < 0.05)
 
 **Interpretation**: 
 - We reject the null hypothesis that mean AUROC ≤ 0.88
 - There is statistically significant evidence (p < 0.01) that the model achieves AUROC > 0.88
-- The 95% bootstrap confidence interval [0.9331, 0.9796] does not include 0.88, confirming rejection
+- The 95% bootstrap confidence interval [0.9343, 0.9796] does not include 0.88, confirming rejection
 - **Conclusion**: Static PE features enable reliable ransomware classification with AUROC significantly exceeding the 0.88 benchmark
 
 **Additional Tests**:
-- **AUROC ≥ 0.95**: p = 0.262798 (fail to reject H0 at α=0.05)
+- **AUROC ≥ 0.95**: p = 0.248697 (fail to reject H0 at α=0.05)
   - Interpretation: Cannot conclude mean AUROC > 0.95, though observed mean (0.9610) exceeds threshold
 - **F1 ≥ 0.88**: p = 0.997581 (fail to reject H0 at α=0.05)
   - Interpretation: F1 score (mean=0.7794) does not exceed 0.88 threshold
@@ -611,7 +612,7 @@ mean(diff) = 0.0066 - 0.0457 = -0.0378 (negative = worse after calibration)
 
 | Hypothesis | Test | Null Hypothesis (H0) | p-Value | Decision (α=0.05) | Interpretation |
 |------------|------|---------------------|---------|-------------------|----------------|
-| **H1** | AUROC ≥ 0.88 | mean(AUROC) ≤ 0.88 | **0.005959** | **✓ Reject H0** | Model achieves AUROC > 0.88 |
+| **H1** | AUROC ≥ 0.88 | mean(AUROC) ≤ 0.88 | **0.005481** | **✓ Reject H0** | Model achieves AUROC > 0.88 |
 | **H2** | Expected Loss | cost_opt ≥ f1_opt | **0.012536** | **✓ Reject H0** | Cost-optimized reduces expected loss vs F1-optimized |
 | **H3** | DAC | DAC_det ≤ DAC_learned | **< 0.0001** | **✓ Reject H0** | Deterministic achieves higher DAC |
 | **H3** | Precision | Precision_det ≤ Precision_learned | **< 0.0001** | **✓ Reject H0** | Deterministic achieves higher precision |
@@ -620,7 +621,7 @@ mean(diff) = 0.0066 - 0.0457 = -0.0378 (negative = worse after calibration)
 
 | Hypothesis | Test | Null Hypothesis (H0) | p-Value | Decision (α=0.05) | Interpretation |
 |------------|------|---------------------|---------|-------------------|----------------|
-| **H1** | AUROC ≥ 0.95 | mean(AUROC) ≤ 0.95 | 0.262798 | Fail to reject | Cannot conclude AUROC > 0.95 |
+| **H1** | AUROC ≥ 0.95 | mean(AUROC) ≤ 0.95 | 0.248697 | Fail to reject | Cannot conclude AUROC > 0.95 |
 | **H1** | F1 ≥ 0.88 | mean(F1) ≤ 0.88 | 0.997581 | Fail to reject | F1 does not exceed 0.88 |
 | **H3** | Coverage | Coverage_det ≤ Coverage_learned | 1.000000 | Not applicable | Both achieve 100% coverage |
 

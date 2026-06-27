@@ -22,12 +22,12 @@
 |-------|---------------|-------|-----------|--------|-----|---------------------------|
 | LightGBM (AICRA) | Full EMBER Temporal (full_ember) | 0.9796 | 0.648 | 0.998 | 0.786 | +25.4% vs empirical logistic |
 | LightGBM (AICRA) | Out-of-Family (supplementary) | 0.9616 | 0.066* | 0.994* | 0.124* | Exceeds > 0.88 benchmark |
-| Logistic Regression (Baseline) | Full EMBER Temporal | 0.778† | 0.70† | 0.75† | 0.72† | Empirical baseline (same split) |
+| Logistic Regression (Baseline) | Full EMBER Temporal | 0.7811† | 0.773 | 0.636 | 0.698 | Empirical baseline (same split) |
 | Majority Classifier (Baseline) | Full EMBER Temporal | 0.50 | 0.50 | 0.50 | 0.50 | Baseline |
 
 *OOF metrics: `results/H1_oof_robust_eval/oof_robust_summary.md`  
 *OOF precision/recall/F1 use the full-test banking threshold on the OOF slice (~3.2% positive rate); AUROC remains the primary OOF metric.  
-†Empirical baseline values from the same EMBER-2024 splits (`H1_full_results.json`). **Reliability benchmark for AUROC is > 0.88** (not 0.85).
+†Empirical baseline values from the same EMBER-2024 splits (`H1_full_results.json`). **Reliability benchmark for AUROC is > 0.88**.
 
 **Additional Metrics**:
 - PR-AUC: 0.977 (full_ember; aggregated mean 0.955)
@@ -38,7 +38,7 @@
 
 ### H1 Interpretation
 
-**Predictive Strength**: AICRA achieves AUROC of 0.9796 on the full_ember temporal split and mean AUROC 0.9610 across multi-split evaluation, exceeding the **> 0.88 reliability benchmark** and the stricter ≥ 0.95 design target. Out-of-family evaluation (OOF AUROC 0.9616) provides an additional generalization stress test. Improvement over the empirical logistic baseline on the same split is **+25.4%** (0.781 → 0.9796).
+**Predictive Strength**: AICRA achieves AUROC of 0.9796 on the full_ember temporal split and mean AUROC 0.9610 across multi-split evaluation, exceeding the **> 0.88 reliability benchmark** and the stricter ≥ 0.95 design target. Out-of-family evaluation (OOF AUROC 0.9616) provides an additional generalization stress test. Improvement over the empirical logistic baseline on the same split is **+25.4%** (0.7811 → 0.9796).
 
 **Calibration Relevance**: The Brier score (0.055) and ECE (0.008) on full_ember indicate well-calibrated probability estimates on the temporal holdout, supporting interpretable risk scores for banking SOCs.
 
@@ -123,7 +123,7 @@
 
 ### H1: Predictive Performance and Operational Deployment
 
-H1 tested whether static PE features enable reliable ransomware classification suitable for banking SOC deployment across **time-ordered**, **multi-split**, and **out-of-family** evaluation. Results demonstrate AUROC 0.9796 on full_ember (mean 0.9610 multi-split; OOF 0.9616)—all exceeding the **> 0.88 reliability benchmark**—with **+25.4%** improvement over the empirical logistic baseline (0.781) on the same split.
+H1 tested whether static PE features enable reliable ransomware classification suitable for banking SOC deployment across **time-ordered**, **multi-split**, and **out-of-family** evaluation. Results demonstrate AUROC 0.9796 on full_ember (mean 0.9610 multi-split; OOF 0.9616)—all exceeding the **> 0.88 reliability benchmark**—with **+25.4%** improvement over the empirical logistic baseline (0.7811) on the same split.
 
 The banking-optimized threshold (0.104) prioritizes recall (0.936) over precision (0.946), reflecting the cost structure where false negatives are 10× more expensive than false positives. This threshold configuration produces expected operational loss of 0.173, representing a 65.4% reduction compared to baseline. The well-calibrated probability estimates (Brier: 0.043, ECE: 0.007) ensure that risk scores are interpretable and actionable for security analysts making triage decisions.
 
@@ -147,7 +147,7 @@ The actionable precision advantage for deterministic mapping (vs 0.0 for learned
 
 The experimental results across H1, H2, and H3 demonstrate that AICRA achieves its design objectives:
 
-1. **H1**: Exceeds **> 0.88 reliability benchmark** on time-ordered, multi-split, and OOF evaluation (full_ember AUROC 0.9796; +25.9% vs empirical logistic baseline 0.778).
+1. **H1**: Exceeds **> 0.88 reliability benchmark** on time-ordered, multi-split, and OOF evaluation (full_ember AUROC 0.9796; +25.4% vs empirical logistic baseline 0.7811).
 
 2. **H2**: Cost-optimal thresholding reduces expected operational loss vs F1-optimal; post-hoc calibration **test** shows no expected-loss improvement (model already well-calibrated from H1).
 

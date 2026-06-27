@@ -61,7 +61,7 @@ Evaluated across 4 splits: full_ember, main, small_ember, smoke_test
 
 ## AICRA Improvements Over Baseline
 
-- **AUROC Improvement**: +25.4% (0.9610 vs 0.7811)
+- **AUROC Improvement**: +25.4% (0.9796 vs 0.7811)
 - **Precision Improvement**: +-16.2% (0.6194 vs 0.7734)
 - **Recall Improvement**: +56.9% (0.9990 vs 0.6363)
 - **F1 Improvement**: +12.5% (0.7641 vs 0.6982)
