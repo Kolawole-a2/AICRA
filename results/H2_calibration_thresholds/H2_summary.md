@@ -145,21 +145,30 @@ Both experiments maintain the banking principle where **FN cost >> FP cost**, re
 
 ## Threshold Comparison
 
-### Aggregated Results Across Splits
+H2 reports **two levels** — do not mix in one table:
 
-**F1-Optimized Threshold (from full_ember split):- Uncalibrated: 0.4586
-- Calibrated: 0.2268
+1. **Expected loss** → **mean across 4 splits** (main, full_ember, small_ember, smoke_test)
+2. **Threshold, precision, recall** → **full_ember split** (10,001 samples)
 
-**Cost-Optimized Threshold (from full_ember split):- Uncalibrated: 0.1040
-- Calibrated: 0.0100
+### Expected Loss (aggregated mean — primary H2 headline)
 
-### Expected Loss (Aggregated)
+| Method | Uncalibrated | Calibrated |
+|--------|--------------|------------|
+| F1-optimized | **0.3648** | 0.3648 |
+| Cost-optimized | **0.1802** | 0.2579 |
 
-**F1-Optimized:- Uncalibrated: 0.3648
-- Calibrated: 0.3648
+**Reduction (uncalibrated):** (0.3648 − 0.1802) / 0.3648 = **50.6%**
 
-**Cost-Optimized:- Uncalibrated: 0.1802
-- Calibrated: 0.2579
+### Thresholds & classification metrics (full_ember split only)
+
+| Method | Threshold | Precision | Recall | F1 | Expected Loss |
+|--------|-----------|-----------|--------|-----|---------------|
+| F1-opt (uncal) | 0.459 | 0.940 | 0.943 | 0.942 | 0.303 |
+| F1-opt (cal) | 0.227 | 0.940 | 0.943 | 0.942 | 0.303 |
+| Cost-opt (uncal) | **0.104** | 0.821 | 0.985 | 0.896 | **0.173** |
+| Cost-opt (cal) | 0.010 | 0.905 | 0.965 | 0.934 | 0.215 |
+
+**Reduction on full_ember (uncalibrated):** (0.303 − 0.173) / 0.303 = **42.9%**
 
 ### Per-Split Expected Loss
 

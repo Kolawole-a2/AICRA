@@ -90,7 +90,7 @@ This document presents experimental results for hypotheses H1, H2, and H3 in the
 
 | Comparison | full_ember | Mean across splits |
 |------------|--------------|-------------------|
-| Cost-optimal vs F1-optimal | 0.173 vs 0.303 (**42.9%** reduction) | 0.180 vs 0.365 (**50.6%** reduction) |
+| Cost-optimal vs F1-optimal | 0.173 vs 0.303 (**42.9%** on full_ember) | 0.180 vs 0.365 (**50.6%** mean across splits) |
 | Cost-optimal (cal) vs F1-optimal | 0.215 vs 0.303 (29.1% reduction) | 0.258 vs 0.365 (29.3% reduction) |
 
 *Design-benchmark comparison vs expected loss = 0.50 yields ~65.4% improvement for cost-optimal uncalibrated (0.173); that is an H2 design target, not an H1 baseline.*

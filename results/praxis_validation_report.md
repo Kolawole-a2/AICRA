@@ -14,7 +14,7 @@ This report validates AICRA's performance against baseline methods for all three
 | **H1** | AUROC reliability benchmark | >0.88 (pass/fail only†) | 0.9796 | — | Exceeds | ✅ **PASSED** |
 | **H1** | False Negative Rate | 36.4% (empirical baseline) | 0.15% | -36.3 pp | ~99.6% | ✅ **PASSED** |
 | **H1** | Alert Fatigue Reduction | 36.4% FN rate | 0.15% FN rate | N/A | ~99.6% | ✅ **PASSED** |
-| **H2** | Expected Loss (F1-opt) | 0.3648 | 0.1802 (cost-opt) | -0.1846 | -50.6% | ✅ **PASSED** |
+| **H2** | Expected Loss (F1-opt → cost-opt, **mean across 4 splits**) | 0.3648 | 0.1802 (cost-opt uncal) | −0.1846 | **−50.6%** | ✅ **PASSED** |
 | **H2** | Brier Score (vs baseline) | 0.200 | 0.0490 | -0.1510 | -75.5% | ✅ **PASSED** |
 | **H2** | ECE (vs baseline) | 0.080 | 0.0162 | -0.0638 | -79.8% | ✅ **PASSED** |
 | **H3** | DAC_internal (%) | 0.00% | 100.00% | +100.00% | +∞% (perfect) | ✅ **PASSED** |
@@ -91,16 +91,42 @@ This report validates AICRA's performance against baseline methods for all three
 
 **Hypothesis:** Cost-aware thresholding produces lower expected loss than F1-optimized thresholds under banking-style asymmetric costs (FN cost >> FP cost). Platt/isotonic regression is applied post hoc **to test whether calibration helps** (Brier, ECE, expected loss)—not assumed to improve outcomes.
 
-**Status:** ✅ **SUPPORTED** (primary) - Cost-aware thresholding reduces expected loss by 50.6%. Post-hoc calibration does **not** improve expected loss (model already well-calibrated from H1).
+**Status:** ✅ **SUPPORTED** (primary) — Cost-aware thresholding reduces **mean** expected loss by **50.6%** across four splits. Post-hoc calibration does **not** improve expected loss (model already well-calibrated from H1).
 
-### Key Metrics
+### Key Metrics — read the level column
 
-| Metric | F1-Optimized (Uncal) | Cost-Optimized (Uncal) | Cost-Optimized (Cal) | Improvement |
-|--------|---------------------|----------------------|---------------------|-------------|
-| **Expected Loss** | 0.3648 | 0.1802 | 0.2579 | **-50.6%** (uncal) |
-| **Threshold** | 0.4586 | 0.1040 | 0.0100 | Lower (banking-optimized) |
-| **Precision** | 0.9404 | 0.8213 | 0.9047 | Lower (acceptable trade-off) |
-| **Recall** | 0.9429 | 0.9854 | 0.9654 | **Higher** (critical for banking) |
+H2 reports two levels: **(A) mean expected loss across four splits** (primary H2 headline) and **(B) full_ember split** (10,001 samples — threshold, precision, recall, and split-level expected loss). Do not mix them in one row.
+
+**Cost parameters (H2):** FN cost = **10**, FP cost = **1** (10:1).
+
+#### (A) Expected loss — aggregated mean (4 splits: main, full_ember, small_ember, smoke_test)
+
+| Method | Expected Loss | vs F1-opt (uncal) |
+|--------|---------------|-------------------|
+| F1-optimized (uncalibrated) | **0.3648** | baseline |
+| Cost-optimized (uncalibrated) | **0.1802** | **−50.6%** |
+| Cost-optimized (calibrated) | **0.2579** | **−29.3%** |
+
+*Primary H2 finding: cost-opt uncalibrated (**0.1802**) beats F1-opt uncalibrated (**0.3648**) on mean expected loss.*
+
+#### (B) full_ember split only (10,001 samples)
+
+| Method | Threshold | Precision | Recall | Expected Loss | vs F1-opt (uncal) |
+|--------|-----------|-----------|--------|---------------|-------------------|
+| F1-optimized (uncalibrated) | 0.459 | 0.940 | 0.943 | **0.303** | baseline |
+| Cost-optimized (uncalibrated) | **0.104** | 0.821 | **0.985** | **0.173** | **−42.9%** |
+| Cost-optimized (calibrated) | 0.010 | 0.905 | 0.965 | 0.215 | −29.1% |
+
+*On full_ember, cost-opt uncalibrated lowers expected loss to **0.173** vs **0.303** at F1-optimal. Threshold **0.104** prioritizes recall over precision under 10:1 costs.*
+
+#### Quick reference — which number to cite when
+
+| You need… | Use this |
+|-----------|----------|
+| H2 headline % reduction | **−50.6%** (aggregated mean EL) |
+| Temporal holdout (full_ember) EL reduction | **−42.9%** (0.173 vs 0.303) |
+| Banking threshold for H2 cost-opt | **0.104** (full_ember; uncalibrated) |
+| H1 operational threshold (separate experiment) | **0.0248** (100:1 costs — see H1 section) |
 
 ### Calibration Results (Aggregated Across Splits)
 
@@ -128,9 +154,10 @@ This report validates AICRA's performance against baseline methods for all three
 
 ✅ **H2 is SUPPORTED:** Cost-aware thresholding produces more decision-aligned susceptibility scores than uncalibrated F1-optimized thresholds.
 
-**Key Findings:- F1-optimized (uncalibrated) Expected Loss: 0.3648
-- Cost-optimized (uncalibrated) Expected Loss: 0.1802 (**50.6% reduction**)
-- Cost-optimized (calibrated) Expected Loss: 0.2579 (**29.3% reduction**)
+**Key Findings:**
+- **Aggregated (4 splits):** F1-opt uncal EL **0.3648** → cost-opt uncal EL **0.1802** (**50.6%** reduction)
+- **full_ember only:** F1-opt uncal EL **0.303** → cost-opt uncal EL **0.173** (**42.9%** reduction); threshold **0.104**, recall **0.985**, precision **0.821**
+- Cost-opt **calibrated** EL **0.2579** (aggregated) / **0.215** (full_ember) — worse than uncalibrated cost-opt
 
 Cost-aware thresholding significantly reduces expected loss compared to F1-optimized thresholding, demonstrating better alignment with banking cost structures (FN cost >> FP cost).
 
