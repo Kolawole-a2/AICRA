@@ -1,6 +1,8 @@
 # AICRA Results Summary
 
-**Artificial Intelligence–Powered Cyber Risk Advisor for Endpoint Security in U.S. Banking OrganizationsThis document presents the experimental results for all three hypotheses (H1, H2, H3) tested in the AICRA praxis. Results are presented in research-ready tables with interpretation text suitable for examiner and reviewer evaluation.
+**Artificial Intelligence–Powered Cyber Risk Advisor for Endpoint Security in U.S. Banking Organizations**
+
+This document presents the experimental results for all three hypotheses (H1, H2, H3) tested in the AICRA praxis. Results are presented in research-ready tables with interpretation text suitable for examiner and reviewer evaluation.
 
 ---
 
@@ -79,7 +81,7 @@
 
 **Temporal Calibration Stability**: The temporal calibration check shows calibration parameters transfer across time periods with some ECE degradation. This supports monitoring recalibration intervals but does **not** establish that post-hoc calibration improves operational decision quality here.
 
-**Practical SOC Implications**: Cost-optimal threshold configuration (FN cost = 10× FP cost) produces expected loss of 0.173–0.215, representing a substantial reduction compared to F1-optimal baselines. This is the primary H2 operational finding; calibration metrics are reported for completeness only.
+**Practical SOC Implications**: Under H2's **10:1** cost structure (FN cost = 10, FP cost = 1), cost-optimal thresholding on full_ember reduces expected loss to **0.173** vs **0.303** at F1-optimal (**42.9%** reduction on that split; **50.6%** mean reduction aggregated across splits). Calibrated cost-optimal loss is **0.215** on full_ember—still better than F1-optimal but worse than uncalibrated cost-optimal. This is the primary H2 operational finding; calibration metrics are reported for completeness only. *(A separate design-benchmark comparison vs expected loss = 0.50 yields ~65.4% improvement; that figure is an H2 design target, not an H1 baseline.)*
 
 ---
 
@@ -125,13 +127,13 @@
 
 H1 tested whether static PE features enable reliable ransomware classification suitable for banking SOC deployment across **time-ordered**, **multi-split**, and **out-of-family** evaluation. Results demonstrate AUROC 0.9796 on full_ember (mean 0.9610 multi-split; OOF 0.9616)—all exceeding the **> 0.88 reliability benchmark**—with **+25.4%** improvement over the empirical logistic baseline (0.7811) on the same split.
 
-The banking-optimized threshold (0.104) prioritizes recall (0.936) over precision (0.946), reflecting the cost structure where false negatives are 10× more expensive than false positives. This threshold configuration produces expected operational loss of 0.173, representing a 65.4% reduction compared to baseline. The well-calibrated probability estimates (Brier: 0.043, ECE: 0.007) ensure that risk scores are interpretable and actionable for security analysts making triage decisions.
+H1 uses a banking-optimized threshold of **0.0248** under a **100:1** cost structure (FN cost = 100, FP cost = 1), intentionally prioritizing recall (**0.999** aggregated; **0.998** on full_ember) over precision (**0.619** aggregated; **0.648** on full_ember), reflecting that missed ransomware is far costlier than false alarms in banking SOCs. Well-calibrated probability estimates on full_ember (Brier: **0.055**, ECE: **0.008**) support interpretable risk scores for analyst triage. H1 does **not** report expected operational loss; that metric belongs to **H2** (cost-optimal threshold **0.104** at 10:1 costs, expected loss **0.173** on full_ember).
 
-**Operational Significance**: The results validate that AICRA can be deployed in banking SOCs with confidence that it will detect ransomware threats with high reliability while minimizing false negatives. The calibration quality ensures that risk scores can be directly integrated into SIEM systems for automated alert prioritization.
+**Operational Significance**: The results validate that AICRA can be deployed in banking SOCs with high detection reliability while minimizing false negatives (7 FNs out of 4,592 positives on full_ember at the H1 banking threshold). Calibration quality on the temporal holdout supports integrating risk scores into SIEM workflows for alert prioritization. Threshold and expected-loss optimization for deployment economics are evaluated separately under H2.
 
 ### H2: Cost-Aware Thresholding & Calibration Help Test
 
-H2 tested cost-optimal vs F1-optimal thresholds and applied Platt/isotonic regression **post hoc to test whether calibration helps**. Cost-optimal thresholding reduces expected loss substantially vs F1-optimal (primary H2 finding). Post-hoc calibration does not improve expected loss because the model is already well-calibrated from H1 (Brier≈0.049, ECE≈0.016).
+H2 tested cost-optimal vs F1-optimal thresholds and applied Platt/isotonic regression **post hoc to test whether calibration helps**. Cost-optimal thresholding (threshold **0.104**, FN cost = 10, FP cost = 1) reduces expected loss to **0.173** on full_ember vs **0.303** at F1-optimal (**42.9%** reduction on that split; **50.6%** mean reduction across splits)—the primary H2 finding. At that H2 threshold, precision is **0.821** and recall **0.985** on full_ember (uncalibrated). Post-hoc calibration does not improve expected loss because the model is already well-calibrated from H1 (Brier≈0.049, ECE≈0.016 aggregated; full_ember uncalibrated Brier **0.043**, ECE **0.007**).
 
 ### H3: Mapping Consistency and Decision Reliability
 
@@ -147,9 +149,9 @@ The actionable precision advantage for deterministic mapping (vs 0.0 for learned
 
 The experimental results across H1, H2, and H3 demonstrate that AICRA achieves its design objectives:
 
-1. **H1**: Exceeds **> 0.88 reliability benchmark** on time-ordered, multi-split, and OOF evaluation (full_ember AUROC 0.9796; +25.4% vs empirical logistic baseline 0.7811).
+1. **H1**: Exceeds **> 0.88 reliability benchmark** on time-ordered, multi-split, and OOF evaluation (full_ember AUROC 0.9796; +25.4% vs empirical logistic baseline 0.7811). Banking threshold **0.0248** (100:1 costs) yields recall **0.998** and precision **0.648** on full_ember.
 
-2. **H2**: Cost-optimal thresholding reduces expected operational loss vs F1-optimal; post-hoc calibration **test** shows no expected-loss improvement (model already well-calibrated from H1).
+2. **H2**: Cost-optimal thresholding (0.104 at 10:1 costs) reduces expected operational loss by **42.9%** on full_ember (0.173 vs 0.303 F1-optimal; **50.6%** mean across splits). Post-hoc calibration **test** shows no expected-loss improvement (model already well-calibrated from H1).
 
 3. **H3**: Deterministic mapping provides perfect DAC_internal (100%) and superior actionable precision; variance reduction is 0.0 on all splits—validated via perfect separation, not variance tests.
 
