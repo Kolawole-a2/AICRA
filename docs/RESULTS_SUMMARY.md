@@ -1,123 +1,154 @@
 # AICRA Results Summary
 
-**Artificial Intelligence–Powered Cyber Risk Advisor for Endpoint Security in U.S. Banking Organizations**
+**Machine Learning-Based Cyber Risk Advisor with Analytics for Endpoint Ransomware Defense in U.S. Banking Organizations**
 
-This document presents the experimental results for all three hypotheses (H1, H2, H3) tested in the AICRA praxis. Results are presented in research-ready tables with interpretation text suitable for examiner and reviewer evaluation.
+This document presents experimental results for hypotheses H1, H2, and H3 in the AICRA praxis. All figures below are taken from canonical artifacts in `results/H1_classification/`, `results/H2_calibration_thresholds/`, and `results/H3_full_evaluation/` unless noted as supplementary.
+
+**Canonical sources:** `H1_summary.md`, `H2_summary.md`, `H3_full_summary.md`, and matching `*_full_results.json` / `metrics.json` files.
 
 ---
 
 ## H1: Static PE Classification Reliability
 
-**Hypothesis**: LightGBM on EMBER-2024 static PE features predicts ransomware susceptibility with AUROC ≥ 0.95 and operational precision suitable for banking environments.
+**Hypothesis (canonical):** Static PE features enable reliable ransomware classification with AUROC ≥ 0.95 and operational precision suitable for banking environments.
 
-**Validation modes** (all reported for H1):
+**Model:** LightGBM on EMBER-2024 static PE features (`results/H1_classification/H1_full_results.json`).
+
+**Validation modes:**
 
 | Mode | Purpose | Evidence |
 |------|---------|----------|
-| **Time-ordered** | Train/test respects temporal ordering (no leakage) | Canonical H1: 40,004 train / 10,001 test; verified in `results/H1_classification/temporal_split_verification.json` (`max(train) < min(test)`) |
+| **Time-ordered** | Train/test respects temporal ordering (no leakage) | 40,004 train / 10,001 test; `temporal_split_verification.json` confirms `max(train) < min(test)` |
 | **Multi-split** | Robustness across nested test slices | `config/h1_splits.yaml` → full_ember, main, small_ember, smoke_test |
-| **Out-of-family (OOF)** | Ranking on malware families unseen in training | `results/H1_oof_robust_eval/` (OOF AUROC 0.9616; operational P/R/F1 at banking threshold in `oof_robust_metrics.json`) |
+| **Out-of-family (OOF)** | Ranking on malware families unseen in training (supplementary) | `results/H1_oof_robust_eval/oof_robust_metrics.json` |
 
 ### H1 Results Table
 
-| Model | Dataset Split | AUROC | Precision | Recall | F1 | % Improvement vs Baseline |
-|-------|---------------|-------|-----------|--------|-----|---------------------------|
-| LightGBM (AICRA) | Full EMBER Temporal (full_ember) | 0.9796 | 0.648 | 0.998 | 0.786 | +25.4% vs empirical logistic |
-| LightGBM (AICRA) | Out-of-Family (supplementary) | 0.9616 | 0.066* | 0.994* | 0.124* | Exceeds > 0.88 benchmark |
-| Logistic Regression (Baseline) | Full EMBER Temporal | 0.7811† | 0.773 | 0.636 | 0.698 | Empirical baseline (same split) |
-| Majority Classifier (Baseline) | Full EMBER Temporal | 0.50 | 0.50 | 0.50 | 0.50 | Baseline |
+| Model | Dataset Split | AUROC | Precision | Recall | F1 | vs Empirical Baseline |
+|-------|---------------|-------|-----------|--------|-----|------------------------|
+| LightGBM (AICRA) | full_ember (10,001 samples) | 0.9796 | 0.648 | 0.998 | 0.786 | +25.4% AUROC vs logistic |
+| LightGBM (AICRA) | OOF (supplementary, 5,587 samples) | 0.9616 | 0.066* | 0.994* | 0.124* | Exceeds > 0.88 AUROC benchmark |
+| Logistic Regression | full_ember (same split) | 0.7811 | 0.773 | 0.636 | 0.698 | Empirical baseline |
+| Majority Classifier | full_ember (same split) | 0.500 | 0.000 | 0.000 | 0.000 | Trivial baseline (AUROC only) |
 
-*OOF metrics: `results/H1_oof_robust_eval/oof_robust_summary.md`  
-*OOF precision/recall/F1 use the full-test banking threshold on the OOF slice (~3.2% positive rate); AUROC remains the primary OOF metric.  
-†Empirical baseline values from the same EMBER-2024 splits (`H1_full_results.json`). **Reliability benchmark for AUROC is > 0.88**.
+\*OOF precision/recall/F1 use the **H1 banking threshold (0.0248)** tuned on the full test set, then applied to the OOF slice (~3.2% positive rate vs ~46% on full test). **AUROC is the primary OOF metric**; operational P/R/F1 are supporting reference only (`oof_robust_metrics.json` notes).
 
-**Additional Metrics**:
-- PR-AUC: 0.977 (full_ember; aggregated mean 0.955)
-- Brier Score: 0.055 (full_ember)
-- ECE: 0.008 (full_ember)
-- Operational Threshold: 0.0248 (banking-optimized at **FN cost = 100, FP cost = 1**)
-- Lift@1%: 2.18 (2.18× baseline precision at top 1% of predictions)
+**Additional H1 metrics (full_ember unless noted):**
+
+| Metric | Value | Source |
+|--------|-------|--------|
+| PR-AUC | 0.9767 (mean 0.9550 multi-split) | `H1_summary.md` |
+| Brier Score | 0.0551 (mean 0.0753 multi-split) | `H1_summary.md` |
+| ECE | 0.0079 (mean 0.0249 multi-split) | `H1_summary.md` |
+| Banking threshold | **0.0248** | FN cost = **100**, FP cost = **1** (100:1) |
+| Lift@1% / 5% / 10% | 2.18× | `H1_full_results.json` |
+| Confusion matrix (full_ember @ 0.0248) | TN=2916, FP=2493, FN=7, TP=4585 | 7 FNs out of 4,592 positives |
+
+**Important trade-off:** At the banking threshold, AICRA **lowers precision** vs the logistic baseline (0.648 vs 0.773, −16.2%) while **raising recall** (0.998 vs 0.636, +56.9%). This is intentional under FN ≫ FP costs.
 
 ### H1 Interpretation
 
-**Predictive Strength**: AICRA achieves AUROC of 0.9796 on the full_ember temporal split and mean AUROC 0.9610 across multi-split evaluation, exceeding the **> 0.88 reliability benchmark** and the stricter ≥ 0.95 design target. Out-of-family evaluation (OOF AUROC 0.9616) provides an additional generalization stress test. Improvement over the empirical logistic baseline on the same split is **+25.4%** (0.7811 → 0.9796).
+**Predictive strength:** AUROC 0.9796 on full_ember and mean 0.9610 across multi-split evaluation exceed both the **> 0.88 reliability benchmark** and the **≥ 0.95 design target**. Supplementary OOF AUROC is 0.9616. AUROC improvement over the empirical logistic baseline on full_ember is **+25.4%** (0.7811 → 0.9796).
 
-**Calibration Relevance**: The Brier score (0.055) and ECE (0.008) on full_ember indicate well-calibrated probability estimates on the temporal holdout, supporting interpretable risk scores for banking SOCs.
+**Calibration:** Brier 0.055 and ECE 0.008 on full_ember indicate well-calibrated probabilities on the temporal holdout.
 
-**Alert-Fatigue Reduction Implication**: The ~25.4% AUROC improvement over the empirical logistic baseline on the same split, combined with the banking-optimized threshold that prioritizes recall (~99.8% on full_ember; 7 false negatives out of 4,592 positives), suggests a meaningful reduction in false negatives relative to the logistic baseline (~99.6% FN-rate reduction).
+**False-negative reduction:** At the banking threshold, AICRA achieves **99.6% FN-rate reduction** vs the logistic baseline (0.15% vs 36.4% FN rate; 7 vs 1,670 false negatives on 4,592 positives).
+
+**Scope note:** H1 does **not** report expected operational loss. Threshold economics at **10:1** costs are evaluated under **H2**.
 
 ---
 
 ## H2: Cost-Aware Thresholding & Post-Hoc Calibration Test
 
-**Research Question (RQ2)**: Does cost-aware thresholding reduce expected loss compared to F1-optimized thresholds under banking-style asymmetric costs (FN cost >> FP cost)?
+**Research Question (RQ2):** Does cost-aware thresholding reduce expected loss compared to F1-optimized thresholds under banking-style asymmetric costs (FN cost >> FP cost)?
 
-**Hypothesis (H2)**: Cost-aware thresholding produces lower expected loss than F1-optimized thresholds under banking-style asymmetric costs (FN cost >> FP cost), demonstrating more decision-aligned susceptibility scores for operational deployment.
+**Hypothesis (H2):** Cost-aware thresholding produces lower expected loss than F1-optimized thresholds under banking-style asymmetric costs, demonstrating more decision-aligned susceptibility scores for operational deployment.
 
-**Calibration (Platt/isotonic)**: Applied post hoc **to test whether calibration improves** Brier, ECE, or expected loss relative to uncalibrated H1 probabilities. H2 finding: the model is already well-calibrated from H1; post-hoc calibration does **not** improve expected loss (primary H2 metric remains cost-optimal vs F1-optimal thresholding).
+**Cost parameters (H2):** FN cost = **10**, FP cost = **1** (10:1). *(H1 uses 100:1 for its banking threshold; the two experiments are complementary.)*
 
-### H2 Results Table
+**Calibration:** Platt/isotonic regression applied post hoc **to test whether calibration helps**. Finding: uncalibrated H1 probabilities are already well-calibrated; post-hoc calibration **does not** improve expected loss and **worsens** Brier/ECE on full_ember.
 
-| Model | Calibration Method | Dataset Split | Brier Score | ECE | % Improvement vs Uncalibrated |
-|-------|-------------------|---------------|-------------|-----|--------------------------------|
-| LightGBM (AICRA) | Uncalibrated | Full EMBER Temporal | 0.043 | 0.007 | Baseline |
-| LightGBM (AICRA) | Isotonic | Full EMBER Temporal | 0.050 | 0.046 | -16.3% (Brier), -557% (ECE)* |
-| LightGBM (AICRA) | Uncalibrated | Temporal Calibration Check | 0.043 | 0.007 | Baseline |
-| LightGBM (AICRA) | Isotonic | Temporal Calibration Check | 0.050 | 0.046 | See temporal check |
+### H2 Results Table (full_ember, 10,001 samples)
 
-*Note: ECE increased after calibration in this evaluation. This may indicate overfitting to the calibration set or temporal shift between calibration and test windows. See temporal calibration check for details.
+| Calibration | Brier | ECE | Change vs uncalibrated |
+|-------------|-------|-----|------------------------|
+| Uncalibrated | 0.0426 | 0.0066 | Baseline |
+| Isotonic (calibrated) | 0.0500 | 0.0457 | Brier +17.4% worse; ECE +595% worse |
 
-**Threshold Comparison**:
-- F1-Optimized (Uncalibrated): Threshold = 0.459, F1 = 0.942, Expected Loss = 0.303
-- F1-Optimized (Calibrated): Threshold = 0.227, F1 = 0.942, Expected Loss = 0.303
-- Cost-Optimal (Uncalibrated): Threshold = 0.104, Precision = 0.821, Recall = 0.985, Expected Loss = 0.173
-- Cost-Optimal (Calibrated): Threshold = 0.01, Precision = 0.905, Recall = 0.965, Expected Loss = 0.215
+*Aggregated uncalibrated means across splits: Brier 0.0490, ECE 0.0162 (`H2_summary.md`).*
 
-**Temporal Calibration Check**: Calibration was performed on an earlier temporal window (validation set) and tested on a later window (test set). The calibration metrics on the later window show similar patterns to the main test, indicating that calibration parameters transfer across time periods, though with some degradation (ECE increases from 0.007 to 0.046). This temporal stability is important for operational deployment where models must remain calibrated as new malware samples arrive.
+### H2 Threshold Comparison (full_ember)
+
+| Method | Threshold | Precision | Recall | F1 | Expected Loss |
+|--------|-----------|-----------|--------|-----|---------------|
+| F1-optimized (uncalibrated) | 0.459 | 0.940 | 0.943 | 0.942 | 0.303 |
+| F1-optimized (calibrated) | 0.227 | 0.940 | 0.943 | 0.942 | 0.303 |
+| Cost-optimal (uncalibrated) | 0.104 | 0.821 | 0.985 | 0.896 | **0.173** |
+| Cost-optimal (calibrated) | 0.010 | 0.905 | 0.965 | 0.934 | 0.215 |
+
+**Expected-loss reductions (uncalibrated, primary H2 finding):**
+
+| Comparison | full_ember | Mean across splits |
+|------------|--------------|-------------------|
+| Cost-optimal vs F1-optimal | 0.173 vs 0.303 (**42.9%** reduction) | 0.180 vs 0.365 (**50.6%** reduction) |
+| Cost-optimal (cal) vs F1-optimal | 0.215 vs 0.303 (29.1% reduction) | 0.258 vs 0.365 (29.3% reduction) |
+
+*Design-benchmark comparison vs expected loss = 0.50 yields ~65.4% improvement for cost-optimal uncalibrated (0.173); that is an H2 design target, not an H1 baseline.*
 
 ### H2 Interpretation
 
-**Transferability to SIEM Contexts**: The cost-optimal threshold produces high recall (0.965–0.985) at the expense of precision (0.821–0.905), which is appropriate for banking SOCs where missing ransomware is more costly than investigating false positives. Post-hoc isotonic calibration was evaluated as a **help test**; it does not improve expected loss on this already well-calibrated model.
+**Primary finding:** Cost-optimal thresholding at **0.104** (10:1 costs) minimizes expected loss vs F1-optimal thresholding. On full_ember it yields recall **0.985** and precision **0.821** (uncalibrated).
 
-**Temporal Calibration Stability**: The temporal calibration check shows calibration parameters transfer across time periods with some ECE degradation. This supports monitoring recalibration intervals but does **not** establish that post-hoc calibration improves operational decision quality here.
+**Calibration help test:** Post-hoc isotonic calibration does **not** improve expected loss. Uncalibrated cost-optimal loss (**0.173**) beats calibrated cost-optimal loss (**0.215**) on full_ember. Optimal H2 deployment uses **cost-optimized thresholds on uncalibrated probabilities**.
 
-**Practical SOC Implications**: Under H2's **10:1** cost structure (FN cost = 10, FP cost = 1), cost-optimal thresholding on full_ember reduces expected loss to **0.173** vs **0.303** at F1-optimal (**42.9%** reduction on that split; **50.6%** mean reduction aggregated across splits). Calibrated cost-optimal loss is **0.215** on full_ember—still better than F1-optimal but worse than uncalibrated cost-optimal. This is the primary H2 operational finding; calibration metrics are reported for completeness only. *(A separate design-benchmark comparison vs expected loss = 0.50 yields ~65.4% improvement; that figure is an H2 design target, not an H1 baseline.)*
+**Temporal check:** Calibration parameters transfer across time windows with ECE degradation (0.007 → 0.046 on full_ember), supporting monitoring intervals but not mandatory recalibration for this model.
 
 ---
 
 ## H3: Deterministic vs Learned ATT&CK–D3FEND Mapping
 
-**Hypothesis**: Deterministic ATT&CK–D3FEND mapping beats learned mapping in DAC_internal and actionable precision across all evaluation splits.
+**Hypothesis:** Deterministic ATT&CK–D3FEND mapping achieves higher DAC_internal and actionable precision than learned mapping.
 
-**Variance note**: Across all splits, deterministic mapping is **always correct** (100% DAC_internal) and learned mapping is **always extraneous** (0%). Variance reduction is **0.0 for both** mappings, so t-test, Wilcoxon, and Shapiro–Wilk tests on variance reduction are **not applicable**. H3 is validated through **perfect separation**, **deterministic dominance**, and **consistent superiority** on DAC and precision—not variance-reduction significance.
+**Evaluation:** 4 splits, 32,004 total samples (`H3_full_summary.md`). Mapping comparison uses **173 deterministic pairs** (46 techniques, 9 controls) vs **190 learned pairs** (47 techniques, 79 controls). **Zero pair overlap** between deterministic and learned mappings.
 
-### H3 Results Table
+**Variance note:** Variance reduction is **0.0 on all splits** for both mappings. H3 is validated via **perfect DAC separation** and **actionable-precision dominance on production-scale splits**, not variance-reduction tests.
 
-| Mapping Method | Coverage (%) | Consistency (DAC %) | Precision | Variance Reduction (%) | Statistical Test Result |
-|----------------|-------------|---------------------|-----------|----------------------|------------------------|
-| Deterministic | 100.0 | 100.0 | 0.75 (SD: 0.50) | 0.0 | p < 0.001 (t-test) |
-| Learned | 100.0 | 0.0 | 0.0 (SD: 0.0) | 0.0 | Baseline |
-| Δ (Deterministic - Learned) | 0.0 | +100.0 | +0.75 | 0.0 | p = 0.058 (actionable precision) |
+### H3 Results Table (aggregated across splits)
 
-**Per-Split Results** (aggregated across main, small_ember, full_ember, smoke_test):
-- **Deterministic DAC**: 100.0% (SD: 0.0%) — perfect by definition
-- **Learned DAC**: 0.0% (SD: 0.0%) — zero overlap with deterministic pairs
-- **Delta DAC**: +100.0% (95% CI: [100.0, 100.0])
-- **Actionable Precision Delta**: +0.75 (95% CI: [0.25, 1.0], p = 0.058)
-- **Variance Reduction Delta**: 0.0 (no significant difference)
+| Mapping | Coverage (%) | DAC_internal (%) | Actionable Precision | Variance Reduction |
+|---------|-------------|------------------|------------------------|-------------------|
+| Deterministic | 100.0 | 100.0 | **0.75** (SD: 0.50) | 0.0 |
+| Learned | 100.0 | 0.0 | 0.0 (SD: 0.0) | 0.0 |
+| Δ (Det − Learned) | 0.0 | +100.0 | +0.75 | 0.0 |
 
-**Statistical Tests**:
-- DAC: t-test statistic = ∞, p < 0.001 (deterministic achieves 100% by definition)
-- Actionable Precision: t-test statistic = 3.0, p = 0.058 (marginal significance)
-- Variance Reduction: t-test statistic = NaN (**not applicable**—identically zero variance reduction on all splits)
+**Per-split actionable precision (deterministic / learned):**
+
+| Split | n_samples | Deterministic | Learned |
+|-------|-------------|---------------|---------|
+| main | 10,000 | 1.0 | 0.0 |
+| full_ember | 20,002 | 1.0 | 0.0 |
+| small_ember | 2,000 | 1.0 | 0.0 |
+| smoke_test | 2 | 0.0 | 0.0 |
+
+*Mean 0.75 reflects three large splits at 1.0 and smoke_test at 0.0 (no actionable alerted rows in that 2-sample split).*
+
+**Statistical tests (`H3_full_summary.md`):**
+
+| Metric | Result | Interpretation |
+|--------|--------|----------------|
+| DAC_internal | t = ∞, **p < 0.001** | Perfect separation (det 100%, learned 0%) |
+| Actionable precision | t = 3.0, **p = 0.058** | Marginal; not p < 0.05 |
+| Variance reduction | t = NaN | Not applicable (zero variance) |
 
 ### H3 Interpretation
 
-**Why Deterministic Mapping Improves Stability**: The deterministic mapping achieves 100% Defense-Attack Consistency (DAC) by definition, meaning every technique-control pair matches the expert-curated ontology exactly. This perfect consistency eliminates mapping uncertainty, which is critical for banking SOCs where security analysts must trust that recommended countermeasures are appropriate for detected attack techniques. The learned mapping, in contrast, achieves 0% DAC because it uses a completely different set of D3FEND controls (79 unique controls vs 9 in deterministic), indicating that embedding-based similarity produces mappings that diverge significantly from expert knowledge.
+**DAC_internal (primary H3 metric):** Measures exact **(technique_id, control_id) pair overlap** between mappings. Deterministic vs itself = **100%** by definition. Learned vs deterministic ground truth = **0%** (disjoint control vocabularies: 9 ransomware-focused vs 79 broad controls).
 
-**Why Learned Mapping Still Matters**: While the learned mapping shows zero overlap with the deterministic mapping in this evaluation, it achieves 100% coverage (all techniques have mapped controls) and uses a broader set of controls (79 vs 9). This suggests that learned mappings may discover alternative control recommendations that experts did not consider, potentially expanding the solution space for defense strategies. However, the zero actionable precision (0.0) indicates that none of the learned mapping's recommendations align with ransomware-relevant controls, limiting its operational utility in the banking context.
+**Actionable precision:** Among **alerted** samples (`predicted_label = 1`), fraction whose mapping recommends at least one deterministic (ransomware-relevant) control. Deterministic = **1.0** on main, full_ember, and small_ember; learned = **0.0** on all splits (learned mapping has no T1486 entries and zero deterministic-pair overlap).
 
-**SOC Decision Reliability Impact**: The deterministic mapping's actionable precision of 0.75 (with high variance, SD: 0.50) means that 75% of positive predictions have at least one ransomware-relevant control recommendation, on average. This precision is operationally significant because it directly impacts analyst confidence: when AICRA recommends a countermeasure, analysts can trust that it is relevant to ransomware defense. The learned mapping's actionable precision of 0.0 means that none of its recommendations are ransomware-relevant, making it unsuitable for operational use despite its high coverage. The statistical test for actionable precision (p = 0.058) shows marginal significance, suggesting that the deterministic mapping's advantage is meaningful but should be interpreted cautiously given the high variance across splits.
+**Learned mapping role:** 100% technique coverage and broader control set (79 controls) show learned mappings are **broader but not ransomware-aligned** in this evaluation—zero actionable precision limits operational use in banking SOCs.
+
+**Limitation:** Canonical H3 risk registers default many samples to **T1486** when family is unknown; DAC is mapping-table-level and does not depend on per-sample scores. See `H3_full_summary.md` for register and default-technique context.
 
 ---
 
@@ -125,46 +156,39 @@ This document presents the experimental results for all three hypotheses (H1, H2
 
 ### H1: Predictive Performance and Operational Deployment
 
-H1 tested whether static PE features enable reliable ransomware classification suitable for banking SOC deployment across **time-ordered**, **multi-split**, and **out-of-family** evaluation. Results demonstrate AUROC 0.9796 on full_ember (mean 0.9610 multi-split; OOF 0.9616)—all exceeding the **> 0.88 reliability benchmark**—with **+25.4%** improvement over the empirical logistic baseline (0.7811) on the same split.
+H1 validates reliable ransomware classification across time-ordered, multi-split, and supplementary OOF evaluation. full_ember AUROC **0.9796** (mean **0.9610**; OOF **0.9616**) exceeds the **> 0.88** benchmark with **+25.4%** AUROC gain vs logistic regression (**0.7811**).
 
-H1 uses a banking-optimized threshold of **0.0248** under a **100:1** cost structure (FN cost = 100, FP cost = 1), intentionally prioritizing recall (**0.999** aggregated; **0.998** on full_ember) over precision (**0.619** aggregated; **0.648** on full_ember), reflecting that missed ransomware is far costlier than false alarms in banking SOCs. Well-calibrated probability estimates on full_ember (Brier: **0.055**, ECE: **0.008**) support interpretable risk scores for analyst triage. H1 does **not** report expected operational loss; that metric belongs to **H2** (cost-optimal threshold **0.104** at 10:1 costs, expected loss **0.173** on full_ember).
-
-**Operational Significance**: The results validate that AICRA can be deployed in banking SOCs with high detection reliability while minimizing false negatives (7 FNs out of 4,592 positives on full_ember at the H1 banking threshold). Calibration quality on the temporal holdout supports integrating risk scores into SIEM workflows for alert prioritization. Threshold and expected-loss optimization for deployment economics are evaluated separately under H2.
+H1 banking threshold **0.0248** (100:1 costs) prioritizes recall (**0.998** on full_ember) over precision (**0.648**), reducing false negatives to **7 of 4,592** positives. Calibration on full_ember (Brier **0.055**, ECE **0.008**) supports interpretable risk scores. Expected-loss optimization is addressed in H2.
 
 ### H2: Cost-Aware Thresholding & Calibration Help Test
 
-H2 tested cost-optimal vs F1-optimal thresholds and applied Platt/isotonic regression **post hoc to test whether calibration helps**. Cost-optimal thresholding (threshold **0.104**, FN cost = 10, FP cost = 1) reduces expected loss to **0.173** on full_ember vs **0.303** at F1-optimal (**42.9%** reduction on that split; **50.6%** mean reduction across splits)—the primary H2 finding. At that H2 threshold, precision is **0.821** and recall **0.985** on full_ember (uncalibrated). Post-hoc calibration does not improve expected loss because the model is already well-calibrated from H1 (Brier≈0.049, ECE≈0.016 aggregated; full_ember uncalibrated Brier **0.043**, ECE **0.007**).
+H2 shows cost-optimal threshold **0.104** (10:1 costs) reduces expected loss to **0.173** on full_ember vs **0.303** at F1-optimal (**42.9%** reduction; **50.6%** mean across splits). Post-hoc calibration does not improve expected loss; uncalibrated probabilities remain the operational choice.
 
 ### H3: Mapping Consistency and Decision Reliability
 
-H3 tested whether deterministic ATT&CK–D3FEND mappings achieve higher DAC_internal and actionable precision than learned mappings. Deterministic mapping is **always correct** (100% DAC_internal); learned is **always extraneous** (0%). Variance reduction is zero on all splits, so H3 validation rests on **perfect separation and deterministic dominance**, not variance-based tests.
-
-The actionable precision advantage for deterministic mapping (vs 0.0 for learned) directly impacts analyst confidence. Statistical tests on DAC and precision reflect perfect separation across splits.
-
-**Operational Significance**: The results validate that deterministic mappings are essential for operational deployment in banking SOCs, where decision reliability and analyst trust are paramount. The learned mapping's zero actionable precision makes it unsuitable for operational use despite its high coverage, highlighting the importance of expert knowledge in cybersecurity ontology alignment. The deterministic mapping's perfect DAC ensures that AICRA's recommendations are consistent and defensible, which is critical for regulatory compliance and audit requirements in banking environments.
+H3 shows **perfect DAC_internal separation** (deterministic 100%, learned 0%) and **deterministic actionable-precision dominance** on production-scale splits (1.0 vs 0.0). Aggregated actionable-precision advantage is **+0.75** (p = **0.058**, marginal). Variance reduction is identically zero—H3 conclusion rests on DAC and precision, not variance tests.
 
 ---
 
 ## Summary
 
-The experimental results across H1, H2, and H3 demonstrate that AICRA achieves its design objectives:
+| Hypothesis | Supported? | Canonical headline |
+|------------|------------|-------------------|
+| **H1** | Yes (AUROC ≥ 0.95) | AUROC 0.9796 on full_ember; +25.4% vs logistic; 99.6% FN-rate reduction at threshold 0.0248 |
+| **H2** | Yes | Cost-optimal threshold 0.104 cuts expected loss 42.9% vs F1-optimal on full_ember (50.6% mean across splits) |
+| **H3** | Yes (DAC separation) | Deterministic DAC_internal 100% vs learned 0%; actionable precision 1.0 vs 0.0 on large splits |
 
-1. **H1**: Exceeds **> 0.88 reliability benchmark** on time-ordered, multi-split, and OOF evaluation (full_ember AUROC 0.9796; +25.4% vs empirical logistic baseline 0.7811). Banking threshold **0.0248** (100:1 costs) yields recall **0.998** and precision **0.648** on full_ember.
-
-2. **H2**: Cost-optimal thresholding (0.104 at 10:1 costs) reduces expected operational loss by **42.9%** on full_ember (0.173 vs 0.303 F1-optimal; **50.6%** mean across splits). Post-hoc calibration **test** shows no expected-loss improvement (model already well-calibrated from H1).
-
-3. **H3**: Deterministic mapping provides perfect DAC_internal (100%) and superior actionable precision; variance reduction is 0.0 on all splits—validated via perfect separation, not variance tests.
-
-Together, these results support the praxis claim that AICRA provides a reliable, calibrated, and operationally viable cyber risk advisor for endpoint security in U.S. banking organizations.
+Together, these results support the praxis claim that AICRA provides a reliable, calibrated, and operationally viable **machine learning-based cyber risk advisor with analytics for endpoint ransomware defense** in U.S. banking organizations.
 
 ---
 
 ## Data Availability
 
-All experimental results are stored in:
-- `results/H1_classification/metrics.json` — H1 complete metrics
-- `results/H2_calibration_thresholds/metrics.json` — H2 complete metrics
-- `results/H3_full_evaluation/H3_full_results.json` — H3 complete results
+| Experiment | Canonical artifacts |
+|------------|----------------------|
+| H1 | `results/H1_classification/H1_summary.md`, `H1_full_results.json`, `metrics.json` |
+| H2 | `results/H2_calibration_thresholds/H2_summary.md`, `H2_full_results.json`, `metrics.json` |
+| H3 | `results/H3_full_evaluation/H3_full_summary.md`, `H3_full_results.json` |
+| H1 OOF (supplementary) | `results/H1_oof_robust_eval/oof_robust_metrics.json` |
 
-See `docs/EXPERIMENTS.md` for reproduction instructions and `docs/DATA.md` for data availability details.
-
+Reproduction: `docs/EXPERIMENTS.md` · Data: `docs/DATA.md`
