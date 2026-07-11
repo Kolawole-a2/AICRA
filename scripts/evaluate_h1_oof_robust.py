@@ -155,7 +155,7 @@ def run_robust_oof_eval(model_path: Path, output_dir: Path) -> dict:
             "OOF asks: *Can the model rank ransomware from malware families "
             "never seen in training?*\n\n"
         )
-        f.write(f"**Script:** `scripts/evaluate_h1_oof_robust.py`  \n")
+        f.write("**Script:** `scripts/evaluate_h1_oof_robust.py`  \n")
         f.write(f"**Model scored:** `{model_path}`\n\n")
         f.write("---\n\n")
         f.write("## 1. Dataset and split (same protocol as canonical H1)\n\n")
@@ -186,10 +186,7 @@ def run_robust_oof_eval(model_path: Path, output_dir: Path) -> dict:
             f"| Held-out families | — | "
             f"**{results['n_held_out_malware_families']}** |\n\n"
         )
-        excluded_ransomware = (
-            results["n_test_samples"]
-            - results["n_oof_samples"]
-        )
+        excluded_ransomware = results["n_test_samples"] - results["n_oof_samples"]
         f.write(
             f"**Excluded from OOF:** ~{excluded_ransomware} in-family test ransomware "
             "(families seen in train malware) — still used for canonical H1, not OOF AUROC.\n\n"
@@ -215,9 +212,7 @@ def run_robust_oof_eval(model_path: Path, output_dir: Path) -> dict:
             f"| Confusion matrix | TN={cm['tn']}, FP={cm['fp']}, "
             f"FN={cm['fn']}, TP={cm['tp']} |\n\n"
         )
-        f.write(
-            f"_{results['operational_threshold_note']}_\n\n"
-        )
+        f.write(f"_{results['operational_threshold_note']}_\n\n")
         f.write("## 5. Reproduce\n\n")
         f.write("```bash\n")
         f.write(
