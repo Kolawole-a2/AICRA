@@ -147,32 +147,85 @@ def run_robust_oof_eval(model_path: Path, output_dir: Path) -> dict:
         json.dump(results, f, indent=2)
 
     with out_md.open("w", encoding="utf-8") as f:
-        f.write("# H1 Robust OOF Evaluation\n\n")
-        f.write(f"- **Model:** `{model_path}`\n")
-        f.write(f"- **Train samples:** {results['n_train_samples']}\n")
-        f.write(f"- **Test samples:** {results['n_test_samples']}\n")
-        f.write(f"- **OOF samples:** {results['n_oof_samples']}\n")
+        f.write("# H1 Robust Out-of-Family (OOF) Evaluation\n\n")
         f.write(
-            f"- **OOF class balance:** positives={pos_count}, negatives={neg_count}\n"
+            "**Supplementary generalization test** for canonical H1. "
+            "Primary H1 evidence remains the **time-ordered temporal holdout** "
+            "(`results/H1_classification/H1_summary.md`). "
+            "OOF asks: *Can the model rank ransomware from malware families "
+            "never seen in training?*\n\n"
+        )
+        f.write(f"**Script:** `scripts/evaluate_h1_oof_robust.py`  \n")
+        f.write(f"**Model scored:** `{model_path}`\n\n")
+        f.write("---\n\n")
+        f.write("## 1. Dataset and split (same protocol as canonical H1)\n\n")
+        f.write(
+            "OOF uses **EMBER-2024** with `load_ember_2024(time_ordered=True)` — "
+            "**not** the native EMBER train/test file split (used by **H2**).\n\n"
         )
         f.write(
-            f"- **Held-out malware families:** {results['n_held_out_malware_families']}\n"
+            "| Step | Result |\n|------|--------|\n"
+            "| Pool EMBER-2024 | 50,005 rows |\n"
+            "| Sort by timestamp | earliest → latest |\n"
+            f"| Train (first 80%) | **{results['n_train_samples']}** |\n"
+            f"| Test (last 20%) | **{results['n_test_samples']}** |\n\n"
         )
-        f.write(f"- **OOF AUROC:** {results['oof_auroc']:.4f}\n")
-        f.write(f"- **OOF PR-AUC:** {results['oof_pr_auc']:.4f}\n")
-        f.write(f"- **OOF Brier:** {results['oof_brier']:.4f}\n")
-        f.write(f"- **OOF ECE:** {results['oof_ece']:.4f}\n\n")
-        f.write("## Operational metrics (banking threshold on OOF slice)\n\n")
-        f.write(f"- **Threshold:** {results['operational_threshold']:.4f}\n")
-        f.write(f"- **Precision:** {results['oof_precision']:.4f}\n")
-        f.write(f"- **Recall:** {results['oof_recall']:.4f}\n")
-        f.write(f"- **F1:** {results['oof_f1']:.4f}\n")
+        f.write(
+            "OOF rows are a **subset of the test set only** — not drawn from train.\n\n"
+        )
+        f.write("## 2. OOF slice construction\n\n")
+        f.write(
+            "| Component | Rule | Count |\n|-----------|------|------:|\n"
+            "| OOF positives | Test ransomware from **held-out families** "
+            "(not in train malware) | "
+            f"**{results['n_oof_positive_samples']}** |\n"
+            "| OOF negatives | **All benign** test rows | "
+            f"**{results['n_oof_negative_samples']}** |\n"
+            "| **OOF total** | Positives + negatives | "
+            f"**{results['n_oof_samples']}** |\n"
+            f"| Held-out families | — | "
+            f"**{results['n_held_out_malware_families']}** |\n\n"
+        )
+        excluded_ransomware = (
+            results["n_test_samples"]
+            - results["n_oof_samples"]
+        )
+        f.write(
+            f"**Excluded from OOF:** ~{excluded_ransomware} in-family test ransomware "
+            "(families seen in train malware) — still used for canonical H1, not OOF AUROC.\n\n"
+        )
+        f.write("## 3. Scoring\n\n")
+        f.write(
+            f"- Banking threshold **{results['operational_threshold']:.4f}** tuned on "
+            "**full** test (FN=100, FP=1), then applied to OOF slice.\n"
+            "- **Primary OOF metric:** AUROC. P/R/F1 are supporting only "
+            "(OOF prevalence ~3.2% vs ~46% on full test).\n\n"
+        )
+        f.write("## 4. Results\n\n")
+        f.write("| Metric | Value |\n|--------|------:|\n")
+        f.write(f"| **OOF AUROC** | **{results['oof_auroc']:.4f}** |\n")
+        f.write(f"| OOF PR-AUC | {results['oof_pr_auc']:.4f} |\n")
+        f.write(f"| OOF Brier | {results['oof_brier']:.4f} |\n")
+        f.write(f"| OOF ECE | {results['oof_ece']:.4f} |\n")
+        f.write(f"| Precision (OOF @ threshold) | {results['oof_precision']:.4f} |\n")
+        f.write(f"| Recall (OOF @ threshold) | {results['oof_recall']:.4f} |\n")
+        f.write(f"| F1 (OOF @ threshold) | {results['oof_f1']:.4f} |\n")
         cm = results["oof_confusion_matrix"]
         f.write(
-            f"- **Confusion matrix:** TN={cm['tn']}, FP={cm['fp']}, "
-            f"FN={cm['fn']}, TP={cm['tp']}\n"
+            f"| Confusion matrix | TN={cm['tn']}, FP={cm['fp']}, "
+            f"FN={cm['fn']}, TP={cm['tp']} |\n\n"
         )
-        f.write(f"\n_{results['operational_threshold_note']}_\n")
+        f.write(
+            f"_{results['operational_threshold_note']}_\n\n"
+        )
+        f.write("## 5. Reproduce\n\n")
+        f.write("```bash\n")
+        f.write(
+            "python scripts/evaluate_h1_oof_robust.py "
+            "--model-path models/h1_lgbm.joblib "
+            "--output-dir results/H1_oof_robust_eval\n"
+        )
+        f.write("```\n")
 
     return results
 
