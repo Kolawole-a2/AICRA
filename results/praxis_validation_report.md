@@ -1,6 +1,6 @@
 # AICRA Praxis Validation Report
 
-**Machine Learning-Based Cyber Risk Advisor with Analytics for Endpoint Security in U.S. Banking Organizations (AICRA)**
+**Machine Learning-Based Cyber Risk Advisor with Analytics for Endpoint Ransomware Defense in U.S. Banking Organizations (AICRA)**
 
 This report validates AICRA's performance against baseline methods for all three hypotheses (H1, H2, H3).
 

@@ -1,6 +1,8 @@
 # Final Praxis Audit Checklist
 
-**AICRA: Artificial Intelligence–Powered Cyber Risk Advisor for Endpoint Security in U.S. Banking OrganizationsThis checklist supports final submission review and examiner audit by verifying that all required components, validations, and documentation are present and correct.
+**AICRA: Machine Learning-Based Cyber Risk Advisor with Analytics for Endpoint Ransomware Defense in U.S. Banking Organizations**
+
+This checklist supports final submission review and examiner audit by verifying that all required components, validations, and documentation are present and correct.
 
 ---
 

@@ -40,9 +40,9 @@ Your praxis has **two distinct but complementary components**:
 - They are the **scientific foundation** of your praxis
 - Results are used in your dissertation/praxis document
 
-**Example Results**:
-- H1: AUROC = 0.9866, PR-AUC = 0.9869, Precision = 0.9459
-- H2: Brier improvement, ECE reduction, cost-optimal threshold selection
+**Example Results** (canonical `H1_summary.md` / `H2_summary.md`):
+- H1 (full_ember, banking threshold 0.0248): AUROC = 0.9796, PR-AUC = 0.9767, Precision = 0.648, Recall = 0.998
+- H2 (full_ember, 10:1 costs): cost-optimal threshold 0.104, expected loss 0.173 vs F1-optimal 0.303 (42.9% reduction on split)
 
 ---
 

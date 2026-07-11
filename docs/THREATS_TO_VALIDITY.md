@@ -1,6 +1,8 @@
 # Threats to Validity
 
-**AICRA: Artificial Intelligence–Powered Cyber Risk Advisor for Endpoint Security in U.S. Banking OrganizationsThis document identifies potential threats to the validity of the AICRA praxis results and describes mitigations implemented in the experimental design and codebase.
+**AICRA: Machine Learning-Based Cyber Risk Advisor with Analytics for Endpoint Ransomware Defense in U.S. Banking Organizations**
+
+This document identifies potential threats to the validity of the AICRA praxis results and describes mitigations implemented in the experimental design and codebase.
 
 ---
 

@@ -1,5 +1,7 @@
 # AICRA Model Card
 
+**Machine Learning-Based Cyber Risk Advisor with Analytics for Endpoint Ransomware Defense in U.S. Banking Organizations**
+
 ## Model Information
 
 ### Model Name

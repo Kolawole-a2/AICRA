@@ -9,7 +9,7 @@
 
 ## Summary
 
-**Status:** ✅ **PASSED** — README and secondary praxis docs match canonical artifacts as of commit series `574024c` / `5235899` / `d544018`.
+**Status:** ✅ **PASSED** — README and secondary praxis docs match canonical artifacts as of commits `7202dd6` (RESULTS_SUMMARY audit) and prior alignment series.
 
 | Area | Status | Notes |
 |------|--------|-------|
@@ -75,6 +75,9 @@ The following incorrect README claims were **fixed** in 2024–2026:
 | H3 “47% variance reduction” | **0.0%** on all splits; perfect separation |
 | H3 “greater risk-score stability (lower variance)” | Removed from hypothesis; variance tests N/A |
 | H1 OOF buried as optional only | Three modes: time-ordered, multi-split, **OOF** |
+| Wrong praxis title (“Artificial Intelligence–Powered… Endpoint Security”) | **Machine Learning-Based… Endpoint Ransomware Defense** (`README.md`) |
+| H1 precision/recall **0.9459 / 0.9363** in secondary docs | Banking-threshold metrics **0.648 / 0.998** on full_ember (`H1_summary.md`) |
+| H1/H2 metric mix-up (threshold **0.104**, EL **0.173** under H1) | H1 threshold **0.0248** (100:1); H2 threshold **0.104** (10:1) |
 
 See `docs/H3_RECONCILIATION_REPORT.md` for variance-reduction root-cause analysis.
 

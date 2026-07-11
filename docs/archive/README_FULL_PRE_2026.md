@@ -792,15 +792,15 @@ After running H3, check `results/H3_full_evaluation/H3_full_summary.md`.
 The concrete H1/H2 metrics below are taken directly from the current repository outputs (multi-split evaluation):
 
 - **H1 (Static PE classification, aggregated across splits)** – from `results/H1_classification/H1_full_results.json`:
-  - **AUROC**: 0.9605 (std: 0.0294) - **full_ember**: 0.9796
-  - **PR-AUC**: 0.9541 (std: 0.0331) - **full_ember**: 0.9768
-  - **Precision**: 0.6398 (std: 0.0358) - **full_ember**: 0.6660 (banking-optimized threshold 0.0298)
-  - **Recall**: 0.9985 (std: 0.0010) - **full_ember**: 0.9980
-  - **F1**: 0.7794 (std: 0.0267) - **full_ember**: 0.7989
-  - **Brier Score**: 0.0758 (std: 0.0304) - **full_ember**: 0.0554
-  - **ECE**: 0.0261 (std: 0.0285) - **full_ember**: 0.0081
-  - **FN rate reduction**: ~99.5% vs empirical baseline (36.2% → 0.20% on full_ember)
-  - **Confusion Matrix (full_ember)**: TN=3111, FP=2298, FN=9, TP=4583
+  - **AUROC**: 0.9610 (std: 0.0287) — **full_ember**: 0.9796
+  - **PR-AUC**: 0.9550 (std: 0.0317) — **full_ember**: 0.9767
+  - **Precision**: 0.6194 (std: 0.0399) — **full_ember**: 0.6478 (banking threshold **0.0248**)
+  - **Recall**: 0.9990 (std: 0.0007) — **full_ember**: 0.9985
+  - **F1**: 0.7641 (std: 0.0307) — **full_ember**: 0.7858
+  - **Brier Score**: 0.0753 (std: 0.0300) — **full_ember**: 0.0551
+  - **ECE**: 0.0249 (std: 0.0243) — **full_ember**: 0.0079
+  - **FN rate reduction**: ~99.6% vs empirical baseline (36.4% → 0.15% on full_ember)
+  - **Confusion Matrix (full_ember)**: TN=2916, FP=2493, FN=7, TP=4585
 
 - **H2 (Calibration & cost-aware thresholding, aggregated across splits)** – from `results/H2_calibration_thresholds/H2_full_results.json`:
   - **Brier Score (uncalibrated)**: 0.0490 (std: 0.0111) - **full_ember**: 0.0426
@@ -822,9 +822,9 @@ The concrete H1/H2 metrics below are taken directly from the current repository 
 
 From the metrics above, the **current repository outputs meet the target thresholds**:
 
-- **AUROC** ≥ 0.95 (H1 aggregated: 0.9605, full_ember: 0.9796) ✅
-- **Precision** ≥ 0.88 (H1 full_ember: 0.6660*; H2 calibrated: 0.9047)
-  - *Note: H1 precision (0.6660) is lower due to banking-optimized threshold (0.0298) that prioritizes recall. This is operationally suitable for banking security. See `docs/PRECISION_RECALL_TRADE_OFF_BANKING.md` for details.
+- **AUROC** ≥ 0.95 (H1 aggregated: 0.9610, full_ember: 0.9796) ✅
+- **Precision** ≥ 0.88 (H1 full_ember @ banking threshold: 0.6478*; H2 F1-opt uncal: 0.9404; H2 cost-opt cal: 0.9047)
+  - *Note: H1 precision (0.6478) is lower due to banking-optimized threshold (0.0248) that prioritizes recall. This is operationally suitable for banking security. See `docs/PRECISION_RECALL_TRADE_OFF_BANKING.md` for details.
 - **Recall** ≥ 0.88 (H1 full_ember: 0.9980; H2 calibrated: 0.9654) ✅
 - **F1** ≥ 0.88 (H1 full_ember: 0.7989; H2 calibrated: 0.9341) ✅
 - **Brier Score** < 0.12 (all reported Brier scores are ≈ 0.04–0.06) ✅

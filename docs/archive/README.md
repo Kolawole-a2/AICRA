@@ -13,7 +13,7 @@ Archived notes may predate final praxis wording. The **current** hypothesis narr
 
 | Hypothesis | Canonical framing |
 |------------|-------------------|
-| **H1** | Validated on **time-ordered**, **multi-split**, and **out-of-family (OOF)** evaluation. AUROC reliability benchmark **> 0.88** (not 0.85). Empirical logistic baseline ≈ **0.778** on the same split; full_ember AUROC **0.9796**; OOF AUROC **0.9615**. |
+| **H1** | Validated on **time-ordered**, **multi-split**, and **out-of-family (OOF)** evaluation. AUROC reliability benchmark **> 0.88**. Empirical logistic baseline **0.7811** on the same split; full_ember AUROC **0.9796** (banking threshold **0.0248**); OOF AUROC **0.9616**. |
 | **H2** | **Post-hoc Platt/isotonic calibration test** (does calibration help?) plus **cost-optimal vs F1-optimal expected loss** (primary). Model already well-calibrated from H1; calibration does **not** improve expected loss. |
 | **H3** | **4 splits** (main 10,000; full_ember 20,002; small_ember 2,000; smoke_test 2; **32,004** total). Deterministic mapping **always correct** (100% DAC_internal); learned **always extraneous** (0%). Actionable precision **0.75** vs **0.00**. Variance reduction **0.0 on all splits** → variance tests **not applicable**. Validated via **perfect separation** and deterministic dominance. |
 

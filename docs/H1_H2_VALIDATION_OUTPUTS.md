@@ -83,13 +83,13 @@
 
 **⚠️ IMPORTANT**: These plots are **NOT equivalent** to canonical H1/H2 results because:
 - They evaluate on **train+test combined** (not test-only)
-- They produce **different metrics** (e.g., AUROC 0.9980 vs 0.9866)
+- They produce **different metrics** (e.g., AUROC 0.9980 vs canonical 0.9796)
 - They include **training data in evaluation** (data leakage)
 
 **Do NOT use these plots to represent canonical validation results without clear disclaimers.### Available Plots (For Demonstration Only):
 
 1. **`roc.png`** - ROC Curve
-   - ⚠️ Different AUROC than canonical (0.9980 vs 0.9866)
+   - ⚠️ Different AUROC than canonical (0.9980 vs 0.9796)
    - Evaluates on train+test combined, not test-only
 
 2. **`pr.png`** - Precision-Recall Curve

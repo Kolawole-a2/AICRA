@@ -1,6 +1,8 @@
 # Reviewer and Examiner Guide
 
-**AICRA: Artificial Intelligence–Powered Cyber Risk Advisor for Endpoint Security in U.S. Banking OrganizationsThis guide assists reviewers and examiners in navigating the AICRA repository, understanding experimental design, and reproducing results.
+**AICRA: Machine Learning-Based Cyber Risk Advisor with Analytics for Endpoint Ransomware Defense in U.S. Banking Organizations**
+
+This guide assists reviewers and examiners in navigating the AICRA repository, understanding experimental design, and reproducing results.
 
 ---
 

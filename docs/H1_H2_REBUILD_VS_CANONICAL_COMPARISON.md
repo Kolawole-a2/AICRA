@@ -8,7 +8,16 @@
 
 **Data Split:- Uses time-ordered split: **Train (40,004 samples) / Test (10,001 samples)- Evaluates on **test set only** (10,001 samples)
 
-**Results:- AUROC: **0.9866- PR-AUC: **0.9869- Precision: **0.9459- Recall: **0.9363- F1: **0.9411- Brier: **0.0426- ECE: **0.0066**Location:** `results/H1_classification/H1_full_results.json`
+**Results** (canonical `results/H1_classification/H1_full_results.json`, banking threshold **0.0248**, FN:FP = **100:1**):
+- AUROC: **0.9796** (full_ember)
+- PR-AUC: **0.9767**
+- Precision: **0.6478**
+- Recall: **0.9985**
+- F1: **0.7858**
+- Brier: **0.0551**
+- ECE: **0.0079**
+
+**Location:** `results/H1_classification/H1_full_results.json`
 
 ---
 
@@ -89,8 +98,8 @@ The rebuild pipeline is designed for:
 |--------|----------------|------------------|
 | **Evaluation Dataset** | Test set only (10,001) | Train+test combined (50,006) |
 | **Data Leakage** | ❌ No (proper train/test split) | ⚠️ Yes (includes training data) |
-| **AUROC** | 0.9866 | 0.9980 (different!) |
-| **Precision** | 0.9459 | 0.9847 (different!) |
+| **AUROC** | 0.9796 | 0.9980 (different!) |
+| **Precision** | 0.6478 | 0.9847 (different!) |
 | **Purpose** | Hypothesis validation | Operational demonstration |
 | **Appropriate for Validation?** | ✅ Yes | ❌ No |
 
@@ -104,7 +113,7 @@ The rebuild pipeline is designed for:
 
 1. **Different datasets**: Canonical H1 evaluates on test set only (10,001 samples), while rebuild pipeline evaluates on train+test combined (50,006 samples)
 
-2. **Different metrics**: The metrics are different (e.g., AUROC 0.9866 vs 0.9980) because they're evaluated on different data
+2. **Different metrics**: The metrics are different (e.g., AUROC 0.9796 vs 0.9980) because they're evaluated on different data
 
 3. **Data leakage**: The rebuild pipeline includes training data in evaluation, which is not appropriate for hypothesis validation
 
